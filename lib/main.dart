@@ -3,18 +3,19 @@ import 'package:workmanager/workmanager.dart';
 import 'databasehelper/dataBaseHelper.dart';
 import 'pages/mainmenu.dart';
 
- void callbackDispatcher() async{
-  Workmanager.executeTask((task, inputData) async{
+callbackDispatcher() {
+  Workmanager.executeTask((task, inputData) async {
     var db = DbHelper();
     await db.openNotificationBar();
     return Future.value(true);
   });
 }
 
-Future<void> main() async{
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   Workmanager.initialize(
-      callbackDispatcher,
+    callbackDispatcher,
   );
   Workmanager.registerPeriodicTask(
     "1", // tag / id
@@ -22,6 +23,5 @@ Future<void> main() async{
     existingWorkPolicy: ExistingWorkPolicy.append,
     frequency: Duration(minutes: 15),
   );
-  runApp(MaterialApp(
-      debugShowCheckedModeBanner: false, title: "Takvim", home: MainMenu()));
+  runApp(MaterialApp(debugShowCheckedModeBanner: false, title: "Takvim", home: MainMenu()));
 }

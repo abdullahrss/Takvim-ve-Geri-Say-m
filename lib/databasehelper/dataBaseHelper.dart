@@ -230,7 +230,7 @@ class DbHelper {
     return resultList;
   }
 
-  Future<void> openNotificationBar() async {
+  Future<bool> openNotificationBar() async {
     Database db = await this.database;
     FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
     var not = Notifications(localNotificationsPlugin);
@@ -239,6 +239,9 @@ class DbHelper {
     List<Event> eventList = List<Event>();
     for (var i = 0; i < result.length; i++) {
       eventList.add(Event.fromMap(result[i]));
+    }
+    if (eventList.length == 0){
+      return false;
     }
     for (var i = 0; i < eventList.length; i++) {
       var targetTime = eventList[i].startTime == "null"
@@ -256,6 +259,7 @@ class DbHelper {
           "ETKİNLİĞE ${remainingTime.inDays} GÜN ${remainingTime.inHours - remainingTime.inDays * 24} SAAT ${remainingTime.inMinutes - remainingTime.inHours * 60} DAKİKA KALDI",
           eventList[i].id);
     }
+    return true;
   }
 
   Future<void> createNotifications() async {

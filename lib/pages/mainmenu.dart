@@ -12,16 +12,14 @@ import 'calendar.dart';
 import '../events/closesEvent.dart';
 import '../helpers/ads.dart';
 import 'settings.dart';
-import '../databasehelper/settingsDataBase.dart';
 
 class MainMenu extends StatelessWidget {
   MainMenu({Key key}) : super(key: key);
-  static var mode;
-  var status = SettingsHelper().getStatusList().then((value) => mode = value[0]);
+
   @override
   Widget build(BuildContext context) {
     return DynamicTheme(
-        defaultBrightness: mode==null ? Brightness.light : (mode==0?Brightness.light:Brightness.dark),
+        defaultBrightness:Brightness.light,
         data: (brightness) => ThemeData(
               brightness: brightness,
               fontFamily: "DoppioOne",
@@ -65,6 +63,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     super.initState();
     // Background processes
     _backGroundProcesses = BackGroundProcesses();
+    _backGroundProcesses.startBgServicesManually();
     // Ads
     _advert.showBannerAd();
     // Active processes
@@ -101,7 +100,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 48.0),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 100.0),
         child: FloatingActionButton(
           onPressed: () {
             Navigator.push(
