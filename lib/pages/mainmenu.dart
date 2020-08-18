@@ -3,6 +3,7 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 // Local importlar
 import '../helpers/backgroundProcesses.dart';
 import '../databasehelper/dataBaseHelper.dart';
@@ -19,7 +20,7 @@ class MainMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DynamicTheme(
-        defaultBrightness:Brightness.light,
+        defaultBrightness: Brightness.light,
         data: (brightness) => ThemeData(
               brightness: brightness,
               fontFamily: "DoppioOne",

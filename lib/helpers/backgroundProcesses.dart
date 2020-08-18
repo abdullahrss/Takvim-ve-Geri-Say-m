@@ -1,6 +1,13 @@
 import 'package:workmanager/workmanager.dart';
 import '../databasehelper/dataBaseHelper.dart';
-
+// Arka planda calisacak task
+void callbackDispatcher() {
+  Workmanager.executeTask((task, inputData) async{
+    var db = DbHelper();
+    await db.openNotificationBar();
+    return Future.value(true);
+  });
+}
 class BackGroundProcesses{
 
   static final BackGroundProcesses _backGroundProcesses = BackGroundProcesses._initializeTasks();
@@ -22,14 +29,6 @@ class BackGroundProcesses{
       existingWorkPolicy: ExistingWorkPolicy.append,
       frequency: Duration(minutes: 15),
     );
-  }
-  // Arka planda calisacak task
-  static callbackDispatcher() async{
-    Workmanager.executeTask((task, inputData) async{
-      var db = DbHelper();
-      await db.openNotificationBar();
-      return Future.value(true);
-    });
   }
   void startBgServicesManually(){
     Workmanager.cancelAll();
