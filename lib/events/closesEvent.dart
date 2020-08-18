@@ -26,6 +26,21 @@ class _Closesevents extends State<Soclose> {
     });
   }
 
+
+  String calcRemaining(String date, String startTime) {
+    var result;
+    if (startTime == "null") {
+      result = (DateTime.parse(date).difference(DateTime.now()).inDays < 0)
+          ? "${-1 * DateTime.parse(date).difference(DateTime.now()).inDays}\nGün Geçti"
+          : "${DateTime.parse(date).difference(DateTime.now()).inDays}\nGün Kaldı";
+    } else {
+      result = (DateTime.parse("$date $startTime").difference(DateTime.now()).inDays < 0)
+          ? "${-1 * DateTime.parse("$date $startTime").difference(DateTime.now()).inDays}\nGün Geçti"
+          : "${DateTime.parse("$date $startTime").difference(DateTime.now()).inDays}\nGün Kaldı";
+    }
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,12 +114,8 @@ class _Closesevents extends State<Soclose> {
                                           borderRadius: BorderRadius.circular(8.0),
                                           color: Colors.blue),
                                       child: Text(
-                                        DateTime.parse(snapshot.data[index].date)
-                                                    .difference(DateTime.now())
-                                                    .inDays <
-                                                0
-                                            ? "${-1 * DateTime.parse(snapshot.data[index].date).difference(DateTime.now()).inDays}\nGün Geçti"
-                                            : "${DateTime.parse(snapshot.data[index].date).difference(DateTime.now()).inDays}\nGün Kaldı",
+                                        calcRemaining(snapshot.data[index].date,
+                                            snapshot.data[index].startTime),
                                         textAlign: TextAlign.center,
                                         style: TextStyle(fontSize: 25),
                                       ),
