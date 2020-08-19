@@ -65,13 +65,28 @@ class _SettingsState extends State<Settings> {
                 ),
                 Switch(
                   value: _switchValue,
-                  onChanged: (val) {
+                  onChanged: (val) async {
                     setState(() {
                       _switchValue = val;
-                      _switchValue
-                          ? DynamicTheme.of(context).setBrightness(Brightness.dark)
-                          : DynamicTheme.of(context).setBrightness(Brightness.light);
                     });
+                    var _sdb = SettingsDbHelper();
+                    var setting;
+                    await _sdb.getSettings().then((value) async {
+                      setting = value[0];
+                    });
+                    _switchValue
+                        ? DynamicTheme.of(context).setThemeData(
+                            ThemeData(
+                              brightness: Brightness.dark,
+                              fontFamily: setting.fontName,
+                            ),
+                          )
+                        : DynamicTheme.of(context).setThemeData(
+                            ThemeData(
+                              brightness: Brightness.light,
+                              fontFamily: setting.fontName,
+                            ),
+                          );
                   },
                 ),
               ],

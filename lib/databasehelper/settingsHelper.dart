@@ -54,7 +54,6 @@ class SettingsDbHelper {
   Future<List<Setting>> getSettings() async {
     Database db = await this.database;
     var settingsMapList = await db.query(_tablename);
-    print("settingsMapListLength : ${settingsMapList.length}");
     if (settingsMapList.length == 0) {
       await db.rawQuery("INSERT INTO $_tablename ($_columnFontName) VALUES('DoppioOne');");
     }

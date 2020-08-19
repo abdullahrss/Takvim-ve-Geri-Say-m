@@ -20,7 +20,6 @@ class MainMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return DynamicTheme(
         defaultBrightness: Brightness.light,
         data: (brightness) => ThemeData(
@@ -103,6 +102,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
 
   @override
   Widget build(BuildContext context) {
+    changeFont();
     return Scaffold(
       floatingActionButton: Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 100.0),
@@ -260,7 +260,8 @@ class _MainMenuBodyState extends State<MainMenuBody> {
       },
     );
   }
-  void changeFont()async{
+
+  void changeFont() async {
     var _sdb = SettingsDbHelper();
     var setting;
     await _sdb.getSettings().then((value) async {
