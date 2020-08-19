@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
@@ -7,7 +6,7 @@ import 'dart:io' show Directory;
 import '../events/notifications.dart';
 
 // Local importlar
-import '../helpers/eventConstants.dart';
+import '../helpers/constants.dart';
 import '../databasemodels/events.dart';
 
 class DbHelper {
@@ -98,12 +97,6 @@ class DbHelper {
   Future<int> deleteEvent(int id) async {
     var db = await this.database;
     int result = await db.rawDelete('DELETE FROM $_tablename WHERE $_columnId = $id');
-    return result;
-  }
-
-  Future<int> deleteOldEvent(String date) async {
-    var db = await this.database;
-    int result = await db.rawDelete('DELETE FROM $_tablename WHERE $_columnDate = "$date" ');
     return result;
   }
 
@@ -320,41 +313,6 @@ class DbHelper {
     return resultList;
   }
 
-  Future clearoldevent() async{
-    getEventList().then((value){
-      for(int i=0;i<value.length;i++){
-        var tarih = value[i].date;
-        var saaat = value[i].finishTime;
-        print(tarih);
-        print(saaat);
-        if (DateTime.parse(tarih).isBefore(DateTime.now())){
-              deleteOldEvent(tarih);
-
-        }
-        else if(DateTime.parse(tarih)== DateTime.now()){
-          var saat = value[i].finishTime;
-
-          String myHour = saat.substring(0, 2);
-          String myMin = saat.substring(3, 5);
-          TimeOfDay releaseTime = TimeOfDay(hour: int.parse(myHour), minute: int.parse(myMin));
-          if (releaseTime.hour > TimeOfDay.now().hour){
-            deleteOldEvent(tarih);
-
-          }
-          else if(releaseTime.hour == TimeOfDay.now().hour ){
-            if(releaseTime.minute>TimeOfDay.now().minute ){
-              deleteOldEvent(tarih);
-
-            }
-          }
-        }
-      }
-
-    });
-
-
-  }
-
   Future clearDb() async {
     Database db = await this.database;
     db.rawQuery('DELETE FROM $_tablename');
@@ -362,4 +320,3 @@ class DbHelper {
 
   Future closeDb() => _database.close();
 }
-

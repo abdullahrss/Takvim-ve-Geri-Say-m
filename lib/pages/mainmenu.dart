@@ -13,12 +13,14 @@ import 'calendar.dart';
 import '../events/closesEvent.dart';
 import '../helpers/ads.dart';
 import 'settings.dart';
+import '../databasehelper/settingsHelper.dart';
 
 class MainMenu extends StatelessWidget {
   MainMenu({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     return DynamicTheme(
         defaultBrightness: Brightness.light,
         data: (brightness) => ThemeData(
@@ -66,7 +68,9 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     _backGroundProcesses = BackGroundProcesses();
     _backGroundProcesses.startBgServicesManually();
     // Ads
-    _advert.showBannerAd();
+    // _advert.showBannerAd();
+    // Font
+    changeFont();
     // Active processes
     _db.openNotificationBar();
     timer = Timer.periodic(Duration(minutes: 1), (timer) {
@@ -254,6 +258,19 @@ class _MainMenuBodyState extends State<MainMenuBody> {
           ],
         );
       },
+    );
+  }
+  void changeFont()async{
+    var _sdb = SettingsDbHelper();
+    var setting;
+    await _sdb.getSettings().then((value) async {
+      setting = value[0];
+    });
+    DynamicTheme.of(context).setThemeData(
+      ThemeData(
+        brightness: DynamicTheme.of(context).brightness,
+        fontFamily: setting.fontName,
+      ),
     );
   }
 }

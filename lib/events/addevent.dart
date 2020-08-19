@@ -65,7 +65,7 @@ class _AddEventState extends State<AddEvent> {
 
   @override
   void dispose() {
-    _advert.showBannerAd();
+    // _advert.showBannerAd();
     _titlecontroller.dispose();
     _descriptioncontroller.dispose();
     super.dispose();
@@ -185,6 +185,8 @@ class _AddEventState extends State<AddEvent> {
                         }
                         if (widget.date == null)
                           showDatePicker(
+                            cancelText: "Geri",
+                            confirmText: "Tamam",
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime.now(),

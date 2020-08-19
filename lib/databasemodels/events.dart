@@ -1,4 +1,4 @@
-import '../helpers/eventConstants.dart';
+import '../helpers/constants.dart';
 
 class Event {
   int _id;
