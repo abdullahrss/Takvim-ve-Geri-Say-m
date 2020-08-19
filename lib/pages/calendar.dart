@@ -1,3 +1,4 @@
+import 'package:ajanda/events/addevent.dart';
 import 'package:flutter/material.dart';
 import "package:flutter_calendar_carousel/flutter_calendar_carousel.dart" show CalendarCarousel;
 import 'package:flutter_calendar_carousel/classes/event.dart';
@@ -5,7 +6,7 @@ import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import '../databasehelper/dataBaseHelper.dart';
 import '../events/calenderEvent.dart';
-import '../widgets/emptydatepopup.dart';
+import '../widgets/showDialog.dart';
 
 class Calendar extends StatefulWidget {
   Calendar({Key key}) : super(key: key);
@@ -189,7 +190,17 @@ class _CalendarState extends State<Calendar> {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => CalanderEvent(newdate)));
             } else {
-              showMyDialog(context, newdate);
+              showMyDialog(context,
+                  title: "Boş Gün",
+                  message: 'Bu tarihe etkinlik eklemek ister misiniz ?', function: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddEvent(
+                              inputDate: newdate,
+                            )));
+              });
             }
           });
         });
