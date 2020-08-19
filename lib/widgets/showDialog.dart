@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import '../events/addevent.dart';
 
-Future<void> showMyDialog(context,date) async {
+Future<void> showMyDialog(context,{String title,String message,Function function}) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Boş gün'),
+        title: Text(title),
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
-              Text('Bu tarihe etkinlik eklemek ister misiniz ?',style: TextStyle(fontSize: 18,),textAlign: TextAlign.left,),
+              Text(message,style: TextStyle(fontSize: 18,),textAlign: TextAlign.left,),
             ],
           ),
         ),
@@ -25,11 +24,7 @@ Future<void> showMyDialog(context,date) async {
           FlatButton(
             child: Text('Evet',style:TextStyle(fontSize: 16)),
             onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AddEvent(inputDate: date,)));
+              function();
             },
           ),
         ],
