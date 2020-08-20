@@ -73,6 +73,45 @@ flutter:
     - family: DoppioOne
       fonts:
         - asset: assets/fonts/DoppioOne-Regular.ttf
+    - family: Raleway
+      fonts:
+        - asset: assets/fonts/Raleway-Italic-VariableFont_wght.ttf
+    - family: Bangers
+      fonts:
+        - asset: assets/fonts/Bangers-Regular.ttf
+    - family: DancingScript
+      fonts:
+        - asset: assets/fonts/DancingScript-VariableFont_wght.ttf
+    - family: Dosis
+      fonts:
+          - asset: assets/fonts/Dosis-VariableFont_wght.ttf
+    - family: Inconsolata
+      fonts:
+          - asset: assets/fonts/Inconsolata-VariableFont_wdth,wght.ttf
+    - family: LibreBaskerville
+      fonts:
+      - asset: assets/fonts/LibreBaskerville-Regular.ttf
+    - family: Lora
+      fonts:
+          - asset: assets/fonts/Lora-Italic-VariableFont_wght.ttf
+    - family: Merriweather
+      fonts:
+          - asset: assets/fonts/Merriweather-LightItalic.ttf
+    - family: Pangolin
+      fonts:
+          - asset: assets/fonts/Pangolin-Regular.ttf
+    - family: Playfair
+      fonts:
+          - asset: assets/fonts/PlayfairDisplay-Italic-VariableFont_wght.ttf
+    - family: Quicksand
+      fonts:
+          - asset: assets/fonts/Quicksand-VariableFont_wght.ttf
+    - family: RussoOne
+      fonts:
+          - asset: assets/fonts/RussoOne-Regular.ttf
+    - family: Titillium
+      fonts:
+          - asset: assets/fonts/TitilliumWeb-Regular.ttf
   #   - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf
