@@ -70,6 +70,23 @@ class _AddEventState extends State<AddEvent> {
     _descriptioncontroller.dispose();
     super.dispose();
   }
+  
+  _showdialog() {
+    showAboutDialog(
+        context: context,
+        applicationName: "takvim Ajanda",
+        applicationVersion: "1.0.0",
+        //applicationLegalese: "Sabit bildirim uyglama açıksa 1 dakikada bir güncellenir uygulama kapalı ise 15 dakikada bir güncellenir!",
+    children: [
+      Padding(
+        padding: const EdgeInsets.only(left:24.0),
+        child: Text("Sabit bildirim uyglama açıksa 1 dakikada bir güncellenir uygulama kapalı ise 15 dakikada bir güncellenir!",),
+      )
+
+    ]
+    );
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -290,19 +307,12 @@ class _AddEventState extends State<AddEvent> {
                   )),
               Container(
                 padding: const EdgeInsets.fromLTRB(22.0, 4.0, 20.0, 0),
+                alignment: Alignment.centerLeft,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    Expanded(
-                      child: Text(
-                        "Uygulama açıkken geri sayım açılsın mı ?",
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Switch(
+                    Checkbox(
                       value: _switchValue,
                       onChanged: (val) {
                         setState(() {
@@ -310,6 +320,18 @@ class _AddEventState extends State<AddEvent> {
                         });
                       },
                     ),
+                    Text(
+                      "Sabit bildirim",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.info),
+                      onPressed: _showdialog,
+                    )
                   ],
                 ),
               ),
