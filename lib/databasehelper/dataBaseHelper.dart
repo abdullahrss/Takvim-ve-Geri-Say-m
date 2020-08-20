@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
@@ -22,7 +24,8 @@ class DbHelper {
   static final String _columnDesc = EventConstants.COLUMN_DESCRIPTION;
   static final String _columnIsActive = EventConstants.COLUMN_ISACTIVE;
   static final String _columnNotification = EventConstants.COLUMN_NOTIFICATION;
-  static final String _columnCountdownIsActive = EventConstants.COLUMN_COUNTDOWNISACTIVE;
+  static final String _columnCountdownIsActive =
+      EventConstants.COLUMN_COUNTDOWNISACTIVE;
 
   DbHelper._createInstance();
 
@@ -45,7 +48,8 @@ class DbHelper {
     String path = directory.path + 'dbtakvim.db';
 
     // Database yoksa olusturuyor varsa aciyor
-    var eventsDatabase = await openDatabase(path, version: 1, onCreate: _createDb);
+    var eventsDatabase =
+        await openDatabase(path, version: 1, onCreate: _createDb);
     return eventsDatabase;
   }
 
@@ -71,14 +75,15 @@ class DbHelper {
   // Update Operation: Update a Event object and save it to database
   Future<int> updateEvent(Event event) async {
     var db = await this.database;
-    var result =
-        await db.update(_tablename, event.toMap(), where: '$_columnId = ?', whereArgs: [event.id]);
+    var result = await db.update(_tablename, event.toMap(),
+        where: '$_columnId = ?', whereArgs: [event.id]);
     return result;
   }
 
   Future updateSingleColumn(int id, String columnName, String newValue) async {
     var db = await this.database;
-    await db.rawQuery("UPDATE $_tablename SET $columnName='$newValue' WHERE $_columnId=$id");
+    await db.rawQuery(
+        "UPDATE $_tablename SET $columnName='$newValue' WHERE $_columnId=$id");
   }
 
   // Tum degerleri gunceller
@@ -96,14 +101,27 @@ class DbHelper {
   // Delete Operation: Delete a Event object from database
   Future<int> deleteEvent(int id) async {
     var db = await this.database;
-    int result = await db.rawDelete('DELETE FROM $_tablename WHERE $_columnId = $id');
+    int result =
+        await db.rawDelete('DELETE FROM $_tablename WHERE $_columnId = $id');
     return result;
+  }
+
+  Future<void> deleteOldEventDay(String date) async {
+    var db = await this.database;
+    await db.rawQuery('DELETE FROM $_tablename WHERE $_columnDate = "$date" ');
+  }
+
+  Future<void> deleteOldEventHour(String date, String hour) async {
+    var db = await this.database;
+    await db.rawQuery(
+        'DELETE FROM $_tablename WHERE $_columnStartTime = "$hour" AND $_columnDate = "$date" ');
   }
 
   // Database deki eleman sayisini donduruyor
   Future<int> getCount() async {
     Database db = await this.database;
-    List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $_tablename');
+    List<Map<String, dynamic>> x =
+        await db.rawQuery('SELECT COUNT (*) from $_tablename');
     int result = Sqflite.firstIntValue(x);
     return result;
   }
@@ -144,13 +162,15 @@ class DbHelper {
       case 2:
         {
           // Yakin tarihlerin basta oldugu siralama
-          eventList.sort((a, b) => DateTime.parse(a.date).compareTo(DateTime.parse(b.date)));
+          eventList.sort((a, b) =>
+              DateTime.parse(a.date).compareTo(DateTime.parse(b.date)));
         }
         break;
       case 3:
         {
           // Uzak tarihlerin basta oldugu siralama
-          eventList.sort((a, b) => DateTime.parse(a.date).compareTo(DateTime.parse(b.date)));
+          eventList.sort((a, b) =>
+              DateTime.parse(a.date).compareTo(DateTime.parse(b.date)));
           eventList = eventList.reversed.toList();
         }
         break;
@@ -178,8 +198,8 @@ class DbHelper {
 
   Future<bool> isFullDay(String date) async {
     Database db = await this.database;
-    var result =
-        await db.rawQuery("SELECT $_columnStartTime FROM $_tablename WHERE $_columnDate='$date'");
+    var result = await db.rawQuery(
+        "SELECT $_columnStartTime FROM $_tablename WHERE $_columnDate='$date'");
     if (result.length == 0) {
       return false;
     }
@@ -192,7 +212,8 @@ class DbHelper {
 
   Future<List<Event>> getActiveEvents() async {
     Database db = await this.database;
-    var result = await db.rawQuery("SELECT * FROM $_tablename WHERE $_columnIsActive='1'");
+    var result = await db
+        .rawQuery("SELECT * FROM $_tablename WHERE $_columnIsActive='1'");
     List<Event> resultList = List<Event>();
     for (var i = 0; i < result.length; i++) {
       resultList.add(Event.fromMap(result[i]));
@@ -232,7 +253,8 @@ class DbHelper {
 
   Future<bool> openNotificationBar() async {
     Database db = await this.database;
-    FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin localNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
     var not = Notifications(localNotificationsPlugin);
     var result = await db.rawQuery(
         "SELECT * FROM $_tablename WHERE $_columnCountdownIsActive=1");
@@ -240,16 +262,18 @@ class DbHelper {
     for (var i = 0; i < result.length; i++) {
       eventList.add(Event.fromMap(result[i]));
     }
-    if (eventList.length == 0){
+    if (eventList.length == 0) {
       return false;
     }
     for (var i = 0; i < eventList.length; i++) {
       var targetTime = eventList[i].startTime == "null"
           ? DateTime.parse("${eventList[i].date}")
           : DateTime.parse("${eventList[i].date} ${eventList[i].startTime}");
-      if (targetTime.isBefore(DateTime.now()) || (targetTime == DateTime.now())) {
+      if (targetTime.isBefore(DateTime.now()) ||
+          (targetTime == DateTime.now())) {
         not.cancelNotification(localNotificationsPlugin, eventList[i].id);
-        await updateSingleColumn(eventList[i].id, _columnCountdownIsActive, "0");
+        await updateSingleColumn(
+            eventList[i].id, _columnCountdownIsActive, "0");
         continue;
       }
       var remainingTime = targetTime.difference(DateTime.now());
@@ -264,9 +288,11 @@ class DbHelper {
 
   Future<void> createNotifications() async {
     Database db = await this.database;
-    FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin localNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
     var not = Notifications(localNotificationsPlugin);
-    var events = await db.rawQuery("SELECT * FROM $_tablename WHERE $_columnNotification!='0'"); // WHERE $_ColumnNotification!='0'
+    var events = await db.rawQuery(
+        "SELECT * FROM $_tablename WHERE $_columnNotification!='0'"); // WHERE $_ColumnNotification!='0'
     List<Event> eventList = List<Event>();
 
     for (var i = 0; i < events.length; i++) {
@@ -285,8 +311,8 @@ class DbHelper {
         continue;
       }
       datetime = not.calcNotificationDate(datetime, int.parse(event.choice));
-      await not.singleNotification(
-          localNotificationsPlugin, datetime, event.title, event.desc, event.id);
+      await not.singleNotification(localNotificationsPlugin, datetime,
+          event.title, event.desc, event.id);
     }
   }
 
@@ -311,6 +337,29 @@ class DbHelper {
       resultList.add(Event.fromMap(result[i]));
     }
     return resultList;
+  }
+
+  Future<int> clearoldevent() async {
+    getEventList().then((value) {
+      for (int i = 0; i < value.length; i++) {
+        var targetTime = value[i].startTime == "null"
+            ? DateTime.parse("${value[i].date}")
+            : DateTime.parse("${value[i].date} ${value[i].startTime}");
+        if (targetTime.isBefore(DateTime.now()) ||
+            (targetTime == DateTime.now())) {
+          if (value[i].startTime == "null") {
+            deleteOldEventDay(value[i].date);
+
+            return 0;
+          } else {
+            deleteOldEventHour(value[i].date, value[i].startTime);
+            print("ikinci if");
+            return 0;
+          }
+        }
+      }
+      return 0;
+    });
   }
 
   Future clearDb() async {
