@@ -16,6 +16,7 @@ class _CountDownPageState extends State<CountDownPage> {
 
   @override
   void initState() {
+    super.initState();
     _timer = new Timer.periodic(
       Duration(seconds: 1),
       (Timer timer) => setState(
@@ -24,7 +25,6 @@ class _CountDownPageState extends State<CountDownPage> {
         },
       ),
     );
-    super.initState();
   }
 
   @override
@@ -41,7 +41,7 @@ class _CountDownPageState extends State<CountDownPage> {
           builder: (context, snapshot) {
             if (snapshot.data == null) {
               return Container(
-                child: Text("Loading....."),
+                child: Center(child: Text("Yükleniyor.....")),
               );
             } else {
               return ListView.builder(

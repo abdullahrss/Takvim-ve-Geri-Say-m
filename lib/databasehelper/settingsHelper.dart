@@ -9,6 +9,7 @@ class SettingsDbHelper {
   static SettingsDbHelper _databaseHelper; // Database'in tekil olmasi icin
   static Database _database;
   static final String _tablename = SettingsConstants.TABLE_NAME;
+  static final String _columnTheme= SettingsConstants.COLUMN_THEME;
   static final String _columnFontName = SettingsConstants.COLUMN_FONTNAME;
 
   SettingsDbHelper._createInstance();
@@ -37,16 +38,15 @@ class SettingsDbHelper {
   }
 
   static void _createDb(Database db, int newVersion) async {
-    await db.execute('CREATE TABLE $_tablename($_columnFontName TEXT)');
+    await db.execute('CREATE TABLE $_tablename($_columnTheme TEXT, $_columnFontName TEXT)');
   }
 
-//  // Database'e setting ekliyor
-//  Future<void> insertSetting(Setting setting) async {
-//    Database db = await this.database;
-//    await db.rawQuery("INSERT INTO $_tablename ($_columnFontName) VALUES('${setting.fontName}');");
-//  }
+  Future<void> updateTheme(Setting setting) async {
+    var db = await this.database;
+    await db.rawQuery("UPDATE $_tablename SET $_columnTheme = '${setting.theme}';");
+  }
   // Settings guncelleniyor
-  Future<void> updateEvent(Setting setting) async {
+  Future<void> updateFont(Setting setting) async {
     var db = await this.database;
     await db.rawQuery("UPDATE $_tablename SET $_columnFontName = '${setting.fontName}';");
   }
@@ -54,8 +54,9 @@ class SettingsDbHelper {
   Future<List<Setting>> getSettings() async {
     Database db = await this.database;
     var settingsMapList = await db.query(_tablename);
-    if (settingsMapList.length == 0) {
-      await db.rawQuery("INSERT INTO $_tablename ($_columnFontName) VALUES('DoppioOne');");
+    if (settingsMapList.length == 0 || settingsMapList == []) {
+      await db.rawQuery("INSERT INTO $_tablename ($_columnTheme,$_columnFontName) VALUES('light','DoppioOne');");
+      settingsMapList = await db.query(_tablename);
     }
     List<Setting> settingList = List<Setting>();
     for (int i = 0; i < settingsMapList.length; i++) {

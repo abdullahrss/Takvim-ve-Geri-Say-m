@@ -13,4 +13,5 @@ class EventConstants{
 class SettingsConstants{
   static const String TABLE_NAME = "tblsettings" ;
   static const String COLUMN_FONTNAME = "fontName";
+  static const String COLUMN_THEME = "theme" ;
 }

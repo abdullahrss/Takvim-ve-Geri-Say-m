@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../databasehelper/settingsHelper.dart';
 import '../widgets/showDialog.dart';
 import '../databasehelper/dataBaseHelper.dart';
-import '../pages/mainmenu.dart';
+import 'mainmenu.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -40,6 +40,7 @@ class _SettingsState extends State<Settings> {
   @override
   void initState() {
     super.initState();
+    print(DynamicTheme.of(context).brightness);
     _switchValue = DynamicTheme.of(context).brightness == Brightness.dark ? true : false;
   }
 
@@ -69,24 +70,11 @@ class _SettingsState extends State<Settings> {
                     setState(() {
                       _switchValue = val;
                     });
-                    var _sdb = SettingsDbHelper();
-                    var setting;
-                    await _sdb.getSettings().then((value) async {
-                      setting = value[0];
-                    });
-                    _switchValue
-                        ? DynamicTheme.of(context).setThemeData(
-                            ThemeData(
-                              brightness: Brightness.dark,
-                              fontFamily: setting.fontName,
-                            ),
-                          )
-                        : DynamicTheme.of(context).setThemeData(
-                            ThemeData(
-                              brightness: Brightness.light,
-                              fontFamily: setting.fontName,
-                            ),
-                          );
+                    // theme'i update etme
+                    var sett = Setting();
+                    sett.theme = _switchValue ? 'dark' : 'light';
+                    _sdb.updateTheme(sett);
+                    DynamicTheme.of(context).setBrightness(_switchValue?Brightness.dark:Brightness.light);
                   },
                 ),
               ],
@@ -106,11 +94,9 @@ class _SettingsState extends State<Settings> {
                     showMyDialog(context,
                         title: "Dikkat",
                         message: 'Bütün etkinlikleri silmek istediğinize emin misiniz.',
-                        function: () {
-                      _db.clearDb();
+                        function: () async{
+                      await _db.clearDb();
                       Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => MainMenu()));
                     });
                   },
                 ),
@@ -133,11 +119,9 @@ class _SettingsState extends State<Settings> {
                         title: "Dikkat",
                         message:
                             'Bütün tarihi geçmiş etkinlikleri silmek istediğinize emin misiniz.',
-                        function: () {
-                      // _db.clearoldevent();
+                        function: () async{
+                      await _db.clearoldevent();
                       Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => MainMenu()));
                     });
                   },
                 ),
@@ -167,15 +151,15 @@ class _SettingsState extends State<Settings> {
                     value: _dropDownValue,
                     onChanged: (newValue) async {
                       setState(() => _dropDownValue = newValue);
+                      var temp = Setting();
+                      temp.fontName = _dropDownValue;
+                      _sdb.updateFont(temp);
                       DynamicTheme.of(context).setThemeData(
                         ThemeData(
                           brightness: DynamicTheme.of(context).brightness,
                           fontFamily: _dropDownValue,
                         ),
                       );
-                      var temp = Setting();
-                      temp.fontName = _dropDownValue;
-                      _sdb.updateEvent(temp);
                     },
                   ),
                 ),

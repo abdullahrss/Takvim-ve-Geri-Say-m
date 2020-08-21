@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 Future<void> showMyDialog(context,{String title,String message,Function function}) async {
+  print("title :$title");
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -23,8 +24,8 @@ Future<void> showMyDialog(context,{String title,String message,Function function
           ),
           FlatButton(
             child: Text('Evet',style:TextStyle(fontSize: 16)),
-            onPressed: () {
-              function();
+            onPressed: () async{
+              await function();
             },
           ),
         ],

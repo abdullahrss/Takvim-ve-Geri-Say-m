@@ -1,3 +1,4 @@
+import '../widgets/showDialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // Local importlar
@@ -65,27 +66,10 @@ class _AddEventState extends State<AddEvent> {
 
   @override
   void dispose() {
-    // _advert.showBannerAd();
+    _advert.showBannerAd();
     _titlecontroller.dispose();
     _descriptioncontroller.dispose();
     super.dispose();
-  }
-  
-  _showdialog() {
-    showAboutDialog(
-        context: context,
-        applicationName: "takvim Ajanda",
-        applicationVersion: "1.0.0",
-        //applicationLegalese: "Sabit bildirim uyglama açıksa 1 dakikada bir güncellenir uygulama kapalı ise 15 dakikada bir güncellenir!",
-    children: [
-      Padding(
-        padding: const EdgeInsets.only(left:24.0),
-        child: Text("Sabit bildirim uyglama açıksa 1 dakikada bir güncellenir uygulama kapalı ise 15 dakikada bir güncellenir!",),
-      )
-
-    ]
-    );
-
   }
 
   @override
@@ -277,7 +261,7 @@ class _AddEventState extends State<AddEvent> {
                           ),
                           Text(
                             "Bütün gün",
-                            style: TextStyle(fontSize: 18),
+                            style: TextStyle(fontSize: 20),
                           ),
                         ],
                       ),
@@ -298,7 +282,7 @@ class _AddEventState extends State<AddEvent> {
                             ),
                             Text(
                               "Geri sayım etkinleştir",
-                              style: TextStyle(fontSize: 18),
+                              style: TextStyle(fontSize: 20),
                             ),
                           ],
                         ),
@@ -307,10 +291,8 @@ class _AddEventState extends State<AddEvent> {
                   )),
               Container(
                 padding: const EdgeInsets.fromLTRB(22.0, 4.0, 20.0, 0),
-                alignment: Alignment.centerLeft,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     Checkbox(
                       value: _switchValue,
@@ -320,18 +302,25 @@ class _AddEventState extends State<AddEvent> {
                         });
                       },
                     ),
-                    Text(
-                      "Sabit bildirim",
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                  Text(
+                    "Sabit bildirim",
+                    style: TextStyle(
+                      fontSize: 20,
                     ),
-                    IconButton(
-                      icon: Icon(Icons.info),
-                      onPressed: _showdialog,
-                    )
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.info),
+                    onPressed: (){
+                      showMyDialog(
+                        context,
+                        title: "Uyarı!",
+                        message: "Sabit bildirim uyglama açıksa 1 dakikada bir güncellenir uygulama kapalı ise 15 dakikada bir güncellenir!",
+                        function: () =>  Navigator.of(context).pop(),
+                      );
+                    }
+                  )
                   ],
                 ),
               ),

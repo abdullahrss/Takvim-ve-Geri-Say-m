@@ -3,6 +3,7 @@ import '../events/addevent.dart';
 import '../Widgets/dropdown.dart';
 import '../databasehelper/dataBaseHelper.dart';
 import '../databasemodels/events.dart';
+import '../helpers/helperFunctions.dart';
 
 class CalanderEvent extends StatefulWidget {
   final tarih;
@@ -58,58 +59,73 @@ class _CalanderEventstate extends State<CalanderEvent> {
                   itemCount: snapshot.data.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
-                      margin: EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
+                      padding: const EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
                       child: Card(
                         elevation: 25,
-                        child: Padding(
-                          padding: EdgeInsets.all(24.0),
-                          child: Column(
+                        child: Container(
+                          height: MediaQuery.of(context).size.height / 4,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
-                              Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              Container(
+                                width: MediaQuery.of(context).size.width / 2 - 16,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: <Widget>[
-                                    Expanded(
-                                      child: Text(snapshot.data[index].title,
-                                          style: TextStyle(fontSize: 30.0),
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis),
+                                    Text(
+                                      '${snapshot.data[index].title}',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(fontSize: 28),
                                     ),
-                                    Container(
-                                        child: DropDown(Event(
-                                            id: snapshot.data[index].id,
-                                            title: snapshot.data[index].title,
-                                            date: snapshot.data[index].date,
-                                            startTime: snapshot.data[index].startTime,
-                                            finishTime: snapshot.data[index].finishTime,
-                                            desc: snapshot.data[index].desc,
-                                            isActive: snapshot.data[index].isActive,
-                                            choice: snapshot.data[index].choice)))
-                                  ]),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 1.0, bottom: 16.0),
-                                child: Row(children: <Widget>[
-                                  Text(
-                                    "${snapshot.data[index].date} - ${snapshot.data[index].startTime == "null" ? " Tüm gün" : "${snapshot.data[index].startTime} - ${snapshot.data[index].finishTime}"}",
-                                    style: TextStyle(fontSize: 15),
-                                  ),
-                                  Spacer()
-                                ]),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
-                                child: Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: Text(snapshot.data[index].desc,
-                                          maxLines: 2, overflow: TextOverflow.ellipsis),
+                                    Text(
+                                      "${snapshot.data[index].date} - ${snapshot.data[index].startTime == "null" ? " Tüm gün" : "${snapshot.data[index].startTime} - ${snapshot.data[index].finishTime}"}",
+                                      style: TextStyle(fontSize: 15),
                                     ),
-                                    SizedBox(
-                                      height: 15.0,
+                                    Text(
+                                      snapshot.data[index].desc,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    //Spacer()
                                   ],
                                 ),
-                              )
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width / 2 - 32,
+                                child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                      width: MediaQuery.of(context).size.width / 4,
+                                      child: DropDown(Event(
+                                        id: snapshot.data[index].id,
+                                        title: snapshot.data[index].title,
+                                        date: snapshot.data[index].date,
+                                        startTime: snapshot.data[index].startTime,
+                                        finishTime: snapshot.data[index].finishTime,
+                                        desc: snapshot.data[index].desc,
+                                        isActive: snapshot.data[index].isActive,
+                                        choice: snapshot.data[index].choice,
+                                        countDownIsActive: snapshot.data[index].countDownIsActive,
+                                      )),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.only(top: 8.0),
+                                      height: 100,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          color: Colors.blue),
+                                      child: Text(
+                                        calcRemaining(snapshot.data[index].date,
+                                            snapshot.data[index].startTime),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontSize: 25),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),

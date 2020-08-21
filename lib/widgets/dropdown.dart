@@ -60,7 +60,7 @@ class _DropDownState extends State<DropDown> {
         ].map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
-            child: Text(value),
+            child: Text(value,style: TextStyle(fontSize: 20 ),),
           );
         }).toList(),
       ),

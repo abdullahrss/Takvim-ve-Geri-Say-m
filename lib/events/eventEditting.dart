@@ -1,4 +1,5 @@
 import 'package:ajanda/helpers/ads.dart';
+import 'package:ajanda/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
 import '../pages/mainmenu.dart';
 import '../databasehelper/dataBaseHelper.dart';
@@ -66,7 +67,6 @@ class _AddEventState extends State<EventEdit> {
     _selectedDate = widget.date;
     _iscountdownchecked = widget.isActive == 1 ? true : false;
     setState(() {
-      print("cdia :"+widget.countDownIsActive.toString());
       _switchValue = widget.countDownIsActive==1?true:false;
       _isfullday = _selectedStartHour == "null" ? true : false;
     });
@@ -76,6 +76,7 @@ class _AddEventState extends State<EventEdit> {
   void dispose() {
     _titlecontroller.dispose();
     _descriptioncontroller.dispose();
+    _advert.showBannerAd();
     super.dispose();
   }
 
@@ -297,17 +298,7 @@ class _AddEventState extends State<EventEdit> {
                 padding: const EdgeInsets.fromLTRB(22.0, 4.0, 20.0, 0),
                 child: Row(
                   children: <Widget>[
-                    Expanded(
-                      child: Text(
-                        "Uygulama açıkken geri sayım açılsın mı ?",
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Switch(
+                    Checkbox(
                       value: _switchValue,
                       onChanged: (val) {
                         setState(() {
@@ -315,6 +306,25 @@ class _AddEventState extends State<EventEdit> {
                         });
                       },
                     ),
+                    Text(
+                      "Sabit bildirim",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    IconButton(
+                        icon: Icon(Icons.info),
+                        onPressed: (){
+                          showMyDialog(
+                            context,
+                            title: "Uyarı!",
+                            message: "Sabit bildirim uyglama açıksa 1 dakikada bir güncellenir uygulama kapalı ise 15 dakikada bir güncellenir!",
+                            function: () =>  Navigator.of(context).pop(),
+                          );
+                        }
+                    )
                   ],
                 ),
               ),
@@ -378,7 +388,7 @@ class _AddEventState extends State<EventEdit> {
   void validateandsave() async {
     final FormState state = _formKey.currentState;
     // Duzenlecenek event'in oldugu gun tum gun suren etkinlik var mi diye bakiyor
-    await _db.isFullDay(widget.date).then((value) {
+    await _db.isFullDay(widget.date, id:widget.id).then((value) {
       setState(() {
         _duplicite = value;
       });
@@ -439,7 +449,6 @@ class _AddEventState extends State<EventEdit> {
       Navigator.of(context).pop();
       Navigator.of(context).pop();
       Navigator.of(context).pop();
-      _advert.showBannerAd();
       _advert.showIntersitial();
       Navigator.push(context, MaterialPageRoute(builder: (context) => MainMenu()));
       print("[EVENTEDITTING] Form Uygun");

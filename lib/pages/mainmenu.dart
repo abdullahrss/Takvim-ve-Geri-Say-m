@@ -17,22 +17,39 @@ import '../databasehelper/settingsHelper.dart';
 
 class MainMenu extends StatelessWidget {
   MainMenu({Key key}) : super(key: key);
+  var _sdb = SettingsDbHelper();
 
   @override
   Widget build(BuildContext context) {
-    return DynamicTheme(
-        defaultBrightness: Brightness.light,
-        data: (brightness) => ThemeData(
-              brightness: brightness,
-              fontFamily: "DoppioOne",
-            ),
-        themedWidgetBuilder: (context, theme) {
+    return FutureBuilder(
+      future: _sdb.getSettings(),
+      builder: (context, snapshot) {
+        if (snapshot.data == null) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: theme,
-            home: MainMenuBody(),
+            home: Scaffold(
+              body: Center(
+                child: Text("Yükleniyor....."),
+              ),
+            ),
           );
-        });
+        } else {
+          return DynamicTheme(
+              defaultBrightness: Brightness.light,
+              data: (brightness) => ThemeData(
+                    brightness: brightness,
+                    fontFamily: snapshot.data[0].fontName,
+                  ),
+              themedWidgetBuilder: (context, theme) {
+                return MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  theme: theme,
+                  home: MainMenuBody(),
+                );
+              });
+        }
+      },
+    );
   }
 }
 
@@ -67,9 +84,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     _backGroundProcesses = BackGroundProcesses();
     _backGroundProcesses.startBgServicesManually();
     // Ads
-    // _advert.showBannerAd();
-    // Font
-    changeFont();
+    _advert.showBannerAd();
     // Active processes
     _db.openNotificationBar();
     timer = Timer.periodic(Duration(minutes: 1), (timer) {
@@ -86,7 +101,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
 
   List<Widget> _widgetOptions = <Widget>[
     Soclose.byorder(_selectedOrder),
-    Calendar(),
+    FutureCalendar(),
     CountDownPage(),
   ];
 
@@ -102,7 +117,6 @@ class _MainMenuBodyState extends State<MainMenuBody> {
 
   @override
   Widget build(BuildContext context) {
-    changeFont();
     return Scaffold(
       floatingActionButton: Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 100.0),
@@ -258,20 +272,6 @@ class _MainMenuBodyState extends State<MainMenuBody> {
           ],
         );
       },
-    );
-  }
-
-  void changeFont() async {
-    var _sdb = SettingsDbHelper();
-    var setting;
-    await _sdb.getSettings().then((value) async {
-      setting = value[0];
-    });
-    DynamicTheme.of(context).setThemeData(
-      ThemeData(
-        brightness: DynamicTheme.of(context).brightness,
-        fontFamily: setting.fontName,
-      ),
     );
   }
 }

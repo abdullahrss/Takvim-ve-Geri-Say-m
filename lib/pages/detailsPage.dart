@@ -38,9 +38,6 @@ class _DetailsState extends State<Details> {
             icon: Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.of(context).pop();
-              _advert.showBannerAd();
-//            Navigator.push(
-//                context, MaterialPageRoute(builder: (context) => MainMenu()));
             }),
       ),
       body: Container(

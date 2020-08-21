@@ -1,4 +1,3 @@
-import 'package:ajanda/events/addevent.dart';
 import 'package:flutter/material.dart';
 import "package:flutter_calendar_carousel/flutter_calendar_carousel.dart" show CalendarCarousel;
 import 'package:flutter_calendar_carousel/classes/event.dart';
@@ -7,15 +6,44 @@ import 'package:intl/intl.dart' show DateFormat;
 import '../databasehelper/dataBaseHelper.dart';
 import '../events/calenderEvent.dart';
 import '../widgets/showDialog.dart';
+import '../events/addevent.dart';
 
-class Calendar extends StatefulWidget {
-  Calendar({Key key}) : super(key: key);
+class FutureCalendar extends StatelessWidget {
+  DbHelper _helper = DbHelper();
 
   @override
-  _CalendarState createState() => new _CalendarState();
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _helper.getEventList(),
+      builder: (context, snapshot) {
+        if (snapshot.data == null) {
+          return Scaffold(
+            body: Center(child: Text("Yükleniyor...."),),
+          );
+        } else {
+          return Calendar(eventList: snapshot.data,);
+        }
+      },
+    );
+  }
+
+}
+
+
+class Calendar extends StatefulWidget {
+  final eventList;
+
+  Calendar({Key key, this.eventList}) : super(key: key);
+
+  @override
+  _CalendarState createState() => new _CalendarState(eventList);
 }
 
 class _CalendarState extends State<Calendar> {
+  final eventList;
+
+  _CalendarState(this.eventList);
+
   DateTime _currentDate = DateTime.now();
   DateTime _currentDate2 = DateTime.now();
   String _currentMonth = DateFormat.yMMM().format(DateTime.now());
@@ -29,7 +57,7 @@ class _CalendarState extends State<Calendar> {
         border: Border.all(color: Colors.blue, width: 2.0)),
     child: new Icon(
       Icons.person,
-      color: Colors.amber,
+      color: Colors.deepOrangeAccent,
     ),
   );
 
@@ -40,22 +68,33 @@ class _CalendarState extends State<Calendar> {
   @override
   void initState() {
     super.initState();
-    var _helper = DbHelper();
-    var sorgu = _helper.getEventList();
-    sorgu.then((onValue) {
-      setState(() {
-        for (int i = 0; i < onValue.length; i++) {
-          var tarih = DateTime.parse(onValue[i].date);
-          _markedDateMap.add(
-              tarih,
-              Event(
-                date: tarih,
-                title: onValue[i].title,
-                icon: _eventIcon,
-              ));
-        }
-      });
+    setState(() {
+      for (var event in eventList) {
+        _markedDateMap.add(
+            DateTime.parse(event.date),
+            Event(
+            date: DateTime.parse(event.date),
+            title: event.title,
+            icon: _eventIcon,
+        ));
+      }
     });
+//    var _helper = DbHelper();
+//    var sorgu = _helper.getEventList();
+//    sorgu.then((onValue) {
+//      setState(() {
+//        for (int i = 0; i < onValue.length; i++) {
+//          var tarih = DateTime.parse(onValue[i].date);
+//          _markedDateMap.add(
+//              tarih,
+//              Event(
+//                date: tarih,
+//                title: onValue[i].title,
+//                icon: _eventIcon,
+//              ));
+//        }
+//      });
+//    });
   }
 
   /// Add more events to _markedDateMap EventList
@@ -106,10 +145,10 @@ class _CalendarState extends State<Calendar> {
       markedDateShowIcon: true,
       markedDateIconMaxShown: 2,
       selectedDayTextStyle: TextStyle(
-        color: Colors.yellow,
+        color: Colors.orangeAccent,
       ),
       todayTextStyle: TextStyle(
-        color: Colors.blue,
+        color: Colors.orangeAccent,
       ),
       markedDateIconBuilder: (event) {
         return event.icon;
@@ -123,13 +162,35 @@ class _CalendarState extends State<Calendar> {
 //          markedDateIconOffset: 3,
     );
 
-    /// Example Calendar Carousel without header and custom prev & next button
     _calendarCarouselNoHeader = CalendarCarousel<Event>(
       todayBorderColor: Colors.green,
       onDayPressed: (DateTime date, List<Event> events) {
         print("Ondaypreesed");
         this.setState(() => _currentDate2 = date);
-        events.forEach((event) => print(event.title));
+        setState(() {
+          var newdate = date.toString().split(" ")[0];
+          final _helper = DbHelper();
+          Future<bool> sorgu = _helper.isEventInDb('$newdate');
+          sorgu.then((onValue) {
+            if (onValue == true) {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => CalanderEvent(newdate)));
+            } else {
+              showMyDialog(context,
+                  title: "Boş Gün",
+                  message: 'Bu tarihe etkinlik eklemek ister misiniz ?', function: () {
+                    Navigator.of(context).pop();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                AddEvent(
+                                  inputDate: newdate,
+                                )));
+                  });
+            }
+          });
+        });
       },
       daysHaveCircularBorder: false,
       showOnlyCurrentMonthDate: false,
@@ -144,7 +205,7 @@ class _CalendarState extends State<Calendar> {
       selectedDateTime: _currentDate2,
       targetDateTime: _targetDateTime,
       customGridViewPhysics: NeverScrollableScrollPhysics(),
-      markedDateCustomShapeBorder: CircleBorder(side: BorderSide(color: Colors.yellow)),
+      markedDateCustomShapeBorder: CircleBorder(side: BorderSide(color: Colors.blue)),
       markedDateCustomTextStyle: TextStyle(
         fontSize: 18,
         color: Colors.blue,
@@ -160,9 +221,9 @@ class _CalendarState extends State<Calendar> {
       // },
       // markedDateMoreShowTotal:
       //     true,
-      todayButtonColor: Colors.yellow,
+      todayButtonColor: Colors.blueAccent,
       selectedDayTextStyle: TextStyle(
-        color: Colors.yellow,
+        color: Colors.orange,
       ),
       minSelectedDate: _currentDate.subtract(Duration(days: 360)),
       maxSelectedDate: _currentDate.add(Duration(days: 360)),
@@ -181,29 +242,6 @@ class _CalendarState extends State<Calendar> {
         });
       },
       onDayLongPressed: (DateTime date) {
-        setState(() {
-          var newdate = date.toString().split(" ")[0];
-          final _helper = DbHelper();
-          Future<bool> sorgu = _helper.isEventInDb('$newdate');
-          sorgu.then((onValue) {
-            if (onValue == true) {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => CalanderEvent(newdate)));
-            } else {
-              showMyDialog(context,
-                  title: "Boş Gün",
-                  message: 'Bu tarihe etkinlik eklemek ister misiniz ?', function: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddEvent(
-                              inputDate: newdate,
-                            )));
-              });
-            }
-          });
-        });
         print('long pressed date $date');
       },
     );
@@ -218,8 +256,6 @@ class _CalendarState extends State<Calendar> {
             margin: EdgeInsets.symmetric(horizontal: 16.0),
             child: _calendarCarousel,
           ),
-          // This trailing comma makes auto-formatting nicer for build methods.
-          //custom icon without header
           Container(
             margin: EdgeInsets.only(
               top: 30.0,
@@ -231,12 +267,12 @@ class _CalendarState extends State<Calendar> {
               children: <Widget>[
                 Expanded(
                     child: Text(
-                  translateMonths(_currentMonth),
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24.0,
-                  ),
-                )),
+                      translateMonths(_currentMonth),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.0,
+                      ),
+                    )),
                 FlatButton(
                   child: Text('GERİ'),
                   onPressed: () {

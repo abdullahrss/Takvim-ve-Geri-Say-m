@@ -51,9 +51,13 @@ class Advert {
   // Banner reklamini kapatan fonksiyon
   closeBannerAd() async {
     // Banner'in yuklu olup olmadigini kontrol etmek icin gerekli degisken
-    var isloaded = await _bannerAd.isLoaded();
-    print("isloaded : $isloaded");
-    isloaded ? await _bannerAd.dispose() : print("[ADS] [closeBannerAd] Ad isnt loaded");
+    if(_bannerAd!=null){ //
+      var isloaded = await _bannerAd?.isLoaded();
+      print("isloaded : $isloaded");
+      isloaded ? await _bannerAd.dispose() : print("[ADS] [closeBannerAd] Ad isnt loaded");}
+    else{
+      print("[ADS] [closeBannerAd] _bannerAd is null");
+    }
   }
 
   // Intersitial olusturup gosteren ve kullanilan kaynaklari bosa cikaran fonksiyon

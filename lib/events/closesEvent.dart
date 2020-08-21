@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../databasehelper/dataBaseHelper.dart';
 import '../databasemodels/events.dart';
 import '../widgets/dropdown.dart';
+import '../helpers/helperFunctions.dart';
 
 class Soclose extends StatefulWidget {
   int index = 0;
@@ -26,21 +27,6 @@ class _Closesevents extends State<Soclose> {
     });
   }
 
-
-  String calcRemaining(String date, String startTime) {
-    var result;
-    if (startTime == "null") {
-      result = (DateTime.parse(date).difference(DateTime.now()).inDays < 0)
-          ? "${-1 * DateTime.parse(date).difference(DateTime.now()).inDays}\nGün Geçti"
-          : "${DateTime.parse(date).difference(DateTime.now()).inDays}\nGün Kaldı";
-    } else {
-      result = (DateTime.parse("$date $startTime").difference(DateTime.now()).inDays < 0)
-          ? "${-1 * DateTime.parse("$date $startTime").difference(DateTime.now()).inDays}\nGün Geçti"
-          : "${DateTime.parse("$date $startTime").difference(DateTime.now()).inDays}\nGün Kaldı";
-    }
-    return result;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +35,7 @@ class _Closesevents extends State<Soclose> {
           builder: (context, snapshot) {
             if (snapshot.data == null) {
               return Container(
-                child: Center(child: Text("Loading.....")),
+                child: Center(child: Text("Yükleniyor.....")),
               );
             } else {
               return ListView.builder(
@@ -93,7 +79,7 @@ class _Closesevents extends State<Soclose> {
                                 child: Column(
                                   children: <Widget>[
                                     Container(
-                                      width: MediaQuery.of(context).size.width / 4 - 8,
+                                      width: MediaQuery.of(context).size.width / 4,
                                       child: DropDown(Event(
                                         id: snapshot.data[index].id,
                                         title: snapshot.data[index].title,

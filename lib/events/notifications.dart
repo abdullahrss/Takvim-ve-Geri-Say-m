@@ -22,15 +22,18 @@ class Notifications {
       'your channel id',
       "CHANNEL-NAME",
       "CHANNEL-DESC",
+      largeIcon: DrawableResourceAndroidBitmap('screen'),
       importance: Importance.Max,
       priority: Priority.Max,
       autoCancel: false,
       ongoing: false, // notifications
       onlyAlertOnce: true,
+      styleInformation: DefaultStyleInformation(true,true),
     );
     var iosChannel = IOSNotificationDetails();
     var platformChannel = NotificationDetails(androidChannel, iosChannel);
     initalizeNotifications();
+    subtext = "<b>" + subtext + "<//b>";
     await plugin.show(id, message,
         subtext, platformChannel);
   }
@@ -40,6 +43,7 @@ class Notifications {
       'your channel id',
       "CHANNEL-NAME",
       "CHANNEL-DESC",
+      largeIcon: DrawableResourceAndroidBitmap('screen'),
       importance: Importance.Max,
       priority: Priority.Max,
       autoCancel: false,
