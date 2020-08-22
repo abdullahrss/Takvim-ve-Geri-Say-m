@@ -40,7 +40,6 @@ class _SettingsState extends State<Settings> {
   @override
   void initState() {
     super.initState();
-    print(DynamicTheme.of(context).brightness);
     _switchValue = DynamicTheme.of(context).brightness == Brightness.dark ? true : false;
   }
 
@@ -75,6 +74,13 @@ class _SettingsState extends State<Settings> {
                     sett.theme = _switchValue ? 'dark' : 'light';
                     _sdb.updateTheme(sett);
                     DynamicTheme.of(context).setBrightness(_switchValue?Brightness.dark:Brightness.light);
+                    await _sdb.getSettings().then((settings) {
+                      DynamicTheme.of(context).setThemeData(ThemeData(
+                        brightness: _switchValue?Brightness.dark:Brightness.light,
+                        fontFamily: settings[0].fontName,
+                      ));
+                    });
+
                   },
                 ),
               ],
@@ -90,13 +96,16 @@ class _SettingsState extends State<Settings> {
                 ),
                 IconButton(
                   icon: Icon(Icons.delete),
-                  onPressed: () {
-                    showMyDialog(context,
+                  onPressed: () async{
+                    await showMyDialog(context,
                         title: "Dikkat",
                         message: 'Bütün etkinlikleri silmek istediğinize emin misiniz.',
                         function: () async{
                       await _db.clearDb();
-                      Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MainMenu()),
+                      );
                     });
                   },
                 ),
@@ -113,15 +122,17 @@ class _SettingsState extends State<Settings> {
                 ),
                 IconButton(
                   icon: Icon(Icons.delete),
-                  onPressed: () {
-                    //_db.clearDb();
-                    showMyDialog(context,
+                  onPressed: () async{
+                    await showMyDialog(context,
                         title: "Dikkat",
                         message:
                             'Bütün tarihi geçmiş etkinlikleri silmek istediğinize emin misiniz.',
                         function: () async{
                       await _db.clearoldevent();
-                      Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MainMenu()),
+                      );
                     });
                   },
                 ),
@@ -154,12 +165,12 @@ class _SettingsState extends State<Settings> {
                       var temp = Setting();
                       temp.fontName = _dropDownValue;
                       _sdb.updateFont(temp);
-                      DynamicTheme.of(context).setThemeData(
-                        ThemeData(
-                          brightness: DynamicTheme.of(context).brightness,
+                      await _sdb.getSettings().then((settings) {
+                        DynamicTheme.of(context).setThemeData(ThemeData(
+                          brightness: settings[0].theme=="dark"?Brightness.dark:Brightness.light,
                           fontFamily: _dropDownValue,
-                        ),
-                      );
+                        ));
+                      });
                     },
                   ),
                 ),
@@ -171,3 +182,5 @@ class _SettingsState extends State<Settings> {
     );
   }
 }
+
+

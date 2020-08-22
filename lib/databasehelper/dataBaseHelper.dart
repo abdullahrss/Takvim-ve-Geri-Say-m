@@ -296,13 +296,13 @@ class DbHelper {
           ? DateTime.parse("${event.date} ${event.startTime}")
           : DateTime.parse(event.date);
       if (DateTime.now().compareTo(datetime) == 1) {
-        print("Out of time event title : ${event.title}");
+        print("[dataBaseHelper] Out of time event title : ${event.title}");
         localNotificationsPlugin.cancel(event.id);
         continue;
       }
       datetime = not.calcNotificationDate(datetime, int.parse(event.choice));
       await not.singleNotification(
-          localNotificationsPlugin, datetime, event.title, event.desc, event.id);
+          localNotificationsPlugin, datetime, event.title, not.calcSingleNotificationBodyText(event.choice), event.id);
     }
   }
 
@@ -330,7 +330,7 @@ class DbHelper {
   }
 
   Future clearoldevent() async {
-    getEventList().then((value) {
+    await getEventList().then((value) {
       for (int i = 0; i < value.length; i++) {
         var targetTime = value[i].startTime == "null"
             ? DateTime.parse("${value[i].date}")

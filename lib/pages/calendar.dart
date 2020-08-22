@@ -221,7 +221,7 @@ class _CalendarState extends State<Calendar> {
       // },
       // markedDateMoreShowTotal:
       //     true,
-      todayButtonColor: Colors.blueAccent,
+      todayButtonColor: Colors.orange,
       selectedDayTextStyle: TextStyle(
         color: Colors.orange,
       ),

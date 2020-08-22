@@ -58,7 +58,7 @@ class _AddEventState extends State<AddEvent> {
   @override
   void initState() {
     super.initState();
-    _advert.closeBannerAd();
+    // _advert.closeBannerAd();
     setState(() {
       widget.date != null ? _selectedDate = widget.date : print("[ADDEVENT] widget.date null");
     });
@@ -66,7 +66,7 @@ class _AddEventState extends State<AddEvent> {
 
   @override
   void dispose() {
-    _advert.showBannerAd();
+    // _advert.showBannerAd();
     _titlecontroller.dispose();
     _descriptioncontroller.dispose();
     super.dispose();

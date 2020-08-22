@@ -76,7 +76,7 @@ class _AddEventState extends State<EventEdit> {
   void dispose() {
     _titlecontroller.dispose();
     _descriptioncontroller.dispose();
-    _advert.showBannerAd();
+    // _advert.showBannerAd();
     super.dispose();
   }
 
@@ -320,7 +320,7 @@ class _AddEventState extends State<EventEdit> {
                           showMyDialog(
                             context,
                             title: "Uyarı!",
-                            message: "Sabit bildirim uyglama açıksa 1 dakikada bir güncellenir uygulama kapalı ise 15 dakikada bir güncellenir!",
+                            message: "Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise 15 dakikada bir güncellenir!",
                             function: () =>  Navigator.of(context).pop(),
                           );
                         }
@@ -450,7 +450,7 @@ class _AddEventState extends State<EventEdit> {
       Navigator.of(context).pop();
       Navigator.of(context).pop();
       _advert.showIntersitial();
-      Navigator.push(context, MaterialPageRoute(builder: (context) => MainMenu()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MainMenuBody()));
       print("[EVENTEDITTING] Form Uygun");
     } else {
       print("[EVENTEDITTING] Form uygun değil");
