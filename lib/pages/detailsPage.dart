@@ -1,20 +1,12 @@
-import 'package:ajanda/helpers/ads.dart';
 import 'package:flutter/material.dart';
+import '../databasemodels/events.dart';
+import '../helpers/ads.dart';
 import '../events/eventEditting.dart';
 
 class Details extends StatefulWidget {
-  final id;
-  final title;
-  final date;
-  final startTime;
-  final finishTime;
-  final desc;
-  final isActive;
-  final choice;
-  final countDownIsActive;
+  final Event event;
 
-  Details(this.id, this.title, this.date, this.startTime, this.finishTime,
-      this.desc,this.isActive,this.choice, this.countDownIsActive);
+  const Details({Key key, this.event}) : super(key: key);
 
   @override
   _DetailsState createState() => _DetailsState();
@@ -57,7 +49,7 @@ class _DetailsState extends State<Details> {
                             children: <Widget>[
                               Expanded(
                                 child: Text(
-                                  widget.title,
+                                  widget.event.title,
                                   maxLines: 4,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(fontSize: 40.0),
@@ -70,8 +62,8 @@ class _DetailsState extends State<Details> {
                         padding: const EdgeInsets.all(8.0),
                         child: Row(children: <Widget>[
                           Text(
-                            widget.date +
-                                "${widget.startTime != "null" ? ("  " + widget.startTime + "-" + widget.finishTime) : " - Tüm gün"}",
+                            widget.event.date +
+                                "${widget.event.startTime != "null" ? ("  " + widget.event.startTime + "-" + widget.event.finishTime) : " - Tüm gün"}",
                             style: new TextStyle(fontSize: 15),
                           ),
                         ]),
@@ -88,7 +80,7 @@ class _DetailsState extends State<Details> {
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text(widget.desc, maxLines: 1000),
+                            child: Text(widget.event.desc, maxLines: 1000),
                           ),
                         ),
                         SizedBox(
@@ -110,15 +102,15 @@ class _DetailsState extends State<Details> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => (EventEdit(
-                                      inputId: widget.id,
-                                      inputTitle: widget.title,
-                                      inputDate: widget.date,
-                                      inputStartTime: widget.startTime,
-                                      inputFinishTime: widget.finishTime,
-                                      inputDesc: widget.desc,
-                                      inputIsActive: widget.isActive,
-                                      inputChoice: widget.choice,
-                                      inputCountDownIsActive: widget.countDownIsActive,
+                                      inputId: widget.event.id,
+                                      inputTitle: widget.event.title,
+                                      inputDate: widget.event.date,
+                                      inputStartTime: widget.event.startTime,
+                                      inputFinishTime: widget.event.finishTime,
+                                      inputDesc: widget.event.desc,
+                                      inputIsActive: widget.event.isActive,
+                                      inputChoice: widget.event.choice,
+                                      inputCountDownIsActive: widget.event.countDownIsActive,
                                   ))));
                         },
                         elevation: 18,

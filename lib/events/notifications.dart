@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../databasehelper/dataBaseHelper.dart';
 
@@ -15,7 +16,7 @@ class Notifications {
     var initalizeAndroid = AndroidInitializationSettings("app_icon");
     var initalizeIOS = IOSInitializationSettings();
     var initSettings = InitializationSettings(initalizeAndroid, initalizeIOS);
-    await localNotificationsPlugin.initialize(initSettings);
+    await localNotificationsPlugin.initialize(initSettings,onSelectNotification: selectNotification);
   }
 
   Future countDownNotification(
@@ -60,8 +61,16 @@ class Notifications {
     await localNotificationsPlugin.schedule(id, message, subtext, datetime, platformChannel,
         payload: id.toString());
   }
+  Future selectNotification(String payload) async {
+    if (payload != null) {
+      print('[Notifications] Notification payload: ' + payload);
+    }
+//    await Navigator.push(
+//        context,
+//        MaterialPageRoute(builder: (context) => {});
+  }
 
-  Future cancelNotification(FlutterLocalNotificationsPlugin plugin, int eventId) async {
+        Future cancelNotification(FlutterLocalNotificationsPlugin plugin, int eventId) async {
     await plugin.cancel(eventId);
   }
 

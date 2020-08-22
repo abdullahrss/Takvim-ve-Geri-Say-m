@@ -6,6 +6,7 @@ import '../pages/detailsPage.dart';
 
 class DropDown extends StatefulWidget {
   final Event event;
+
   DropDown(this.event);
 
   @override
@@ -28,25 +29,28 @@ class _DropDownState extends State<DropDown> {
         value: dropdownValue,
         icon: Icon(Icons.arrow_downward),
         iconSize: 24,
-        style: TextStyle(color: Colors.black,fontSize: 18),
+        style: TextStyle(color: Colors.black, fontSize: 18),
         onChanged: (String newValue) {
           setState(() {
             dropdownValue = newValue;
             if (newValue == 'Detaylar') {
+              Event event = Event(
+                id: widget.event.id,
+                title: widget.event.title,
+                date: widget.event.date,
+                startTime: widget.event.startTime,
+                finishTime: widget.event.finishTime,
+                desc: widget.event.desc,
+                isActive: widget.event.isActive,
+                choice: widget.event.choice,
+                countDownIsActive: widget.event.countDownIsActive,
+              );
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => Details(
-                          widget.event.id,
-                          widget.event.title,
-                          widget.event.date,
-                          widget.event.startTime,
-                          widget.event.finishTime,
-                          widget.event.desc,
-                          widget.event.isActive,
-                          widget.event.choice,
-                          widget.event.countDownIsActive,
-                      )));
+                            event: event,
+                          )));
             } else if (newValue == 'Sil') {
               _db.deleteEvent(widget.event.id);
               Navigator.of(context).pop();
@@ -60,7 +64,10 @@ class _DropDownState extends State<DropDown> {
         ].map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
-            child: Text(value,style: TextStyle(fontSize: 20 ),),
+            child: Text(
+              value,
+              style: TextStyle(fontSize: 20),
+            ),
           );
         }).toList(),
       ),
