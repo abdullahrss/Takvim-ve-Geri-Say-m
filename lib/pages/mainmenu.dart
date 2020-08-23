@@ -84,7 +84,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     _backGroundProcesses = BackGroundProcesses();
     _backGroundProcesses.startBgServicesManually();
     // Ads
-    // _advert.showBannerAd();
+    //_advert.showBannerAd();
     // Active processes
     _db.openNotificationBar();
     timer = Timer.periodic(Duration(minutes: 1), (timer) {
@@ -94,7 +94,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
 
   @override
   void dispose() {
-    // _advert.closeBannerAd();
+    _advert.closeBannerAd();
     timer.cancel();
     super.dispose();
   }

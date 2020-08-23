@@ -107,6 +107,13 @@ class _CalanderEventstate extends State<CalanderEvent> {
                                         isActive: snapshot.data[index].isActive,
                                         choice: snapshot.data[index].choice,
                                         countDownIsActive: snapshot.data[index].countDownIsActive,
+                                        attachments: snapshot.data[index].attachments,
+                                        isHTML: snapshot.data[index].isHTML,
+                                        ccController: snapshot.data[index].ccController,
+                                        bbcController: snapshot.data[index].bbcController,
+                                        recipientController: snapshot.data[index].recipientController,
+                                        subjectController: snapshot.data[index].subjectController,
+                                        bodyController: snapshot.data[index].bodyController
                                       )),
                                     ),
                                     Container(

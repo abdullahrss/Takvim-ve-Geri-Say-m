@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:ajanda/helpers/ads.dart';
 import 'package:ajanda/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../pages/mainmenu.dart';
 import '../databasehelper/dataBaseHelper.dart';
 import '../databasemodels/events.dart';
@@ -20,8 +23,22 @@ class EventEdit extends StatefulWidget {
   int isActive;
   String choice;
   int countDownIsActive;
+  String attachments;
+  String isHTML;
+  String ccController;
+  String bbcController;
+  String recipientController;
+  String subjectController;
+  String bodyController;
 
-  EventEdit({int inputId, String inputTitle, String inputDate, String inputStartTime, String inputFinishTime, String inputDesc, int inputIsActive, String inputChoice, int inputCountDownIsActive}){
+  EventEdit({int inputId, String inputTitle, String inputDate, String inputStartTime, String inputFinishTime, String inputDesc, int inputIsActive, String inputChoice, int inputCountDownIsActive,String attachments,
+    String isHTML,
+    String ccController,
+    String bbcController,
+    String recipientController,
+    String subjectController,
+    String bodyController}){
+
     this.id = inputId;
     this.title = inputTitle;
     this.date = inputDate;
@@ -31,6 +48,13 @@ class EventEdit extends StatefulWidget {
     this.isActive = inputIsActive;
     this.choice = inputChoice;
     this.countDownIsActive = inputCountDownIsActive;
+    this.attachments = attachments;
+    this.isHTML = isHTML;
+    this.ccController = ccController;
+    this.bbcController = bbcController;
+    this.recipientController = recipientController;
+    this.subjectController = subjectController;
+    this.bodyController = bodyController;
   }
 }
 
@@ -57,9 +81,51 @@ class _AddEventState extends State<EventEdit> {
   final _titlecontroller = TextEditingController();
   final _descriptioncontroller = TextEditingController();
 
+  List<String> _attachments = [];
+  bool _isHTML = false;
+
+  final _ccController = TextEditingController(
+
+  );
+
+  final _bbcController = TextEditingController(
+
+  );
+
+  final _recipientController = TextEditingController(
+
+  );
+
+  final _subjectController = TextEditingController();
+
+  final _bodyController = TextEditingController(
+
+  );
+  void _picker() async {
+    final File pick = await ImagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _attachments.add(pick.path);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    if(widget.attachments != null){
+    var deneme = widget.attachments.split("-");
+    for(int i=0;i<deneme.length;i++){
+      _attachments.add(deneme[i]);
+    }}
+
+    _isHTML = widget.isHTML == "false" ? false : true;
+    _ccController.text = widget.ccController == "null" ? "" : widget.ccController;
+    _bbcController.text = widget.bbcController == "null" ? "" : widget.bbcController;
+    _recipientController.text = widget.recipientController;
+    _subjectController.text = widget.subjectController;
+    _bodyController.text = widget.bodyController == "null" ? "" : widget.bodyController;
+    
+
+
     _titlecontroller.text = widget.title;
     _descriptioncontroller.text = widget.desc;
     _selectedFinishHour = widget.finishTime;
@@ -67,6 +133,7 @@ class _AddEventState extends State<EventEdit> {
     _selectedDate = widget.date;
     _iscountdownchecked = widget.isActive == 1 ? true : false;
     setState(() {
+
       _switchValue = widget.countDownIsActive==1?true:false;
       _isfullday = _selectedStartHour == "null" ? true : false;
     });
@@ -74,10 +141,205 @@ class _AddEventState extends State<EventEdit> {
 
   @override
   void dispose() {
+    _ccController.dispose();
+    _bbcController.dispose();
+    _recipientController.dispose();
+    _subjectController.dispose();
+    _bodyController.dispose();
     _titlecontroller.dispose();
     _descriptioncontroller.dispose();
-    // _advert.showBannerAd();
+    //_advert.showBannerAd();
     super.dispose();
+  }
+
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Dikkat!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Alıcı mail boş bırakılmaz!'),
+
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Tamam'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showMyDialog3() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Dikkat!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Konu boş bırakılamaz!')
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Tamam'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  Future<void> showMyDialog2() async {
+    return showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: Text("Mail Gönder"),
+              content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: TextField(
+                          controller: _recipientController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Alıcı adresi',
+
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: TextField(
+                          controller: _ccController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'CC',
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: TextField(
+                          controller: _bbcController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'BBC',
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: TextField(
+                          controller: _subjectController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Konu',
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: TextField(
+                          controller: _bodyController,
+                          maxLines: 10,
+                          decoration: InputDecoration(
+                              labelText: 'Mail', border: OutlineInputBorder()),
+                        ),
+                      ),
+                      CheckboxListTile(
+                        title: Text('HTML'),
+                        onChanged: (bool value) {
+                          setState(() {
+                            _isHTML = value;
+                          });
+                        },
+                        value: _isHTML,
+                      ),
+                      ..._attachments.map(
+                            (item) => Text(
+                          item,
+                          overflow: TextOverflow.fade,
+                        ),
+                      ),
+                      RaisedButton(
+                        color: Colors.blue,
+                        elevation: 18,
+                        onPressed: _picker,
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.image,
+                              color: Colors.white,
+                            ),
+                            Text("  Resim ekle",style: TextStyle(color: Colors.white),)
+                          ],
+                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+                        splashColor: Colors.blue,
+                      ),
+                      RaisedButton(
+                        color: Colors.blue,
+                        onPressed:()  {
+                          if(_recipientController.text == ""){
+                            _showMyDialog();
+                          }else if(_subjectController.text == ""){
+                            _showMyDialog3();
+                          }else{Navigator.of(context).pop();}},
+                        elevation: 18,
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.save,
+                              color: Colors.white,
+                            ),
+                            Text("  Kaydet",style: TextStyle(color: Colors.white)),
+                          ],
+                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+                        splashColor: Colors.blue,
+                      ),
+                      RaisedButton(
+                        color: Colors.blue,
+                        onPressed:()  {
+
+                          Navigator.of(context).pop();},
+                        elevation: 18,
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.close,
+                              color: Colors.white,
+                            ),
+                            Text("  Kapat",style: TextStyle(color: Colors.white)),
+                          ],
+                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+                        splashColor: Colors.blue,
+                      ),
+                    ],
+                  )));
+        });
   }
 
   @override
@@ -105,7 +367,13 @@ class _AddEventState extends State<EventEdit> {
                     validator: (value) {
                       return value.isEmpty ? "Etkinlik ismi boş bırakılamaz" : null;
                     },
+
                   )),
+//              IconButton(icon: Icon(Icons.add,),onPressed: (){
+//                _db.getEventList().then((value) {
+//                  for(int i =0;i<value.length;i++) {
+//                    print(value[i].recipientController);
+//                  }});}),
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20),
                 child: Divider(
@@ -215,7 +483,7 @@ class _AddEventState extends State<EventEdit> {
                     ),
                     // Notification ayarlari
                     Container(
-                      padding: EdgeInsets.only(right: 40.0),
+                      padding: EdgeInsets.only(right: 5.0),
                       child: IconButton(
                         icon: Icon(Icons.notifications_active),
                         onPressed: () async {
@@ -227,6 +495,18 @@ class _AddEventState extends State<EventEdit> {
                         },
                       ),
                     ),
+                    Container(
+                      child: IconButton(
+                        icon: Icon(Icons.mail),
+                        onPressed: () {
+//                          Navigator.push(
+//                              context,
+//                              MaterialPageRoute(
+//                                  builder: (context) => EmailSender()));
+                          showMyDialog2();
+                        },
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -320,7 +600,7 @@ class _AddEventState extends State<EventEdit> {
                           showMyDialog(
                             context,
                             title: "Uyarı!",
-                            message: "Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise 15 dakikada bir güncellenir!",
+                            message: "Sabit bildirim uyglama açıksa 1 dakikada bir güncellenir uygulama kapalı ise 15 dakikada bir güncellenir!",
                             function: () =>  Navigator.of(context).pop(),
                           );
                         }
@@ -425,6 +705,11 @@ class _AddEventState extends State<EventEdit> {
       }
     });
     if (state.validate() && (_iscorrect) && (_timeisok) && (errmsg == "")) {
+      String resimler = "";
+      for(int i=0;i<_attachments.length;i++){
+        resimler+= "-${_attachments[i]}";
+      }
+
       var newEvent = _isfullday
           ? Event(
               title: _titlecontroller.text,
@@ -433,6 +718,13 @@ class _AddEventState extends State<EventEdit> {
               isActive: _iscountdownchecked ? 1 : 0,
               choice: _radioValue.toString(),
               countDownIsActive: _switchValue ? 1 : 0,
+              attachments: resimler,
+              isHTML: _isHTML.toString(),
+              ccController: _ccController.text,
+              bbcController: _bbcController.text,
+              recipientController: _recipientController.text,
+              subjectController: _subjectController.text,
+              bodyController: _bodyController.text,
             )
           : Event(
               title: _titlecontroller.text,
@@ -443,6 +735,13 @@ class _AddEventState extends State<EventEdit> {
               isActive: _iscountdownchecked ? 1 : 0,
               choice: _radioValue == null ? "0" : _radioValue.toString(),
               countDownIsActive: _switchValue ? 1 : 0,
+              attachments: _attachments.toString(),
+              isHTML: _isHTML.toString(),
+              ccController: _ccController.text,
+              bbcController: _bbcController.text,
+              recipientController: _recipientController.text,
+              subjectController: _subjectController.text,
+              bodyController: _bodyController.text,
             );
       _db.updateAllEvent(newEvent, widget.id);
       _db.createNotifications();
@@ -450,7 +749,8 @@ class _AddEventState extends State<EventEdit> {
       Navigator.of(context).pop();
       Navigator.of(context).pop();
       _advert.showIntersitial();
-      Navigator.push(context, MaterialPageRoute(builder: (context) => MainMenuBody()));
+      print(widget.recipientController);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MainMenu()));
       print("[EVENTEDITTING] Form Uygun");
     } else {
       print("[EVENTEDITTING] Form uygun değil");

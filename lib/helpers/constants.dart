@@ -9,6 +9,13 @@ class EventConstants{
   static const String COLUMN_ISACTIVE = "isActive";
   static const String COLUMN_NOTIFICATION = "notifications";
   static const String COLUMN_COUNTDOWNISACTIVE = "countdown";
+  static const String COLUMN_ATTACHMENTS = "attachments";
+  static const String COLUMN_ISHTML = "isHTML";
+  static const String COLUMN_CCCONTROLLER = "ccController";
+  static const String COLUMN_BBCCONTROLLER = "bbcController";
+  static const String COLUMN_RECIPIENTCONTROLLER = "recipientController";
+  static const String COLUMN_SUBJECTCONTROLLER = "subjectController";
+  static const String COLUMN_BODYCONTROLLER = "bodyController";
 }
 class SettingsConstants{
   static const String TABLE_NAME = "tblsettings" ;

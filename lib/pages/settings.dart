@@ -40,8 +40,14 @@ class _SettingsState extends State<Settings> {
   @override
   void initState() {
     super.initState();
+    print(DynamicTheme.of(context).brightness);
     _switchValue = DynamicTheme.of(context).brightness == Brightness.dark ? true : false;
   }
+
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -72,15 +78,11 @@ class _SettingsState extends State<Settings> {
                     // theme'i update etme
                     var sett = Setting();
                     sett.theme = _switchValue ? 'dark' : 'light';
-                    _sdb.updateTheme(sett);
-                    DynamicTheme.of(context).setBrightness(_switchValue?Brightness.dark:Brightness.light);
-                    await _sdb.getSettings().then((settings) {
-                      DynamicTheme.of(context).setThemeData(ThemeData(
-                        brightness: _switchValue?Brightness.dark:Brightness.light,
-                        fontFamily: settings[0].fontName,
-                      ));
-                    });
-
+                    var settings = await _sdb.getSettings();
+                    DynamicTheme.of(context).setThemeData(ThemeData(
+                      brightness: _switchValue?Brightness.dark:Brightness.light,
+                      fontFamily: settings[0].fontName,
+                    ));
                   },
                 ),
               ],
@@ -96,16 +98,13 @@ class _SettingsState extends State<Settings> {
                 ),
                 IconButton(
                   icon: Icon(Icons.delete),
-                  onPressed: () async{
-                    await showMyDialog(context,
+                  onPressed: () {
+                    showMyDialog(context,
                         title: "Dikkat",
                         message: 'Bütün etkinlikleri silmek istediğinize emin misiniz.',
                         function: () async{
                       await _db.clearDb();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MainMenu()),
-                      );
+
                     });
                   },
                 ),
@@ -122,17 +121,15 @@ class _SettingsState extends State<Settings> {
                 ),
                 IconButton(
                   icon: Icon(Icons.delete),
-                  onPressed: () async{
-                    await showMyDialog(context,
+                  onPressed: () {
+                    //_db.clearDb();
+                    showMyDialog(context,
                         title: "Dikkat",
                         message:
                             'Bütün tarihi geçmiş etkinlikleri silmek istediğinize emin misiniz.',
                         function: () async{
                       await _db.clearoldevent();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MainMenu()),
-                      );
+
                     });
                   },
                 ),
@@ -165,12 +162,12 @@ class _SettingsState extends State<Settings> {
                       var temp = Setting();
                       temp.fontName = _dropDownValue;
                       _sdb.updateFont(temp);
-                      await _sdb.getSettings().then((settings) {
-                        DynamicTheme.of(context).setThemeData(ThemeData(
-                          brightness: settings[0].theme=="dark"?Brightness.dark:Brightness.light,
+                      DynamicTheme.of(context).setThemeData(
+                        ThemeData(
+                          brightness: DynamicTheme.of(context).brightness,
                           fontFamily: _dropDownValue,
-                        ));
-                      });
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -182,5 +179,3 @@ class _SettingsState extends State<Settings> {
     );
   }
 }
-
-

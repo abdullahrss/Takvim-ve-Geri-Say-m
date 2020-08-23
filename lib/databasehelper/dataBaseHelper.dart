@@ -22,6 +22,13 @@ class DbHelper {
   static final String _columnIsActive = EventConstants.COLUMN_ISACTIVE;
   static final String _columnNotification = EventConstants.COLUMN_NOTIFICATION;
   static final String _columnCountdownIsActive = EventConstants.COLUMN_COUNTDOWNISACTIVE;
+  static final String _column_attachments = EventConstants.COLUMN_ATTACHMENTS;
+  static final String _column_isHTML = EventConstants.COLUMN_ISHTML;
+  static final String _column_ccController = EventConstants.COLUMN_CCCONTROLLER;
+  static final String _column_bbcController = EventConstants.COLUMN_BBCCONTROLLER;
+  static final String _column_recipientController = EventConstants.COLUMN_RECIPIENTCONTROLLER;
+  static final String _column_subjectController = EventConstants.COLUMN_SUBJECTCONTROLLER;
+  static final String _column_bodyController = EventConstants.COLUMN_BODYCONTROLLER;
 
   DbHelper._createInstance();
 
@@ -50,7 +57,7 @@ class DbHelper {
 
   static void _createDb(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $_tablename ( $_columnId INTEGER PRIMARY KEY NOT NULL,$_columnTitle TEXT ,$_columnDate TEXT,$_columnStartTime TEXT,$_columnFinishTime TEXT,$_columnDesc TEXT,$_columnIsActive INTEGER, $_columnNotification TEXT, $_columnCountdownIsActive INTEGER);');
+        'CREATE TABLE $_tablename ( $_columnId INTEGER PRIMARY KEY NOT NULL,$_columnTitle TEXT ,$_columnDate TEXT,$_columnStartTime TEXT,$_columnFinishTime TEXT,$_columnDesc TEXT,$_columnIsActive INTEGER, $_columnNotification TEXT, $_columnCountdownIsActive INTEGER, $_column_attachments TEXT,$_column_isHTML TEXT,$_column_ccController TEXT, $_column_bbcController TEXT, $_column_recipientController TEXT, $_column_subjectController TEXT, $_column_bodyController TEXT);');
   }
 
   // Databaseden tüm eventleri alma
@@ -296,13 +303,13 @@ class DbHelper {
           ? DateTime.parse("${event.date} ${event.startTime}")
           : DateTime.parse(event.date);
       if (DateTime.now().compareTo(datetime) == 1) {
-        print("[dataBaseHelper] Out of time event title : ${event.title}");
+        print("Out of time event title : ${event.title}");
         localNotificationsPlugin.cancel(event.id);
         continue;
       }
       datetime = not.calcNotificationDate(datetime, int.parse(event.choice));
       await not.singleNotification(
-          localNotificationsPlugin, datetime, event.title, not.calcSingleNotificationBodyText(event.choice), event.id);
+          localNotificationsPlugin, datetime, event.title, event.desc, event.id);
     }
   }
 
@@ -330,7 +337,7 @@ class DbHelper {
   }
 
   Future clearoldevent() async {
-    await getEventList().then((value) {
+    getEventList().then((value) {
       for (int i = 0; i < value.length; i++) {
         var targetTime = value[i].startTime == "null"
             ? DateTime.parse("${value[i].date}")

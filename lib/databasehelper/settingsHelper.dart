@@ -53,10 +53,10 @@ class SettingsDbHelper {
 
   Future<List<Setting>> getSettings() async {
     Database db = await this.database;
-    var settingsMapList = await db.rawQuery("SELECT * FROM $_tablename");
+    var settingsMapList = await db.query(_tablename);
     if (settingsMapList.length == 0 || settingsMapList == []) {
       await db.rawQuery("INSERT INTO $_tablename ($_columnTheme,$_columnFontName) VALUES('light','DoppioOne');");
-      settingsMapList = await db.rawQuery("SELECT * FROM $_tablename");
+      settingsMapList = await db.query(_tablename);
     }
     List<Setting> settingList = List<Setting>();
     for (int i = 0; i < settingsMapList.length; i++) {
