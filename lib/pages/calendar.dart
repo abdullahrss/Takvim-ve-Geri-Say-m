@@ -18,17 +18,19 @@ class FutureCalendar extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.data == null) {
           return Scaffold(
-            body: Center(child: Text("Yükleniyor...."),),
+            body: Center(
+              child: Text("Yükleniyor...."),
+            ),
           );
         } else {
-          return Calendar(eventList: snapshot.data,);
+          return Calendar(
+            eventList: snapshot.data,
+          );
         }
       },
     );
   }
-
 }
-
 
 class Calendar extends StatefulWidget {
   final eventList;
@@ -73,10 +75,10 @@ class _CalendarState extends State<Calendar> {
         _markedDateMap.add(
             DateTime.parse(event.date),
             Event(
-            date: DateTime.parse(event.date),
-            title: event.title,
-            icon: _eventIcon,
-        ));
+              date: DateTime.parse(event.date),
+              title: event.title,
+              icon: _eventIcon,
+            ));
       }
     });
 //    var _helper = DbHelper();
@@ -179,15 +181,13 @@ class _CalendarState extends State<Calendar> {
               showMyDialog(context,
                   title: "Boş Gün",
                   message: 'Bu tarihe etkinlik eklemek ister misiniz ?', function: () {
-                    Navigator.of(context).pop();
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                AddEvent(
-                                  inputDate: newdate,
-                                )));
-                  });
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddEvent(
+                              inputDate: newdate,
+                            )));
+              });
             }
           });
         });
@@ -221,7 +221,7 @@ class _CalendarState extends State<Calendar> {
       // },
       // markedDateMoreShowTotal:
       //     true,
-      todayButtonColor: Colors.blueAccent,
+      todayButtonColor: Colors.orange,
       selectedDayTextStyle: TextStyle(
         color: Colors.orange,
       ),
@@ -267,12 +267,12 @@ class _CalendarState extends State<Calendar> {
               children: <Widget>[
                 Expanded(
                     child: Text(
-                      translateMonths(_currentMonth),
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24.0,
-                      ),
-                    )),
+                  translateMonths(_currentMonth),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24.0,
+                  ),
+                )),
                 FlatButton(
                   child: Text('GERİ'),
                   onPressed: () {

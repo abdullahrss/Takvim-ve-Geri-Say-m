@@ -1,61 +1,25 @@
 import 'dart:io';
-
-import 'package:ajanda/helpers/ads.dart';
-import 'package:ajanda/widgets/showDialog.dart';
+import 'package:ajanda/helpers/helperFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
+// local imports
 import '../pages/mainmenu.dart';
 import '../databasehelper/dataBaseHelper.dart';
 import '../databasemodels/events.dart';
 import '../helpers/validateEmpty.dart';
 import '../widgets/notificationtimepicker.dart';
+import '../widgets/showDialog.dart';
+import '../helpers/ads.dart';
+import 'mailSender.dart';
 
 class EventEdit extends StatefulWidget {
+  final Event event;
+
+  const EventEdit({Key key, this.event}) : super(key: key);
+
   @override
   _AddEventState createState() => _AddEventState();
-
-  int id;
-  String title;
-  String date;
-  String startTime;
-  String finishTime;
-  String desc;
-  int isActive;
-  String choice;
-  int countDownIsActive;
-  String attachments;
-  String isHTML;
-  String ccController;
-  String bbcController;
-  String recipientController;
-  String subjectController;
-  String bodyController;
-
-  EventEdit({int inputId, String inputTitle, String inputDate, String inputStartTime, String inputFinishTime, String inputDesc, int inputIsActive, String inputChoice, int inputCountDownIsActive,String attachments,
-    String isHTML,
-    String ccController,
-    String bbcController,
-    String recipientController,
-    String subjectController,
-    String bodyController}){
-
-    this.id = inputId;
-    this.title = inputTitle;
-    this.date = inputDate;
-    this.startTime = inputStartTime;
-    this.finishTime = inputFinishTime;
-    this.desc = inputDesc;
-    this.isActive = inputIsActive;
-    this.choice = inputChoice;
-    this.countDownIsActive = inputCountDownIsActive;
-    this.attachments = attachments;
-    this.isHTML = isHTML;
-    this.ccController = ccController;
-    this.bbcController = bbcController;
-    this.recipientController = recipientController;
-    this.subjectController = subjectController;
-    this.bodyController = bodyController;
-  }
 }
 
 class _AddEventState extends State<EventEdit> {
@@ -84,262 +48,44 @@ class _AddEventState extends State<EventEdit> {
   List<String> _attachments = [];
   bool _isHTML = false;
 
-  final _ccController = TextEditingController(
+  var _cc = "";
 
-  );
+  var _bb = "";
 
-  final _bbcController = TextEditingController(
+  var _recipient = "";
 
-  );
+  var _subject = "";
 
-  final _recipientController = TextEditingController(
-
-  );
-
-  final _subjectController = TextEditingController();
-
-  final _bodyController = TextEditingController(
-
-  );
-  void _picker() async {
-    final File pick = await ImagePicker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      _attachments.add(pick.path);
-    });
-  }
+  var _body = "";
 
   @override
   void initState() {
+    if (widget.event.attachments != null) {
+      var deneme = widget.event.attachments.split("-");
+      for (int i = 0; i < deneme.length; i++) {
+        _attachments.add(deneme[i]);
+      }
+    }
+
     super.initState();
-    if(widget.attachments != null){
-    var deneme = widget.attachments.split("-");
-    for(int i=0;i<deneme.length;i++){
-      _attachments.add(deneme[i]);
-    }}
-
-    _isHTML = widget.isHTML == "false" ? false : true;
-    _ccController.text = widget.ccController == "null" ? "" : widget.ccController;
-    _bbcController.text = widget.bbcController == "null" ? "" : widget.bbcController;
-    _recipientController.text = widget.recipientController;
-    _subjectController.text = widget.subjectController;
-    _bodyController.text = widget.bodyController == "null" ? "" : widget.bodyController;
-    
-
-
-    _titlecontroller.text = widget.title;
-    _descriptioncontroller.text = widget.desc;
-    _selectedFinishHour = widget.finishTime;
-    _selectedStartHour = widget.startTime;
-    _selectedDate = widget.date;
-    _iscountdownchecked = widget.isActive == 1 ? true : false;
+    _titlecontroller.text = widget.event.title;
+    _descriptioncontroller.text = widget.event.desc;
+    _selectedFinishHour = widget.event.finishTime;
+    _selectedStartHour = widget.event.startTime;
+    _selectedDate = widget.event.date;
+    _iscountdownchecked = widget.event.isActive == 1 ? true : false;
     setState(() {
-
-      _switchValue = widget.countDownIsActive==1?true:false;
+      _switchValue = widget.event.countDownIsActive == 1 ? true : false;
       _isfullday = _selectedStartHour == "null" ? true : false;
     });
   }
 
   @override
   void dispose() {
-    _ccController.dispose();
-    _bbcController.dispose();
-    _recipientController.dispose();
-    _subjectController.dispose();
-    _bodyController.dispose();
     _titlecontroller.dispose();
     _descriptioncontroller.dispose();
-    //_advert.showBannerAd();
+    // _advert.showBannerAd();
     super.dispose();
-  }
-
-
-  Future<void> _showMyDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Dikkat!'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('Alıcı mail boş bırakılmaz!'),
-
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Tamam'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _showMyDialog3() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Dikkat!'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('Konu boş bırakılamaz!')
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Tamam'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-  Future<void> showMyDialog2() async {
-    return showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-              title: Text("Mail Gönder"),
-              content: SingleChildScrollView(
-                  child: ListBody(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: TextField(
-                          controller: _recipientController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Alıcı adresi',
-
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: TextField(
-                          controller: _ccController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'CC',
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: TextField(
-                          controller: _bbcController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'BBC',
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: TextField(
-                          controller: _subjectController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Konu',
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: TextField(
-                          controller: _bodyController,
-                          maxLines: 10,
-                          decoration: InputDecoration(
-                              labelText: 'Mail', border: OutlineInputBorder()),
-                        ),
-                      ),
-                      CheckboxListTile(
-                        title: Text('HTML'),
-                        onChanged: (bool value) {
-                          setState(() {
-                            _isHTML = value;
-                          });
-                        },
-                        value: _isHTML,
-                      ),
-                      ..._attachments.map(
-                            (item) => Text(
-                          item,
-                          overflow: TextOverflow.fade,
-                        ),
-                      ),
-                      RaisedButton(
-                        color: Colors.blue,
-                        elevation: 18,
-                        onPressed: _picker,
-                        child: Row(
-                          children: <Widget>[
-                            Icon(
-                              Icons.image,
-                              color: Colors.white,
-                            ),
-                            Text("  Resim ekle",style: TextStyle(color: Colors.white),)
-                          ],
-                        ),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-                        splashColor: Colors.blue,
-                      ),
-                      RaisedButton(
-                        color: Colors.blue,
-                        onPressed:()  {
-                          if(_recipientController.text == ""){
-                            _showMyDialog();
-                          }else if(_subjectController.text == ""){
-                            _showMyDialog3();
-                          }else{Navigator.of(context).pop();}},
-                        elevation: 18,
-                        child: Row(
-                          children: <Widget>[
-                            Icon(
-                              Icons.save,
-                              color: Colors.white,
-                            ),
-                            Text("  Kaydet",style: TextStyle(color: Colors.white)),
-                          ],
-                        ),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-                        splashColor: Colors.blue,
-                      ),
-                      RaisedButton(
-                        color: Colors.blue,
-                        onPressed:()  {
-
-                          Navigator.of(context).pop();},
-                        elevation: 18,
-                        child: Row(
-                          children: <Widget>[
-                            Icon(
-                              Icons.close,
-                              color: Colors.white,
-                            ),
-                            Text("  Kapat",style: TextStyle(color: Colors.white)),
-                          ],
-                        ),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-                        splashColor: Colors.blue,
-                      ),
-                    ],
-                  )));
-        });
   }
 
   @override
@@ -348,7 +94,6 @@ class _AddEventState extends State<EventEdit> {
       appBar: AppBar(
         title: Text("Etkinliği Düzenle"),
       ),
-
       body: Form(
           key: _formKey,
           child: ListView(
@@ -367,13 +112,7 @@ class _AddEventState extends State<EventEdit> {
                     validator: (value) {
                       return value.isEmpty ? "Etkinlik ismi boş bırakılamaz" : null;
                     },
-
                   )),
-//              IconButton(icon: Icon(Icons.add,),onPressed: (){
-//                _db.getEventList().then((value) {
-//                  for(int i =0;i<value.length;i++) {
-//                    print(value[i].recipientController);
-//                  }});}),
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20),
                 child: Divider(
@@ -483,7 +222,7 @@ class _AddEventState extends State<EventEdit> {
                     ),
                     // Notification ayarlari
                     Container(
-                      padding: EdgeInsets.only(right: 5.0),
+                      // padding: EdgeInsets.only(right: 40.0),
                       child: IconButton(
                         icon: Icon(Icons.notifications_active),
                         onPressed: () async {
@@ -498,15 +237,35 @@ class _AddEventState extends State<EventEdit> {
                     Container(
                       child: IconButton(
                         icon: Icon(Icons.mail),
-                        onPressed: () {
-//                          Navigator.push(
-//                              context,
-//                              MaterialPageRoute(
-//                                  builder: (context) => EmailSender()));
-                          showMyDialog2();
+                        onPressed: () async {
+                          print("eventeditng rec: ${widget.event.recipient}");
+                          await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EmailSender(
+                                        attacs: stringPathsToList(widget.event.attachments),
+                                        isHtml: widget.event.isHTML,
+                                        cctext: widget.event.cc,
+                                        bbtext: widget.event.bb,
+                                        recipienttext: widget.event.recipient,
+                                        subjecttext: widget.event.subject,
+                                        bodytext: widget.event.body,
+                                      ))).then((value) {
+                            if (value != null) {
+                              setState(() {
+                                _attachments = value[0];
+                                _isHTML = value[1];
+                                _cc = value[2];
+                                _bb = value[3];
+                                _recipient = value[4];
+                                _subject = value[5];
+                                _body = value[6];
+                              });
+                            }
+                          });
                         },
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -529,83 +288,100 @@ class _AddEventState extends State<EventEdit> {
                   ),
                 ),
               // Butun gun secenegi
-              Container(
-                  padding: const EdgeInsets.fromLTRB(20.0, 4.0, 20.0, 0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Checkbox(
-                            value: _isfullday,
-                            onChanged: (value) => {
-                              setState(() {
-                                _isfullday = value;
-                              })
-                            },
-                          ),
-                          Text(
-                            "Bütün gün",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ],
-                      ),
-                      // Geri sayim aktiflestirmesi
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
+              InkWell(
+                onTap: () {
+                  setState(() {
+                    _isfullday = !_isfullday;
+                  });
+                },
+                child: Container(
+                    padding: const EdgeInsets.fromLTRB(20.0, 4.0, 20.0, 0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
                           children: <Widget>[
                             Checkbox(
-                              value: _iscountdownchecked,
-                              onChanged: (bool value) {
+                              value: _isfullday,
+                              onChanged: (value) => {
                                 setState(() {
-                                  _iscountdownchecked = value;
-                                });
+                                  _isfullday = value;
+                                })
                               },
                             ),
                             Text(
-                              "Geri sayım etkinleştir",
+                              "Bütün gün",
                               style: TextStyle(fontSize: 18),
                             ),
                           ],
                         ),
+                        // Geri sayim aktiflestirmesi
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              _iscountdownchecked = !_iscountdownchecked;
+                            });
+                          },
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Checkbox(
+                                  value: _iscountdownchecked,
+                                  onChanged: (bool value) {
+                                    setState(() {
+                                      _iscountdownchecked = value;
+                                    });
+                                  },
+                                ),
+                                Text(
+                                  "Geri sayım etkinleştir",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
+              ),
+              // Sabit bildirim
+              InkWell(
+                onTap: () {
+                  setState(() {
+                    _switchValue = !_switchValue;
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(22.0, 4.0, 20.0, 0),
+                  child: Row(
+                    children: <Widget>[
+                      Checkbox(
+                        value: _switchValue,
+                        onChanged: (val) {
+                          setState(() {
+                            _switchValue = val;
+                          });
+                        },
                       ),
+                      Text(
+                        "Sabit bildirim",
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      IconButton(
+                          icon: Icon(Icons.info),
+                          onPressed: () {
+                            showWarningDialog(context,
+                                "Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!");
+                          })
                     ],
-                  )),
-              Container(
-                padding: const EdgeInsets.fromLTRB(22.0, 4.0, 20.0, 0),
-                child: Row(
-                  children: <Widget>[
-                    Checkbox(
-                      value: _switchValue,
-                      onChanged: (val) {
-                        setState(() {
-                          _switchValue = val;
-                        });
-                      },
-                    ),
-                    Text(
-                      "Sabit bildirim",
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    IconButton(
-                        icon: Icon(Icons.info),
-                        onPressed: (){
-                          showMyDialog(
-                            context,
-                            title: "Uyarı!",
-                            message: "Sabit bildirim uyglama açıksa 1 dakikada bir güncellenir uygulama kapalı ise 15 dakikada bir güncellenir!",
-                            function: () =>  Navigator.of(context).pop(),
-                          );
-                        }
-                    )
-                  ],
+                  ),
                 ),
               ),
               // Etkinlik aciklamasi
@@ -668,17 +444,17 @@ class _AddEventState extends State<EventEdit> {
   void validateandsave() async {
     final FormState state = _formKey.currentState;
     // Duzenlecenek event'in oldugu gun tum gun suren etkinlik var mi diye bakiyor
-    await _db.isFullDay(widget.date, id:widget.id).then((value) {
+    await _db.isFullDay(widget.event.date, id: widget.event.id).then((value) {
       setState(() {
         _duplicite = value;
       });
     });
     // Eger tum gun suren etkinlik yoksa istenilen etkinlik saatlerinin uygunluguna bakıyor
     if (!_duplicite) {
-      await _db.isTimeOk(widget.date).then((value) {
+      await _db.isTimeOk(widget.event.date).then((value) {
         setState(() {
-          _timeisok =
-              validateDayIsEmpty(value, _selectedStartHour, _selectedFinishHour, id: widget.id);
+          _timeisok = validateDayIsEmpty(value, _selectedStartHour, _selectedFinishHour,
+              id: widget.event.id);
         });
       });
     }
@@ -700,33 +476,34 @@ class _AddEventState extends State<EventEdit> {
         }
       } catch (e) {
         print("[ERROR] [EVENTEDITTING] $e");
-        // Tüm gün olan eventi tüm günden cikartip saat secilmezse 
+        // Tüm gün olan eventi tüm günden cikartip saat secilmezse
         errmsg += "Tüm gün işaretli değilse saat girmelisiniz\n";
       }
     });
+    String imagePaths = "";
+    for (int i = 0; i < _attachments.length; i++) {
+      imagePaths += "${_attachments[i]}-";
+    }
     if (state.validate() && (_iscorrect) && (_timeisok) && (errmsg == "")) {
-      String resimler = "";
-      for(int i=0;i<_attachments.length;i++){
-        resimler+= "-${_attachments[i]}";
-      }
-
       var newEvent = _isfullday
           ? Event(
+              id: widget.event.id,
               title: _titlecontroller.text,
               date: _selectedDate,
               desc: _descriptioncontroller.text,
               isActive: _iscountdownchecked ? 1 : 0,
               choice: _radioValue.toString(),
               countDownIsActive: _switchValue ? 1 : 0,
-              attachments: resimler,
+              attachments: imagePaths,
               isHTML: _isHTML.toString(),
-              ccController: _ccController.text,
-              bbcController: _bbcController.text,
-              recipientController: _recipientController.text,
-              subjectController: _subjectController.text,
-              bodyController: _bodyController.text,
+              cc: _cc,
+              bb: _bb,
+              recipient: _recipient,
+              subject: _subject,
+              body: _body,
             )
           : Event(
+              id: widget.event.id,
               title: _titlecontroller.text,
               date: _selectedDate,
               startTime: _selectedStartHour,
@@ -735,22 +512,21 @@ class _AddEventState extends State<EventEdit> {
               isActive: _iscountdownchecked ? 1 : 0,
               choice: _radioValue == null ? "0" : _radioValue.toString(),
               countDownIsActive: _switchValue ? 1 : 0,
-              attachments: _attachments.toString(),
+              attachments: imagePaths,
               isHTML: _isHTML.toString(),
-              ccController: _ccController.text,
-              bbcController: _bbcController.text,
-              recipientController: _recipientController.text,
-              subjectController: _subjectController.text,
-              bodyController: _bodyController.text,
+              cc: _cc,
+              bb: _bb,
+              recipient: _recipient,
+              subject: _subject,
+              body: _body,
             );
-      _db.updateAllEvent(newEvent, widget.id);
+      _db.updateEvent(newEvent);
       _db.createNotifications();
       Navigator.of(context).pop();
       Navigator.of(context).pop();
       Navigator.of(context).pop();
       _advert.showIntersitial();
-      print(widget.recipientController);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => MainMenu()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MainMenuBody()));
       print("[EVENTEDITTING] Form Uygun");
     } else {
       print("[EVENTEDITTING] Form uygun değil");

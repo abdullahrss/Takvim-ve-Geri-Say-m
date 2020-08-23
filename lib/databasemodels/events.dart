@@ -1,42 +1,43 @@
 import '../helpers/constants.dart';
 
 class Event {
+  // etkinlik detaylari
   int _id;
   String _title;
   String _date;
   String _startTime;
   String _finishTime;
   String _desc;
+  // geri sayim ve bildirimler icin gerekli degiskenler
   int _isActive;
   String _choice;
   int _countDownIsActive;
-
+  // mail icin gerekli bilgiler
   String _attachments;
   String _isHTML;
-  String _ccController;
-  String _bbcController;
-  String _recipientController;
-  String _subjectController;
-  String _bodyController;
+  String _cc;
+  String _bb;
+  String _recipient;
+  String _subject;
+  String _body;
 
-  Event({
-    int id,
-    String title,
-    String date,
-    String startTime,
-    String finishTime,
-    String desc,
-    int isActive,
-    String choice,
-    int countDownIsActive,
-    String attachments,
-    String isHTML,
-    String ccController,
-    String bbcController,
-    String recipientController,
-    String subjectController,
-    String bodyController
-  }) {
+  Event(
+      {int id,
+      String title,
+      String date,
+      String startTime,
+      String finishTime,
+      String desc,
+      int isActive,
+      String choice,
+      int countDownIsActive,
+      String attachments,
+      String isHTML,
+      String cc,
+      String bb,
+      String recipient,
+      String subject,
+      String body}) {
     this._id = id;
     this._title = title;
     this._date = date;
@@ -48,31 +49,44 @@ class Event {
     this._countDownIsActive = countDownIsActive;
     this._attachments = attachments;
     this._isHTML = isHTML;
-    this._ccController = ccController;
-    this._bbcController = bbcController;
-    this._recipientController = recipientController;
-    this._subjectController = subjectController;
-    this._bodyController = bodyController;
+    this._cc = cc;
+    this._bb = bb;
+    this._recipient = recipient;
+    this._subject = subject;
+    this._body = body;
   }
 
   int get id => _id;
+
   String get title => _title;
+
   String get date => _date;
+
   String get startTime => _startTime;
+
   String get finishTime => _finishTime;
+
   String get desc => _desc;
+
   int get isActive => _isActive;
+
   String get choice => _choice;
+
   int get countDownIsActive => _countDownIsActive;
+
   String get attachments => _attachments;
+
   String get isHTML => _isHTML;
-  String get ccController => _ccController;
-  String get bbcController => _bbcController;
-  String get recipientController => _recipientController;
-  String get subjectController => _subjectController;
-  String get bodyController => _bodyController;
 
+  String get cc => _cc;
 
+  String get bb => _bb;
+
+  String get recipient => _recipient;
+
+  String get subject => _subject;
+
+  String get body => _body;
 
   set id(int newId) {
     _id = newId;
@@ -109,13 +123,34 @@ class Event {
   set countDownIsActive(int countDownIsActive) {
     _countDownIsActive = countDownIsActive;
   }
-  set attachments(String attachments){_attachments = attachments;}
-  set isHTML(String isHTML){_isHTML = isHTML;}
-  set ccController(String ccController){_ccController = ccController;}
-  set bbcController(String bbcController){_bbcController = bbcController;}
-  set recipientController(String recipientController){_recipientController = recipientController;}
-  set subjectController(String subjectController){_subjectController = subjectController;}
-  set bodyController(String bodyController){_bodyController = bodyController;}
+
+  set attachments(String attachments) {
+    _attachments = attachments;
+  }
+
+  set isHTML(String isHTML) {
+    _isHTML = isHTML;
+  }
+
+  set cc(String ccController) {
+    _cc = ccController;
+  }
+
+  set bb(String bbcController) {
+    _bb = bbcController;
+  }
+
+  set recipient(String recipientController) {
+    _recipient = recipientController;
+  }
+
+  set subject(String subjectController) {
+    _subject = subjectController;
+  }
+
+  set body(String bodyController) {
+    _body = bodyController;
+  }
 
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
@@ -134,11 +169,11 @@ class Event {
     map[EventConstants.COLUMN_COUNTDOWNISACTIVE] = _countDownIsActive;
     map[EventConstants.COLUMN_ATTACHMENTS] = _attachments;
     map[EventConstants.COLUMN_ISHTML] = _isHTML;
-    map[EventConstants.COLUMN_CCCONTROLLER] = _ccController;
-    map[EventConstants.COLUMN_BBCCONTROLLER] = _bbcController;
-    map[EventConstants.COLUMN_RECIPIENTCONTROLLER] = _recipientController;
-    map[EventConstants.COLUMN_SUBJECTCONTROLLER] = _subjectController;
-    map[EventConstants.COLUMN_BODYCONTROLLER] = _bodyController;
+    map[EventConstants.COLUMN_CC] = _cc;
+    map[EventConstants.COLUMN_BB] = _bb;
+    map[EventConstants.COLUMN_RECIPIENT] = _recipient;
+    map[EventConstants.COLUMN_SUBJECT] = _subject;
+    map[EventConstants.COLUMN_BODY] = _body;
 
     return map;
   }
@@ -155,11 +190,10 @@ class Event {
     this._countDownIsActive = input[EventConstants.COLUMN_COUNTDOWNISACTIVE];
     this._attachments = input[EventConstants.COLUMN_ATTACHMENTS];
     this._isHTML = input[EventConstants.COLUMN_ISHTML];
-    this._ccController = input[EventConstants.COLUMN_CCCONTROLLER];
-    this._bbcController = input[EventConstants.COLUMN_BBCCONTROLLER];
-    this._recipientController = input[EventConstants.COLUMN_RECIPIENTCONTROLLER];
-    this._subjectController = input[EventConstants.COLUMN_SUBJECTCONTROLLER];
-    this._bodyController = input[EventConstants.COLUMN_BODYCONTROLLER];
-
+    this._cc = input[EventConstants.COLUMN_CC];
+    this._bb = input[EventConstants.COLUMN_BB];
+    this._recipient = input[EventConstants.COLUMN_RECIPIENT];
+    this._subject = input[EventConstants.COLUMN_SUBJECT];
+    this._body = input[EventConstants.COLUMN_BODY];
   }
 }

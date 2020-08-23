@@ -92,20 +92,21 @@ class _Closesevents extends State<Soclose> {
                                         countDownIsActive: snapshot.data[index].countDownIsActive,
                                         attachments: snapshot.data[index].attachments,
                                         isHTML: snapshot.data[index].isHTML,
-                                        ccController: snapshot.data[index].ccController,
-                                        bbcController: snapshot.data[index].bbcController,
-                                        recipientController: snapshot.data[index].recipientController,
-                                        subjectController: snapshot.data[index].subjectController,
-                                        bodyController: snapshot.data[index].bodyController
+                                        cc: snapshot.data[index].cc,
+                                        bb: snapshot.data[index].bb,
+                                        recipient: snapshot.data[index].recipient,
+                                        subject: snapshot.data[index].subject,
+                                        body: snapshot.data[index].body,
                                       )),
                                     ),
                                     Container(
-                                      padding: EdgeInsets.only(top: 8.0),
+                                      padding: EdgeInsets.only(top: 4.0),
                                       height: 100,
                                       width: 100,
                                       decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(8.0),
-                                          color: Colors.blue),
+                                          color: Colors.blue,
+                                      ),
                                       child: Text(
                                         calcRemaining(snapshot.data[index].date,
                                             snapshot.data[index].startTime),

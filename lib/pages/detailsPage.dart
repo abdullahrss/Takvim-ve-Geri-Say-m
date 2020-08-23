@@ -1,43 +1,12 @@
-import 'package:ajanda/helpers/ads.dart';
 import 'package:flutter/material.dart';
+import '../databasemodels/events.dart';
+import '../helpers/ads.dart';
 import '../events/eventEditting.dart';
 
 class Details extends StatefulWidget {
-  final id;
-  final title;
-  final date;
-  final startTime;
-  final finishTime;
-  final desc;
-  final isActive;
-  final choice;
-  final countDownIsActive;
-  final attachments;
-  final isHTML;
-  final ccController;
-  final bbcController;
-  final recipientController;
-  final subjectController;
-  final bodyController;
+  final Event event;
 
-  Details(
-      this.id,
-      this.title,
-      this.date,
-      this.startTime,
-      this.finishTime,
-      this.desc,
-      this.isActive,
-      this.choice,
-      this.countDownIsActive,
-      this.attachments,
-      this.isHTML,
-      this.ccController,
-      this.bbcController,
-      this.recipientController,
-      this.subjectController,
-      this.bodyController
-      );
+  const Details({Key key, this.event}) : super(key: key);
 
   @override
   _DetailsState createState() => _DetailsState();
@@ -49,7 +18,7 @@ class _DetailsState extends State<Details> {
   @override
   void initState() {
     super.initState();
-
+    print("detailspage rec : ${widget.event.recipient}");
     _advert.closeBannerAd();
   }
 
@@ -76,38 +45,34 @@ class _DetailsState extends State<Details> {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Text(
-                                    widget.title,
-                                    maxLines: 4,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(fontSize: 35.0),
-                                  ),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Expanded(
+                                child: Text(
+                                  widget.event.title,
+                                  maxLines: 4,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontSize: 35.0),
                                 ),
-
-                                //Container(child: DropDown(index))
-                              ]),
-                        ),
-
+                              ),
+                              //Container(child: DropDown(index))
+                            ]),
                       ),
-                      if(widget.recipientController != null)
+                      if(widget.event.recipient != null)
                         Row(children: <Widget>[
                           Expanded(
                             child: Text(
-                                "   Mail atılacak kişi: "+widget.recipientController
-                            ,style: TextStyle(fontSize: 15),),
+                              "   Mail atılacak kişi: "+widget.event.recipient
+                              ,style: TextStyle(fontSize: 15),),
                           )
                         ],),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(children: <Widget>[
                           Text(
-                             widget.date +
-                                "${widget.startTime != "null" ? ("  " + widget.startTime + "-" + widget.finishTime) : " - Tüm gün"}",
+                            widget.event.date +
+                                "${widget.event.startTime != "null" ? ("  " + widget.event.startTime + "-" + widget.event.finishTime) : " - Tüm gün"}",
                             style: new TextStyle(fontSize: 15),
                           ),
                         ]),
@@ -124,7 +89,7 @@ class _DetailsState extends State<Details> {
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text(widget.desc, maxLines: 1000),
+                            child: Text(widget.event.desc, maxLines: 1000),
                           ),
                         ),
                         SizedBox(
@@ -145,24 +110,24 @@ class _DetailsState extends State<Details> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => (EventEdit(
-                                        inputId: widget.id,
-                                        inputTitle: widget.title,
-                                        inputDate: widget.date,
-                                        inputStartTime: widget.startTime,
-                                        inputFinishTime: widget.finishTime,
-                                        inputDesc: widget.desc,
-                                        inputIsActive: widget.isActive,
-                                        inputChoice: widget.choice,
-                                        inputCountDownIsActive: widget.countDownIsActive,
-                                        attachments: widget.attachments,
-                                        isHTML: widget.isHTML,
-                                        ccController: widget.ccController,
-                                        bbcController: widget.bbcController,
-                                        recipientController: widget.recipientController,
-                                        subjectController: widget.subjectController,
-                                        bodyController: widget.bodyController,
-                                      ))));
+                                  builder: (context) => (EventEdit(event: Event(
+                                    id: widget.event.id,
+                                    title: widget.event.title,
+                                    date: widget.event.date,
+                                    startTime: widget.event.startTime,
+                                    finishTime: widget.event.finishTime,
+                                    desc: widget.event.desc,
+                                    isActive: widget.event.isActive,
+                                    choice: widget.event.choice,
+                                    countDownIsActive: widget.event.countDownIsActive,
+                                    attachments: widget.event.attachments,
+                                    isHTML: widget.event.isHTML,
+                                    cc: widget.event.cc,
+                                    bb: widget.event.bb,
+                                    recipient: widget.event.recipient,
+                                    subject: widget.event.subject,
+                                    body: widget.event.body,
+                                  ),))));
                         },
                         elevation: 18,
                         child: Text("Düzenle"),

@@ -39,6 +39,9 @@ class MainMenu extends StatelessWidget {
               data: (brightness) => ThemeData(
                     brightness: brightness,
                     fontFamily: snapshot.data[0].fontName,
+                    floatingActionButtonTheme: FloatingActionButtonThemeData(
+                      foregroundColor: Colors.green,
+                    ),
                   ),
               themedWidgetBuilder: (context, theme) {
                 return MaterialApp(
@@ -84,7 +87,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     _backGroundProcesses = BackGroundProcesses();
     _backGroundProcesses.startBgServicesManually();
     // Ads
-    //_advert.showBannerAd();
+    // _advert.showBannerAd();
     // Active processes
     _db.openNotificationBar();
     timer = Timer.periodic(Duration(minutes: 1), (timer) {
@@ -94,7 +97,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
 
   @override
   void dispose() {
-    _advert.closeBannerAd();
+    // _advert.closeBannerAd();
     timer.cancel();
     super.dispose();
   }
@@ -127,7 +130,10 @@ class _MainMenuBodyState extends State<MainMenuBody> {
               MaterialPageRoute(builder: (context) => AddEvent()),
             );
           },
-          child: Icon(Icons.add),
+          child: Icon(
+            Icons.add,
+            color: Colors.blueAccent,
+          ),
           backgroundColor: Colors.green,
         ),
       ),
@@ -203,7 +209,6 @@ class _MainMenuBodyState extends State<MainMenuBody> {
       radioValue = e;
       _widgetOptions[0] = Soclose.byorder(e);
     });
-    Navigator.pop(context);
   }
 
   Future<void> showMySortDialog(context) async {
@@ -221,7 +226,10 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                     Radio(
                       value: 0,
                       groupValue: radioValue,
-                      onChanged: changeRadios,
+                      onChanged: (e) async {
+                        changeRadios(e);
+                        Navigator.pop(context);
+                      },
                     ),
                     Text("A-Z a-z"),
                   ],
@@ -231,7 +239,10 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                     Radio(
                       value: 1,
                       groupValue: radioValue,
-                      onChanged: changeRadios,
+                      onChanged: (e) async {
+                        changeRadios(e);
+                        Navigator.pop(context);
+                      },
                     ),
                     Text("Z-A z-a"),
                   ],
@@ -241,7 +252,10 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                     Radio(
                       value: 2,
                       groupValue: radioValue,
-                      onChanged: changeRadios,
+                      onChanged: (e) async {
+                        changeRadios(e);
+                        Navigator.pop(context);
+                      },
                     ),
                     Text("Yakın tarihler başta"),
                   ],
@@ -251,7 +265,10 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                     Radio(
                       value: 3,
                       groupValue: radioValue,
-                      onChanged: changeRadios,
+                      onChanged: (e) async {
+                        changeRadios(e);
+                        Navigator.pop(context);
+                      },
                     ),
                     Text("Uzak tarihler başta"),
                   ],

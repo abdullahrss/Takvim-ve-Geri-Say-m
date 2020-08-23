@@ -11,11 +11,11 @@ class EventConstants{
   static const String COLUMN_COUNTDOWNISACTIVE = "countdown";
   static const String COLUMN_ATTACHMENTS = "attachments";
   static const String COLUMN_ISHTML = "isHTML";
-  static const String COLUMN_CCCONTROLLER = "ccController";
-  static const String COLUMN_BBCCONTROLLER = "bbcController";
-  static const String COLUMN_RECIPIENTCONTROLLER = "recipientController";
-  static const String COLUMN_SUBJECTCONTROLLER = "subjectController";
-  static const String COLUMN_BODYCONTROLLER = "bodyController";
+  static const String COLUMN_CC = "cc";
+  static const String COLUMN_BB = "bb";
+  static const String COLUMN_RECIPIENT = "recipient";
+  static const String COLUMN_SUBJECT = "subject";
+  static const String COLUMN_BODY = "body";
 }
 class SettingsConstants{
   static const String TABLE_NAME = "tblsettings" ;

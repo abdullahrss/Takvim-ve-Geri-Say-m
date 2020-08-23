@@ -3,6 +3,7 @@ import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io' show Directory;
+
 // Local importlar
 import '../events/notifications.dart';
 import '../helpers/constants.dart';
@@ -22,13 +23,13 @@ class DbHelper {
   static final String _columnIsActive = EventConstants.COLUMN_ISACTIVE;
   static final String _columnNotification = EventConstants.COLUMN_NOTIFICATION;
   static final String _columnCountdownIsActive = EventConstants.COLUMN_COUNTDOWNISACTIVE;
-  static final String _column_attachments = EventConstants.COLUMN_ATTACHMENTS;
-  static final String _column_isHTML = EventConstants.COLUMN_ISHTML;
-  static final String _column_ccController = EventConstants.COLUMN_CCCONTROLLER;
-  static final String _column_bbcController = EventConstants.COLUMN_BBCCONTROLLER;
-  static final String _column_recipientController = EventConstants.COLUMN_RECIPIENTCONTROLLER;
-  static final String _column_subjectController = EventConstants.COLUMN_SUBJECTCONTROLLER;
-  static final String _column_bodyController = EventConstants.COLUMN_BODYCONTROLLER;
+  static final String _columnAttachments = EventConstants.COLUMN_ATTACHMENTS;
+  static final String _columnIsHtml = EventConstants.COLUMN_ISHTML;
+  static final String _columnCc = EventConstants.COLUMN_CC;
+  static final String _columnBb = EventConstants.COLUMN_BB;
+  static final String _columnRecipient = EventConstants.COLUMN_RECIPIENT;
+  static final String _columnSubject = EventConstants.COLUMN_SUBJECT;
+  static final String _columnBody = EventConstants.COLUMN_BODY;
 
   DbHelper._createInstance();
 
@@ -57,7 +58,7 @@ class DbHelper {
 
   static void _createDb(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $_tablename ( $_columnId INTEGER PRIMARY KEY NOT NULL,$_columnTitle TEXT ,$_columnDate TEXT,$_columnStartTime TEXT,$_columnFinishTime TEXT,$_columnDesc TEXT,$_columnIsActive INTEGER, $_columnNotification TEXT, $_columnCountdownIsActive INTEGER, $_column_attachments TEXT,$_column_isHTML TEXT,$_column_ccController TEXT, $_column_bbcController TEXT, $_column_recipientController TEXT, $_column_subjectController TEXT, $_column_bodyController TEXT);');
+        'CREATE TABLE $_tablename ( $_columnId INTEGER PRIMARY KEY NOT NULL,$_columnTitle TEXT ,$_columnDate TEXT,$_columnStartTime TEXT,$_columnFinishTime TEXT,$_columnDesc TEXT,$_columnIsActive INTEGER, $_columnNotification TEXT, $_columnCountdownIsActive INTEGER, $_columnAttachments TEXT,$_columnIsHtml TEXT,$_columnCc TEXT, $_columnBb TEXT, $_columnRecipient TEXT, $_columnSubject TEXT, $_columnBody TEXT);');
   }
 
   // Databaseden tüm eventleri alma
@@ -87,18 +88,6 @@ class DbHelper {
     await db.rawQuery("UPDATE $_tablename SET $columnName='$newValue' WHERE $_columnId=$id");
   }
 
-  // Tum degerleri gunceller
-  Future updateAllEvent(Event event, int id) async {
-    var db = await this.database;
-    if (event.finishTime == Null) {
-      await db.rawQuery(
-          'UPDATE $_tablename SET $_columnTitle="${event.title}",$_columnDate="${event.date}",$_columnStartTime=$Null,$_columnFinishTime=$Null,$_columnDesc="${event.desc}",$_columnIsActive="${event.isActive}", $_columnNotification="${event.choice}", $_columnCountdownIsActive="${event.countDownIsActive}" WHERE $_columnId=$id');
-    } else {
-      await db.rawQuery(
-          'UPDATE $_tablename SET $_columnTitle="${event.title}",$_columnDate="${event.date}",$_columnStartTime="${event.startTime}",$_columnFinishTime="${event.finishTime}",$_columnDesc="${event.desc}",$_columnIsActive="${event.isActive}", $_columnNotification="${event.choice}", $_columnCountdownIsActive="${event.countDownIsActive}" WHERE $_columnId=$id');
-    }
-  }
-
   // Delete Operation: Delete a Event object from database
   Future<int> deleteEvent(int id) async {
     var db = await this.database;
@@ -115,6 +104,14 @@ class DbHelper {
     var db = await this.database;
     await db.rawQuery(
         'DELETE FROM $_tablename WHERE $_columnStartTime = "$hour" AND $_columnDate = "$date" ');
+  }
+
+  Future<Event> getEventById(int id) async {
+    var db = await this.database;
+    var result = await db.rawQuery('SELECT * FROM $_tablename WHERE $_columnId=id');
+    Event event = Event();
+    event = Event.fromMap(result[0]);
+    return event;
   }
 
   // Database deki eleman sayisini donduruyor
@@ -193,13 +190,13 @@ class DbHelper {
     return false;
   }
 
-  Future<bool> isFullDay(String date,{int id}) async {
+  Future<bool> isFullDay(String date, {int id}) async {
     Database db = await this.database;
-    var result =
-        await db.rawQuery("SELECT $_columnId,$_columnStartTime FROM $_tablename WHERE $_columnDate='$date'");
+    var result = await db.rawQuery(
+        "SELECT $_columnId,$_columnStartTime FROM $_tablename WHERE $_columnDate='$date'");
     print(id);
-    if(id!=null){
-      if(result[0]["id"] == id){
+    if (id != null) {
+      if (result[0]["id"] == id) {
         return false;
       }
     }
@@ -303,13 +300,13 @@ class DbHelper {
           ? DateTime.parse("${event.date} ${event.startTime}")
           : DateTime.parse(event.date);
       if (DateTime.now().compareTo(datetime) == 1) {
-        print("Out of time event title : ${event.title}");
+        print("[dataBaseHelper] Out of time event title : ${event.title}");
         localNotificationsPlugin.cancel(event.id);
         continue;
       }
       datetime = not.calcNotificationDate(datetime, int.parse(event.choice));
-      await not.singleNotification(
-          localNotificationsPlugin, datetime, event.title, event.desc, event.id);
+      await not.singleNotification(localNotificationsPlugin, datetime, event.title,
+          not.calcSingleNotificationBodyText(event.choice), event.id);
     }
   }
 
@@ -337,7 +334,7 @@ class DbHelper {
   }
 
   Future clearoldevent() async {
-    getEventList().then((value) {
+    await getEventList().then((value) {
       for (int i = 0; i < value.length; i++) {
         var targetTime = value[i].startTime == "null"
             ? DateTime.parse("${value[i].date}")

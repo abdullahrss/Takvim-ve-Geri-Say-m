@@ -190,7 +190,7 @@ TextStyle infoStyles() {
   return TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.bold,
-    color: Colors.white54,
+    color: Colors.black38,
   );
 }
 
@@ -198,6 +198,6 @@ TextStyle inputStyles() {
   return TextStyle(
     fontSize: 28,
     fontWeight: FontWeight.bold,
-    color: Colors.white54,
+    color: Colors.black38,
   );
 }

@@ -1,11 +1,21 @@
 import 'dart:async';
 import 'dart:io';
-
+import 'package:ajanda/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EmailSender extends StatefulWidget {
+
+  final attacs;
+  final isHtml;
+  final cctext;
+  final bbtext;
+  final recipienttext;
+  final subjecttext;
+  final bodytext;
+  const EmailSender({Key key, this.attacs, this.isHtml, this.cctext, this.bbtext, this.recipienttext, this.subjecttext, this.bodytext,}) : super(key: key);
+
   @override
   _EmailSender createState() => _EmailSender();
 }
@@ -14,65 +24,45 @@ class _EmailSender extends State<EmailSender> {
   List<String> attachments = [];
   bool isHTML = false;
 
-  final _ccController = TextEditingController(
-    text: '',
-  );
+  final _ccController = TextEditingController();
 
-  final _bbcController = TextEditingController(
-    text: '',
-  );
+  final _bbcController = TextEditingController();
 
-  final _recipientController = TextEditingController(
-    text: '',
-  );
+  final _recipientController = TextEditingController();
 
-  final _subjectController = TextEditingController(text: '');
+  final _subjectController = TextEditingController();
 
-  final _bodyController = TextEditingController(
-    text: '',
-  );
+  final _bodyController = TextEditingController();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  Future<void> send() async {
-    final Email email = Email(
-      body: _bodyController.text,
-      subject: _subjectController.text,
-      recipients: [_recipientController.text],
-      cc: [_ccController.text],
-      bcc: [_bbcController.text],
-      attachmentPaths: attachments,
-      isHTML: isHTML,
-    );
-
-    String platformResponse;
-
-    try {
-      await FlutterEmailSender.send(email);
-      platformResponse = 'Mail Gönderildi.';
-    } catch (error) {
-      platformResponse = error.toString();
+  @override
+  void initState(){
+    super.initState();
+    if(widget.recipienttext != null){
+      setState(() {
+        attachments = widget.attacs;
+        isHTML = widget.isHtml=="false"?false:true;
+        _ccController.text = widget.cctext;
+        _bbcController.text = widget.bbtext;
+        _recipientController.text = widget.recipienttext;
+        _subjectController.text = widget.subjecttext;
+        _bodyController.text = widget.bodytext;
+      });
     }
-
-    if (!mounted) return;
-
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(platformResponse),
-    ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gmail gönderme'),
+        title: Text('Mail gönderme'),
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(8.0),
           child: Column(
             mainAxisSize: MainAxisSize.max,
-            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Padding(
@@ -120,8 +110,7 @@ class _EmailSender extends State<EmailSender> {
                 child: TextField(
                   controller: _bodyController,
                   maxLines: 10,
-                  decoration: InputDecoration(
-                      labelText: 'Mail', border: OutlineInputBorder()),
+                  decoration: InputDecoration(labelText: 'Mail', border: OutlineInputBorder()),
                 ),
               ),
               CheckboxListTile(
@@ -134,28 +123,11 @@ class _EmailSender extends State<EmailSender> {
                 value: isHTML,
               ),
               ...attachments.map(
-                (item) => Text(
+                    (item) => Text(
                   item,
                   overflow: TextOverflow.fade,
                 ),
               ),
-//              Container(
-//                width: (MediaQuery.of(context).size.width / 3) - 30,
-//                decoration: BoxDecoration(
-//                    borderRadius: BorderRadius.circular(45.0),
-//                    color: Colors.blue),
-//                child: FlatButton(
-//                  child: Row(
-//                    children: <Widget>[
-//                      Icon(
-//                        Icons.save,
-//                      ),
-//                      Text(" Kaydet"),
-//                    ],
-//                  ),
-//                  onPressed: _picker,
-//                ),
-//              )
               Container(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -171,7 +143,10 @@ class _EmailSender extends State<EmailSender> {
                             Icons.image,
                             color: Colors.white,
                           ),
-                          Text("  Resim ekle",style: TextStyle(color: Colors.white),)
+                          Text(
+                            "  Resim ekle",
+                            style: TextStyle(color: Colors.white),
+                          )
                         ],
                       ),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
@@ -179,7 +154,7 @@ class _EmailSender extends State<EmailSender> {
                     ),
                     RaisedButton(
                       color: Colors.blue,
-                      onPressed: _picker,
+                      onPressed: save,
                       elevation: 18,
                       child: Row(
                         children: <Widget>[
@@ -187,7 +162,7 @@ class _EmailSender extends State<EmailSender> {
                             Icons.save,
                             color: Colors.white,
                           ),
-                          Text("  Kaydet",style: TextStyle(color: Colors.white)),
+                          Text("  Kaydet", style: TextStyle(color: Colors.white)),
                         ],
                       ),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
@@ -200,18 +175,49 @@ class _EmailSender extends State<EmailSender> {
           ),
         ),
       ),
-//      floatingActionButton: Padding(
-//        padding: const EdgeInsets.only(left: 25),
-//        child: Align(
-//          alignment: Alignment.bottomLeft,
-//          child: FloatingActionButton.extended(
-//            icon: Icon(Icons.camera),
-//            label: Text('Resim ekle'),
-//            onPressed: _picker,
-//          ),
-//        ),
-//      ),
     );
+  }
+  Future<void>  sendMail() async {
+    final Email email = Email(
+      body: _bodyController.text,
+      subject: _subjectController.text,
+      recipients: [_recipientController.text],
+      cc: [_ccController.text],
+      bcc: [_bbcController.text],
+      attachmentPaths: attachments,
+      isHTML: isHTML,
+    );
+
+    String platformResponse;
+
+    try {
+      await FlutterEmailSender.send(email);
+      platformResponse = 'Mail Gönderildi.';
+    } catch (error) {
+      platformResponse = error.toString();
+    }
+
+    if (!mounted) return;
+
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text(platformResponse),
+    ));
+  }
+  void save(){
+    if(_recipientController.text == "" ){
+      showWarningDialog(context,'Alıcı mail boş bırakılmaz!');
+    }else if(_subjectController.text == ""){
+      showWarningDialog(context,'Konu boş bırakılamaz!');
+    }else{
+      List<dynamic> sendBack = [];
+      sendBack.add(attachments);
+      sendBack.add(isHTML);
+      sendBack.add(_ccController.text);
+      sendBack.add(_bbcController.text);
+      sendBack.add(_recipientController.text);
+      sendBack.add(_subjectController.text);
+      sendBack.add(_bodyController.text);
+      Navigator.pop(context,sendBack);}
   }
 
   void _picker() async {
