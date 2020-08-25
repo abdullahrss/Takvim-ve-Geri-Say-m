@@ -3,11 +3,11 @@ import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io' show Directory;
-
 // Local importlar
 import '../events/notifications.dart';
 import '../helpers/constants.dart';
 import '../databasemodels/events.dart';
+import '../main.dart';
 
 class DbHelper {
   static DbHelper _databaseHelper; // Database'in tekil olmasi icin
@@ -194,7 +194,6 @@ class DbHelper {
     Database db = await this.database;
     var result = await db.rawQuery(
         "SELECT $_columnId,$_columnStartTime FROM $_tablename WHERE $_columnDate='$date'");
-    print(id);
     if (id != null) {
       if (result[0]["id"] == id) {
         return false;
@@ -281,12 +280,11 @@ class DbHelper {
     return true;
   }
 
-  Future<void> createNotifications() async {
+  Future<void> createNotifications({Function function}) async {
     Database db = await this.database;
-    FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    var not = Notifications(localNotificationsPlugin);
+    var not = Notifications(flutterLocalNotificationsPlugin);
     var events = await db.rawQuery(
-        "SELECT * FROM $_tablename WHERE $_columnNotification!='0'"); // WHERE $_ColumnNotification!='0'
+        "SELECT * FROM $_tablename WHERE $_columnNotification!='0'");
     List<Event> eventList = List<Event>();
 
     for (var i = 0; i < events.length; i++) {
@@ -300,13 +298,20 @@ class DbHelper {
           ? DateTime.parse("${event.date} ${event.startTime}")
           : DateTime.parse(event.date);
       if (DateTime.now().compareTo(datetime) == 1) {
-        print("[dataBaseHelper] Out of time event title : ${event.title}");
-        localNotificationsPlugin.cancel(event.id);
+        print("[dataBaseHelper] [openNotificationBar] Out of time event title : ${event.title}");
+        flutterLocalNotificationsPlugin.cancel(event.id);
         continue;
       }
       datetime = not.calcNotificationDate(datetime, int.parse(event.choice));
-      await not.singleNotification(localNotificationsPlugin, datetime, event.title,
-          not.calcSingleNotificationBodyText(event.choice), event.id);
+      if (event.recipient != "" || event.recipient != null) {
+        print("[DATABASEHELPER] [openNotificationBar] anormal notification : ${event.title}");
+        await not.singleNotificationWithMail(flutterLocalNotificationsPlugin, datetime, "Example title",
+            "Example body", event.id);
+      } else {
+        print("[DATABASEHELPER] [openNotificationBar] normal notification : ${event.title}");
+        await not.singleNotification(flutterLocalNotificationsPlugin, datetime, event.title,
+            not.calcSingleNotificationBodyText(event.choice), event.id);
+      }
     }
   }
 
@@ -314,7 +319,7 @@ class DbHelper {
   Future<dynamic> query(String query) async {
     Database db = await this.database;
     var result = await db.rawQuery(query);
-    print(result);
+    print("[DATABASEHELPER] [query] result :$result");
     return result;
   }
 

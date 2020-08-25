@@ -71,7 +71,6 @@ class _AddEventState extends State<AddEvent> {
   @override
   void initState() {
     super.initState();
-    // _advert.closeBannerAd();
     setState(() {
       widget.date != null ? _selectedDate = widget.date : print("[ADDEVENT] widget.date null");
     });
@@ -79,7 +78,7 @@ class _AddEventState extends State<AddEvent> {
 
   @override
   void dispose() {
-    // _advert.showBannerAd();
+    // selectNotificationSubject.close();
     _titlecontroller.dispose();
     _descriptioncontroller.dispose();
     super.dispose();
@@ -238,9 +237,11 @@ class _AddEventState extends State<AddEvent> {
                     Container(
                       child: IconButton(
                         icon: Icon(Icons.mail),
-                        onPressed: () async{
-                          await Navigator.push(context, MaterialPageRoute(builder: (context) => EmailSender())).then((value) {
-                            if(value!=null){
+                        onPressed: () async {
+                          await Navigator.push(
+                                  context, MaterialPageRoute(builder: (context) => EmailSender()))
+                              .then((value) {
+                            if (value != null) {
                               setState(() {
                                 _attachments = value[0];
                                 _isHTML = value[1];
@@ -283,7 +284,7 @@ class _AddEventState extends State<AddEvent> {
                   child: Column(
                     children: <Widget>[
                       InkWell(
-                        onTap: (){
+                        onTap: () {
                           setState(() {
                             _isfullday = !_isfullday;
                           });
@@ -307,7 +308,7 @@ class _AddEventState extends State<AddEvent> {
                       ),
                       // Geri sayim aktiflestirmesi
                       InkWell(
-                        onTap: (){
+                        onTap: () {
                           setState(() {
                             _iscountdownchecked = !_iscountdownchecked;
                           });
@@ -338,7 +339,7 @@ class _AddEventState extends State<AddEvent> {
                   )),
               // Sabit bildirim
               InkWell(
-                onTap: (){
+                onTap: () {
                   setState(() {
                     _switchValue = !_switchValue;
                   });
@@ -367,7 +368,8 @@ class _AddEventState extends State<AddEvent> {
                       IconButton(
                           icon: Icon(Icons.info),
                           onPressed: () {
-                            showWarningDialog(context, "Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!");
+                            showWarningDialog(context,
+                                "Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!");
                           })
                     ],
                   ),
@@ -430,6 +432,7 @@ class _AddEventState extends State<AddEvent> {
     _isfullday = false;
   }
 
+
   void validateandsave() async {
     final FormState state = _formKey.currentState;
 
@@ -462,11 +465,10 @@ class _AddEventState extends State<AddEvent> {
       }
     });
     String imagePaths = "";
-    for(int i=0;i<_attachments.length;i++){
+    for (int i = 0; i < _attachments.length; i++) {
       imagePaths += "${_attachments[i]}-";
     }
     if (state.validate() && _iscorrect && (!_duplicite) && _timeisok) {
-      print("rec : $_recipient");
       var newEvent = (_isfullday)
           ? Event(
               title: _titlecontroller.text,
@@ -501,8 +503,8 @@ class _AddEventState extends State<AddEvent> {
               body: _body,
             );
 
-      _db.insertEvent(newEvent);
-      _db.createNotifications();
+      await _db.insertEvent(newEvent);
+      await _db.createNotifications();
       _advert.showIntersitial();
       Navigator.of(context).pop();
       Navigator.of(context).pop();

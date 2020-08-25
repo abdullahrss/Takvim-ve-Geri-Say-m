@@ -1,4 +1,6 @@
+import 'package:ajanda/events/notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../databasehelper/dataBaseHelper.dart';
 import '../databasemodels/events.dart';
 import '../pages/mainmenu.dart';
@@ -60,6 +62,9 @@ class _DropDownState extends State<DropDown> {
                             event: event,
                           )));
             } else if (newValue == 'Sil') {
+              FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
+              Notifications not = Notifications(localNotificationsPlugin);
+              not.cancelNotification(not.localNotificationsPlugin, widget.event.id);
               _db.deleteEvent(widget.event.id);
               Navigator.of(context).pop();
               Navigator.push(context, MaterialPageRoute(builder: (context) => MainMenu()));

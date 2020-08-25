@@ -6,7 +6,6 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EmailSender extends StatefulWidget {
-
   final attacs;
   final isHtml;
   final cctext;
@@ -14,7 +13,17 @@ class EmailSender extends StatefulWidget {
   final recipienttext;
   final subjecttext;
   final bodytext;
-  const EmailSender({Key key, this.attacs, this.isHtml, this.cctext, this.bbtext, this.recipienttext, this.subjecttext, this.bodytext,}) : super(key: key);
+
+  EmailSender({
+    Key key,
+    this.attacs,
+    this.isHtml,
+    this.cctext,
+    this.bbtext,
+    this.recipienttext,
+    this.subjecttext,
+    this.bodytext,
+  }) : super(key: key);
 
   @override
   _EmailSender createState() => _EmailSender();
@@ -37,12 +46,12 @@ class _EmailSender extends State<EmailSender> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    if(widget.recipienttext != null){
+    if (widget.recipienttext != null) {
       setState(() {
         attachments = widget.attacs;
-        isHTML = widget.isHtml=="false"?false:true;
+        isHTML = widget.isHtml == "false" ? false : true;
         _ccController.text = widget.cctext;
         _bbcController.text = widget.bbtext;
         _recipientController.text = widget.recipienttext;
@@ -123,7 +132,7 @@ class _EmailSender extends State<EmailSender> {
                 value: isHTML,
               ),
               ...attachments.map(
-                    (item) => Text(
+                (item) => Text(
                   item,
                   overflow: TextOverflow.fade,
                 ),
@@ -177,7 +186,8 @@ class _EmailSender extends State<EmailSender> {
       ),
     );
   }
-  Future<void>  sendMail() async {
+  // ----------------------------------gereksiz-----------------------------
+  Future<void> send() async {
     final Email email = Email(
       body: _bodyController.text,
       subject: _subjectController.text,
@@ -203,12 +213,13 @@ class _EmailSender extends State<EmailSender> {
       content: Text(platformResponse),
     ));
   }
-  void save(){
-    if(_recipientController.text == "" ){
-      showWarningDialog(context,'Alıcı mail boş bırakılmaz!');
-    }else if(_subjectController.text == ""){
-      showWarningDialog(context,'Konu boş bırakılamaz!');
-    }else{
+  //----------------------------------------------------------------------
+  void save() {
+    if (_recipientController.text == "") {
+      showWarningDialog(context, 'Alıcı mail boş bırakılmaz!');
+    } else if (_subjectController.text == "") {
+      showWarningDialog(context, 'Konu boş bırakılamaz!');
+    } else {
       List<dynamic> sendBack = [];
       sendBack.add(attachments);
       sendBack.add(isHTML);
@@ -217,11 +228,14 @@ class _EmailSender extends State<EmailSender> {
       sendBack.add(_recipientController.text);
       sendBack.add(_subjectController.text);
       sendBack.add(_bodyController.text);
-      Navigator.pop(context,sendBack);}
+      Navigator.pop(context, sendBack);
+    }
   }
 
   void _picker() async {
+    ImagePicker imagePicker = ImagePicker();
     final File pick = await ImagePicker.pickImage(source: ImageSource.gallery);
+    // final PickedFile pick = await imagePicker.getImage(source: ImageSource.gallery);
     setState(() {
       attachments.add(pick.path);
     });

@@ -37,8 +37,8 @@ class _CalanderEventstate extends State<CalanderEvent> {
                 size: 30,
               ),
               onPressed: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => AddEvent(inputDate:widget.tarih)));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AddEvent(inputDate: widget.tarih)));
               })
         ],
         leading: IconButton(

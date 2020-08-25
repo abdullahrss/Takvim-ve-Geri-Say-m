@@ -1,10 +1,5 @@
-import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:ajanda/helpers/helperFunctions.dart';
-import 'package:ajanda/pages/detailsPage.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../databasehelper/dataBaseHelper.dart';
-import './mailSender.dart';
 
 class Notifications {
   final FlutterLocalNotificationsPlugin localNotificationsPlugin;
@@ -84,28 +79,15 @@ class Notifications {
     );
     var iosChannel = IOSNotificationDetails();
     var platformChannel = NotificationDetails(androidChannel, iosChannel);
-    var initalizeAndroid = AndroidInitializationSettings("app_icon");
-    var initalizeIOS = IOSInitializationSettings();
-    var initSettings = InitializationSettings(initalizeAndroid, initalizeIOS);
-    await localNotificationsPlugin.initialize(initSettings,
-        onSelectNotification: onSelectNotification);
-  }
-
-  Future onSelectNotification(String payload) async {
-    if (payload != null) {
-      debugPrint('[Notifications] Notification payload: ' + payload);
-    }
-    var event = await _db.getEventById(int.parse(payload));
-    EmailSender sender = EmailSender(
-      attacs: stringPathsToList(event.attachments),
-      isHtml: event.isHTML,
-      cctext: event.cc,
-      bbtext: event.bb,
-      recipienttext: event.recipient,
-      subjecttext: event.subject,
-      bodytext: event.body,
+    print("[NOTIFICATIONS] [onSelectNotification] creating notification ");
+    await localNotificationsPlugin.schedule(
+      id,
+      message,
+      subtext,
+      datetime,
+      platformChannel,
+      payload: id.toString(),
     );
-
   }
 
   Future cancelNotification(FlutterLocalNotificationsPlugin plugin, int eventId) async {

@@ -1,4 +1,3 @@
-import 'package:ajanda/pages/mainmenu.dart';
 import 'package:flutter/material.dart';
 
 Future<void> showMyDialog(context, {String title, String message, Function function}) async {

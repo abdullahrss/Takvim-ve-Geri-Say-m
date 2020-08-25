@@ -1,8 +1,5 @@
-import 'dart:io';
 import 'package:ajanda/helpers/helperFunctions.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-
 // local imports
 import '../pages/mainmenu.dart';
 import '../databasehelper/dataBaseHelper.dart';
@@ -222,7 +219,6 @@ class _AddEventState extends State<EventEdit> {
                     ),
                     // Notification ayarlari
                     Container(
-                      // padding: EdgeInsets.only(right: 40.0),
                       child: IconButton(
                         icon: Icon(Icons.notifications_active),
                         onPressed: () async {
@@ -238,7 +234,6 @@ class _AddEventState extends State<EventEdit> {
                       child: IconButton(
                         icon: Icon(Icons.mail),
                         onPressed: () async {
-                          print("eventeditng rec: ${widget.event.recipient}");
                           await Navigator.push(
                               context,
                               MaterialPageRoute(

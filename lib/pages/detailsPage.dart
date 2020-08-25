@@ -18,7 +18,6 @@ class _DetailsState extends State<Details> {
   @override
   void initState() {
     super.initState();
-    print("detailspage rec : ${widget.event.recipient}");
     _advert.closeBannerAd();
   }
 

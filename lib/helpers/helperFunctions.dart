@@ -11,7 +11,8 @@ String calcRemaining(String date, String startTime) {
   }
   return result;
 }
-List<String> stringPathsToList(String attachmentsStr){
+
+List<String> stringPathsToList(String attachmentsStr) {
   var result = attachmentsStr.split("-");
   result.removeLast();
   return result;

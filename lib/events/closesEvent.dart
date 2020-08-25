@@ -20,11 +20,6 @@ class _Closesevents extends State<Soclose> {
   @override
   void initState() {
     super.initState();
-    _db.getEventsByOrder(widget.index).then((value) {
-      for (var i in value) {
-        print(i.title);
-      }
-    });
   }
 
   @override
@@ -104,8 +99,8 @@ class _Closesevents extends State<Soclose> {
                                       height: 100,
                                       width: 100,
                                       decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(8.0),
-                                          color: Colors.blue,
+                                        borderRadius: BorderRadius.circular(8.0),
+                                        color: Colors.blue,
                                       ),
                                       child: Text(
                                         calcRemaining(snapshot.data[index].date,
