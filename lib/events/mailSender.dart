@@ -62,6 +62,13 @@ class _EmailSender extends State<EmailSender> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Mail gönderme'),
+        actions: <Widget>[
+         IconButton(
+              icon: Icon(Icons.info),
+              onPressed: () {
+                showWarningDialog(context, "Eğer birden fazla alıcı, cc veya bbc değeri girecekseniz her mail arasına virgül koymalısınız.\n\n(örnek: ornek@gmail.com , ornek2@gmail.com)");
+              })
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
