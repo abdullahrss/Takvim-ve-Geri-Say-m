@@ -1,3 +1,5 @@
+import 'package:ajanda/databasemodels/events.dart';
+
 String calcRemaining(String date, String startTime) {
   var result;
   if (startTime == "null") {
@@ -16,4 +18,32 @@ List<String> stringPathsToList(String attachmentsStr) {
   var result = attachmentsStr.split("-");
   result.removeLast();
   return result;
+}
+
+// once ise 1 sonra ise 0
+int sortByDate(Event e1, Event e2) {
+  DateTime d1 = e1.startTime != "null"
+      ? DateTime.parse("${e1.date} ${e1.startTime}")
+      : DateTime.parse(e1.date);
+  DateTime d2 = e2.startTime != "null"
+      ? DateTime.parse("${e2.date} ${e2.startTime}")
+      : DateTime.parse(e2.date);
+
+  /// Once olma durumu
+  if (d1.isBefore(d2))
+    return 1;
+
+  /// Sonra olma durumu
+  else if (d1.isAfter(d2)) return 0;
+  /// Esit olma durumu
+  return 1;
+}
+
+void printEvent(Event e) {
+  print("title : ${e.title} type : ${e.title.runtimeType}"
+      "recipient : ${e.recipient} type : ${e.recipient.runtimeType}"
+      "cc : ${e.cc} type : ${e.cc.runtimeType}"
+      "bb : ${e.bb} type : ${e.bb.runtimeType}"
+      "subject : ${e.subject.runtimeType} type : ${e.subject.runtimeType}"
+      "attachments : ${e.attachments} type : ${e.attachments.runtimeType}");
 }

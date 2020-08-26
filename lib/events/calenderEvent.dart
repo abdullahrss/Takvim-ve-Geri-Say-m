@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../events/addevent.dart';
+
 import '../Widgets/dropdown.dart';
 import '../databasehelper/dataBaseHelper.dart';
 import '../databasemodels/events.dart';
+import '../events/addevent.dart';
 import '../helpers/helperFunctions.dart';
 
 class CalanderEvent extends StatefulWidget {
@@ -108,7 +109,6 @@ class _CalanderEventstate extends State<CalanderEvent> {
                                         choice: snapshot.data[index].choice,
                                         countDownIsActive: snapshot.data[index].countDownIsActive,
                                         attachments: snapshot.data[index].attachments,
-                                        isHTML: snapshot.data[index].isHTML,
                                         cc: snapshot.data[index].cc,
                                         bb: snapshot.data[index].bb,
                                         recipient: snapshot.data[index].recipient,

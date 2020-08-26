@@ -14,7 +14,6 @@ class Event {
   int _countDownIsActive;
   // mail icin gerekli bilgiler
   String _attachments;
-  String _isHTML;
   String _cc;
   String _bb;
   String _recipient;
@@ -32,7 +31,6 @@ class Event {
       String choice,
       int countDownIsActive,
       String attachments,
-      String isHTML,
       String cc,
       String bb,
       String recipient,
@@ -48,7 +46,6 @@ class Event {
     this._choice = choice;
     this._countDownIsActive = countDownIsActive;
     this._attachments = attachments;
-    this._isHTML = isHTML;
     this._cc = cc;
     this._bb = bb;
     this._recipient = recipient;
@@ -75,8 +72,6 @@ class Event {
   int get countDownIsActive => _countDownIsActive;
 
   String get attachments => _attachments;
-
-  String get isHTML => _isHTML;
 
   String get cc => _cc;
 
@@ -128,9 +123,6 @@ class Event {
     _attachments = attachments;
   }
 
-  set isHTML(String isHTML) {
-    _isHTML = isHTML;
-  }
 
   set cc(String ccController) {
     _cc = ccController;
@@ -168,7 +160,6 @@ class Event {
     map[EventConstants.COLUMN_NOTIFICATION] = _choice;
     map[EventConstants.COLUMN_COUNTDOWNISACTIVE] = _countDownIsActive;
     map[EventConstants.COLUMN_ATTACHMENTS] = _attachments;
-    map[EventConstants.COLUMN_ISHTML] = _isHTML;
     map[EventConstants.COLUMN_CC] = _cc;
     map[EventConstants.COLUMN_BB] = _bb;
     map[EventConstants.COLUMN_RECIPIENT] = _recipient;
@@ -189,7 +180,6 @@ class Event {
     this._choice = input[EventConstants.COLUMN_NOTIFICATION];
     this._countDownIsActive = input[EventConstants.COLUMN_COUNTDOWNISACTIVE];
     this._attachments = input[EventConstants.COLUMN_ATTACHMENTS];
-    this._isHTML = input[EventConstants.COLUMN_ISHTML];
     this._cc = input[EventConstants.COLUMN_CC];
     this._bb = input[EventConstants.COLUMN_BB];
     this._recipient = input[EventConstants.COLUMN_RECIPIENT];

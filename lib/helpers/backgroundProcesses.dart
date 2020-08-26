@@ -1,4 +1,5 @@
 import 'package:workmanager/workmanager.dart';
+
 import '../databasehelper/dataBaseHelper.dart';
 // Arka planda calisacak task
 void callbackDispatcher() {
@@ -15,14 +16,14 @@ class BackGroundProcesses{
   factory BackGroundProcesses() => _backGroundProcesses;
 
   BackGroundProcesses._initializeTasks(){
-    // Eskiyen tasklar varsa diye tüm tasklar iptal ediliyor
+    /// Eskiyen tasklar varsa diye tüm tasklar iptal ediliyor
     Workmanager.cancelAll();
-    // Yeni tasklar ve suregelen tasklar tekrardan ekleniyor
-    // Arka planda calisacak fonksiyon initialize ediliyor
+    /// Yeni tasklar ve suregelen tasklar tekrardan ekleniyor
+    /// Arka planda calisacak fonksiyon initialize ediliyor
     Workmanager.initialize(
       callbackDispatcher,
     );
-    // 15 dakikada bir periyodik olarak cagirilmasi icin ekleniyor
+    /// 15 dakikada bir periyodik olarak cagirilmasi icin ekleniyor
     Workmanager.registerPeriodicTask(
       "1", // id
       "bgnotification", // task name
@@ -32,12 +33,12 @@ class BackGroundProcesses{
   }
   void startBgServicesManually(){
     Workmanager.cancelAll();
-    // Yeni tasklar ve suregelen tasklar tekrardan ekleniyor
-    // Arka planda calisacak fonksiyon initialize ediliyor
+    /// Yeni tasklar ve suregelen tasklar tekrardan ekleniyor
+    /// Arka planda calisacak fonksiyon initialize ediliyor
     Workmanager.initialize(
       callbackDispatcher,
     );
-    // 15 dakikada bir periyodik olarak cagirilmasi icin ekleniyor
+    /// 15 dakikada bir periyodik olarak cagirilmasi icin ekleniyor
     Workmanager.registerPeriodicTask(
       "1", // id
       "bgnotification", // task name

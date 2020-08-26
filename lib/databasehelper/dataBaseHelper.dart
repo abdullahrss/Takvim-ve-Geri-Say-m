@@ -1,12 +1,14 @@
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:sqflite/sqflite.dart';
 import 'dart:async';
-import 'package:path_provider/path_provider.dart';
 import 'dart:io' show Directory;
-// Local importlar
+
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
+
+import '../helpers/helperFunctions.dart';
+import '../databasemodels/events.dart';
 import '../events/notifications.dart';
 import '../helpers/constants.dart';
-import '../databasemodels/events.dart';
 import '../main.dart';
 
 class DbHelper {
@@ -24,7 +26,6 @@ class DbHelper {
   static final String _columnNotification = EventConstants.COLUMN_NOTIFICATION;
   static final String _columnCountdownIsActive = EventConstants.COLUMN_COUNTDOWNISACTIVE;
   static final String _columnAttachments = EventConstants.COLUMN_ATTACHMENTS;
-  static final String _columnIsHtml = EventConstants.COLUMN_ISHTML;
   static final String _columnCc = EventConstants.COLUMN_CC;
   static final String _columnBb = EventConstants.COLUMN_BB;
   static final String _columnRecipient = EventConstants.COLUMN_RECIPIENT;
@@ -58,7 +59,7 @@ class DbHelper {
 
   static void _createDb(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $_tablename ( $_columnId INTEGER PRIMARY KEY NOT NULL,$_columnTitle TEXT ,$_columnDate TEXT,$_columnStartTime TEXT,$_columnFinishTime TEXT,$_columnDesc TEXT,$_columnIsActive INTEGER, $_columnNotification TEXT, $_columnCountdownIsActive INTEGER, $_columnAttachments TEXT,$_columnIsHtml TEXT,$_columnCc TEXT, $_columnBb TEXT, $_columnRecipient TEXT, $_columnSubject TEXT, $_columnBody TEXT);');
+        'CREATE TABLE $_tablename ( $_columnId INTEGER PRIMARY KEY NOT NULL,$_columnTitle TEXT ,$_columnDate TEXT,$_columnStartTime TEXT,$_columnFinishTime TEXT,$_columnDesc TEXT,$_columnIsActive INTEGER, $_columnNotification TEXT, $_columnCountdownIsActive INTEGER, $_columnAttachments TEXT,$_columnCc TEXT, $_columnBb TEXT, $_columnRecipient TEXT, $_columnSubject TEXT, $_columnBody TEXT);');
   }
 
   // Databaseden tüm eventleri alma
@@ -158,13 +159,13 @@ class DbHelper {
       case 2:
         {
           // Yakin tarihlerin basta oldugu siralama
-          eventList.sort((a, b) => DateTime.parse(a.date).compareTo(DateTime.parse(b.date)));
+          eventList.sort((a, b) => sortByDate(a,b));
         }
         break;
       case 3:
         {
           // Uzak tarihlerin basta oldugu siralama
-          eventList.sort((a, b) => DateTime.parse(a.date).compareTo(DateTime.parse(b.date)));
+          eventList.sort((a, b) => sortByDate(a,b));
           eventList = eventList.reversed.toList();
         }
         break;
@@ -220,7 +221,6 @@ class DbHelper {
   }
 
   Future<List<Event>> getEventsForCalender(String date) async {
-    // soruguyu guncelle
     var eventList = await getEventList();
     int count = eventList.length;
 
@@ -235,7 +235,6 @@ class DbHelper {
   }
 
   Future<List<Event>> getEventCalander(String date) async {
-    // ????
     var eventList = await getEventList();
     int count = eventList.length;
 
@@ -305,8 +304,8 @@ class DbHelper {
       datetime = not.calcNotificationDate(datetime, int.parse(event.choice));
       if (event.recipient != "" || event.recipient != null) {
         print("[DATABASEHELPER] [openNotificationBar] anormal notification : ${event.title}");
-        await not.singleNotificationWithMail(flutterLocalNotificationsPlugin, datetime, "Example title",
-            "Example body", event.id);
+        await not.singleNotificationWithMail(flutterLocalNotificationsPlugin, datetime, event.title,
+            "Yollayacağınız e-mail'in vakti geldi.", event.id);
       } else {
         print("[DATABASEHELPER] [openNotificationBar] normal notification : ${event.title}");
         await not.singleNotification(flutterLocalNotificationsPlugin, datetime, event.title,

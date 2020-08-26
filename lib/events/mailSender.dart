@@ -1,11 +1,11 @@
 import 'dart:io';
+
 import 'package:ajanda/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EmailSender extends StatefulWidget {
-  final attacs;
-  final isHtml;
+  final List<String> attacs;
   final cctext;
   final bbtext;
   final recipienttext;
@@ -15,7 +15,6 @@ class EmailSender extends StatefulWidget {
   EmailSender({
     Key key,
     this.attacs,
-    this.isHtml,
     this.cctext,
     this.bbtext,
     this.recipienttext,
@@ -29,7 +28,6 @@ class EmailSender extends StatefulWidget {
 
 class _EmailSender extends State<EmailSender> {
   List<String> attachments = [];
-  bool isHTML = false;
 
   final _ccController = TextEditingController();
 
@@ -47,7 +45,6 @@ class _EmailSender extends State<EmailSender> {
     if (widget.recipienttext != null) {
       setState(() {
         attachments = widget.attacs;
-        isHTML = widget.isHtml == "false" ? false : true;
         _ccController.text = widget.cctext;
         _bbcController.text = widget.bbtext;
         _recipientController.text = widget.recipienttext;
@@ -63,10 +60,12 @@ class _EmailSender extends State<EmailSender> {
       appBar: AppBar(
         title: Text('Mail gönderme'),
         actions: <Widget>[
-         IconButton(
-              icon: Icon(Icons.info),
+          IconButton(
+              icon: Icon(Icons.help,size: 36,),
               onPressed: () {
-                showWarningDialog(context, "Eğer birden fazla alıcı, cc veya bbc değeri girecekseniz her mail arasına virgül koymalısınız.\n\n(örnek: ornek@gmail.com , ornek2@gmail.com)");
+                showWarningDialog(
+                    context: context,
+                    explanation: "Eğer birden fazla alıcı, cc veya bbc değeri girecekseniz her mail arasına virgül koymalısınız.\n\n(örnek: ornek@gmail.com , ornek2@gmail.com)");
               })
         ],
       ),
@@ -83,7 +82,7 @@ class _EmailSender extends State<EmailSender> {
                   controller: _recipientController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Alıcı adresi',
+                    labelText: 'Alıcı adresi ',
                   ),
                 ),
               ),
@@ -124,15 +123,6 @@ class _EmailSender extends State<EmailSender> {
                   maxLines: 10,
                   decoration: InputDecoration(labelText: 'Mail', border: OutlineInputBorder()),
                 ),
-              ),
-              CheckboxListTile(
-                title: Text('HTML'),
-                onChanged: (bool value) {
-                  setState(() {
-                    isHTML = value;
-                  });
-                },
-                value: isHTML,
               ),
               ...attachments.map(
                 (item) => Text(
@@ -192,13 +182,12 @@ class _EmailSender extends State<EmailSender> {
 
   void save() {
     if (_recipientController.text == "") {
-      showWarningDialog(context, 'Alıcı mail boş bırakılmaz!');
+      showWarningDialog(context: context, explanation: 'Alıcı mail boş bırakılmaz!');
     } else if (_subjectController.text == "") {
-      showWarningDialog(context, 'Konu boş bırakılamaz!');
+      showWarningDialog(context: context, explanation: 'Konu boş bırakılamaz!');
     } else {
       List<dynamic> sendBack = [];
       sendBack.add(attachments);
-      sendBack.add(isHTML);
       sendBack.add(_ccController.text);
       sendBack.add(_bbcController.text);
       sendBack.add(_recipientController.text);

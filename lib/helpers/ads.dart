@@ -3,13 +3,13 @@ import 'package:firebase_admob/firebase_admob.dart';
 const String testDevice = 'Mobile_id';
 
 class Advert {
-  // Tekil ornek olusturulmasi icin
+  /// Tekil ornek olusturulmasi icin
   static final Advert _instance = Advert._internal();
 
-  // Obje olucturuldugunda _instace objeside olusturuluyor
+  /// Obje olucturuldugunda _instace objeside olusturuluyor
   factory Advert() => _instance;
 
-  // Ad icin gerekli target infosu
+  /// Ad icin gerekli target infosu
   MobileAdTargetingInfo _targetingInfo = MobileAdTargetingInfo();
 
   // Banned reklam id
@@ -25,9 +25,9 @@ class Advert {
         keywords: <String>["Takvim", "Ajanda"]);
   }
 
-  // Banner reklam objesi
+  /// Banner reklam objesi
   static BannerAd _bannerAd;
-  // Banner reklam olusturma fonksiyonu
+  /// Banner reklam olusturma fonksiyonu
   BannerAd createBannerAd() {
     return BannerAd(
         adUnitId: _bannerId,
@@ -38,7 +38,7 @@ class Advert {
         });
   }
 
-  // Banner reklamini gosteren fonksiyon
+  /// Banner reklamini gosteren fonksiyon
   showBannerAd() async {
     // _bannerAd objesine reklam bilgileri veriliyor
     _bannerAd = createBannerAd();
@@ -48,7 +48,7 @@ class Advert {
       ..show(anchorOffset: 80);
   }
 
-  // Banner reklamini kapatan fonksiyon
+  /// Banner reklamini kapatan fonksiyon
   closeBannerAd() async {
     // Banner'in yuklu olup olmadigini kontrol etmek icin gerekli degisken
     if(_bannerAd!=null){ //
@@ -60,7 +60,7 @@ class Advert {
     }
   }
 
-  // Intersitial olusturup gosteren ve kullanilan kaynaklari bosa cikaran fonksiyon
+  /// Intersitial olusturup gosteren ve kullanilan kaynaklari bosa cikaran fonksiyon
   void showIntersitial() {
     InterstitialAd interstitialAd = InterstitialAd(
         adUnitId: _interId, // BannerAd.testAdUnitId

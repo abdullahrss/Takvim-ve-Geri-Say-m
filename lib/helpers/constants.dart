@@ -10,7 +10,6 @@ class EventConstants{
   static const String COLUMN_NOTIFICATION = "notifications";
   static const String COLUMN_COUNTDOWNISACTIVE = "countdown";
   static const String COLUMN_ATTACHMENTS = "attachments";
-  static const String COLUMN_ISHTML = "isHTML";
   static const String COLUMN_CC = "cc";
   static const String COLUMN_BB = "bb";
   static const String COLUMN_RECIPIENT = "recipient";

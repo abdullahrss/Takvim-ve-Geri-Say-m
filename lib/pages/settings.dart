@@ -1,9 +1,10 @@
 import 'package:ajanda/databasemodels/settingsModel.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
+
+import '../databasehelper/dataBaseHelper.dart';
 import '../databasehelper/settingsHelper.dart';
 import '../widgets/showDialog.dart';
-import '../databasehelper/dataBaseHelper.dart';
 import 'mainmenu.dart';
 
 class Settings extends StatefulWidget {
@@ -12,10 +13,10 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  // Tema icin gerekli switch valuesi
+  /// Tema icin gerekli switch valuesi
   bool _switchValue = false;
 
-  // Dropdownmenu icin gerekli item degeri
+  /// Dropdownmenu icin gerekli item degeri
   String _dropDownValue = "Bangers";
   List<String> _fontNamesList = [
     "Bangers",
@@ -69,7 +70,8 @@ class _SettingsState extends State<Settings> {
                     setState(() {
                       _switchValue = val;
                     });
-                    // theme'i update etme
+
+                    /// theme'i update etme
                     var sett = Setting();
                     sett.theme = _switchValue ? 'dark' : 'light';
                     _sdb.updateTheme(sett);

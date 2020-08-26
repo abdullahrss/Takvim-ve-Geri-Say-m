@@ -1,15 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-// Local importlar
 import '../databasehelper/dataBaseHelper.dart';
 import '../databasemodels/events.dart';
+import '../events/mailSender.dart';
+import '../helpers/ads.dart';
 import '../helpers/validateEmpty.dart';
 import '../pages/mainmenu.dart';
 import '../widgets/notificationtimepicker.dart';
-import '../helpers/ads.dart';
 import '../widgets/showDialog.dart';
-import '../events/mailSender.dart';
 
 class AddEvent extends StatefulWidget {
   var date;
@@ -30,10 +29,9 @@ class _AddEventState extends State<AddEvent> {
   var _db = DbHelper();
 
   String _selectedDate = DateTime.now().toString().split(" ")[0];
-  String _selectedStartHour =
-      DateTime.now().toString().split(" ")[1].split(":")[0] +
-          ":" +
-          DateTime.now().toString().split(" ")[1].split(":")[1];
+  String _selectedStartHour = DateTime.now().toString().split(" ")[1].split(":")[0] +
+      ":" +
+      DateTime.now().toString().split(" ")[1].split(":")[1];
   String _selectedFinishHour = DateTime.now()
           .add(Duration(
             hours: 1,
@@ -42,11 +40,7 @@ class _AddEventState extends State<AddEvent> {
           .split(" ")[1]
           .split(":")[0] +
       ":" +
-      DateTime.now()
-          .add(Duration(hours: 1))
-          .toString()
-          .split(" ")[1]
-          .split(":")[1];
+      DateTime.now().add(Duration(hours: 1)).toString().split(" ")[1].split(":")[1];
   String errmsg = "";
 
   bool _iscorrect = true;
@@ -62,7 +56,6 @@ class _AddEventState extends State<AddEvent> {
   final _descriptioncontroller = TextEditingController();
 
   List<String> _attachments = [];
-  bool _isHTML = false;
 
   var _cc = "";
 
@@ -74,109 +67,20 @@ class _AddEventState extends State<AddEvent> {
 
   var _body = "";
 
+
   @override
   void initState() {
     super.initState();
     setState(() {
-      widget.date != null
-          ? _selectedDate = widget.date
-          : print("[ADDEVENT] widget.date null");
+      widget.date != null ? _selectedDate = widget.date : print("[ADDEVENT] widget.date null");
     });
   }
 
   @override
   void dispose() {
-    // selectNotificationSubject.close();
     _titlecontroller.dispose();
     _descriptioncontroller.dispose();
     super.dispose();
-  }
-
-  Future<void> showfuckingdialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Dikkat!'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(Icons.add_circle),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Ekleyeceğiniz etklinlik için tarih ve saati ayarlamanıza yardımcı olur.",
-                          style: TextStyle(
-                            fontSize: 18,
-                          ),
-                          textAlign: TextAlign.left,
-                          maxLines: 3,
-                        ),
-                      ),
-                    ),
-                      ],
-                    ),
-                Row(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(Icons.notifications_active),
-                    ),
-                    Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "Etkinliğiniz için size hatırlatma bildirimi hazırlar.",
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                            textAlign: TextAlign.left,
-                            maxLines: 3,
-                          ),
-                        )),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(Icons.mail),
-                    ),
-                    Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                              "Etklinliğiniz için bildirim ayarlasanız sizin için göndereceğiniz maili Gmail'e gönderir",
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                            textAlign: TextAlign.left,
-                            maxLines: 4,
-                          ),
-                        )),
-                  ],
-                )
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Tamam'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -186,11 +90,9 @@ class _AddEventState extends State<AddEvent> {
         title: Text("Yeni Etkinlik Ekle"),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.info_outline),iconSize: 35,
-            onPressed: () {
-              showfuckingdialog();
-            },
-          )
+            icon: Icon(Icons.help,size: 36,),
+            onPressed: () => showButtonAboutDialog(context),
+          ),
         ],
       ),
       body: Form(
@@ -208,9 +110,7 @@ class _AddEventState extends State<AddEvent> {
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
-                      return value.isEmpty
-                          ? "Etkinlik ismi boş bırakılamaz"
-                          : null;
+                      return value.isEmpty ? "Etkinlik ismi boş bırakılamaz" : null;
                     },
                   )),
               Container(
@@ -270,36 +170,32 @@ class _AddEventState extends State<AddEvent> {
                         if (_isfullday != true) {
                           showTimePicker(
                             context: context,
-                            initialTime: TimeOfDay(
-                                hour: DateTime.now().hour,
-                                minute: DateTime.now().minute),
+                            initialTime:
+                                TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
                           ).then((value) {
                             setState(() {
-                              _selectedFinishHour =
-                                  ((value.hour.toString().length == 1)
-                                          ? ("0" + value.hour.toString())
-                                          : value.hour.toString()) +
-                                      ":" +
-                                      ((value.minute.toString().length == 1)
-                                          ? ("0" + value.minute.toString())
-                                          : value.minute.toString());
+                              _selectedFinishHour = ((value.hour.toString().length == 1)
+                                      ? ("0" + value.hour.toString())
+                                      : value.hour.toString()) +
+                                  ":" +
+                                  ((value.minute.toString().length == 1)
+                                      ? ("0" + value.minute.toString())
+                                      : value.minute.toString());
                             });
                           });
                           showTimePicker(
                             context: context,
-                            initialTime: TimeOfDay(
-                                hour: DateTime.now().hour,
-                                minute: DateTime.now().minute),
+                            initialTime:
+                                TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
                           ).then((value) {
                             setState(() {
-                              _selectedStartHour =
-                                  ((value.hour.toString().length == 1)
-                                          ? ("0" + value.hour.toString())
-                                          : value.hour.toString()) +
-                                      ":" +
-                                      ((value.minute.toString().length == 1)
-                                          ? ("0" + value.minute.toString())
-                                          : value.minute.toString());
+                              _selectedStartHour = ((value.hour.toString().length == 1)
+                                      ? ("0" + value.hour.toString())
+                                      : value.hour.toString()) +
+                                  ":" +
+                                  ((value.minute.toString().length == 1)
+                                      ? ("0" + value.minute.toString())
+                                      : value.minute.toString());
                             });
                           });
                         }
@@ -346,19 +242,16 @@ class _AddEventState extends State<AddEvent> {
                         icon: Icon(Icons.mail),
                         onPressed: () async {
                           await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => EmailSender()))
+                                  context, MaterialPageRoute(builder: (context) => EmailSender()))
                               .then((value) {
                             if (value != null) {
                               setState(() {
                                 _attachments = value[0];
-                                _isHTML = value[1];
-                                _cc = value[2];
-                                _bb = value[3];
-                                _recipient = value[4];
-                                _subject = value[5];
-                                _body = value[6];
+                                _cc = value[1];
+                                _bb = value[2];
+                                _recipient = value[3];
+                                _subject = value[4];
+                                _body = value[5];
                               });
                             }
                           });
@@ -384,8 +277,7 @@ class _AddEventState extends State<AddEvent> {
                   padding: const EdgeInsets.fromLTRB(20.0, 4.0, 20.0, 4.0),
                   child: Text(
                     errmsg,
-                    style: TextStyle(
-                        color: Colors.red, fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                   ),
                 ),
               // Butun gun secenegi
@@ -444,9 +336,11 @@ class _AddEventState extends State<AddEvent> {
                               IconButton(
                                   icon: Icon(Icons.info),
                                   onPressed: () {
-                                    showWarningDialog(context,
-                                        "Geri sayım sayfasında etkinliğinize ne kadar süre kaldığını görebilirsiniz.");
-                                  })
+                                    showWarningDialog(
+                                        context: context,
+                                        explanation:
+                                            "Geri sayım sayfasında etkinliğinize ne kadar süre kaldığını görebilirsiniz.");
+                                  }),
                             ],
                           ),
                         ),
@@ -484,8 +378,10 @@ class _AddEventState extends State<AddEvent> {
                       IconButton(
                           icon: Icon(Icons.info),
                           onPressed: () {
-                            showWarningDialog(context,
-                                "Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!");
+                            showWarningDialog(
+                                context: context,
+                                explanation:
+                                    "Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!");
                           })
                     ],
                   ),
@@ -501,8 +397,7 @@ class _AddEventState extends State<AddEvent> {
                   decoration: InputDecoration(
                     labelText: "Etkinlik açıklaması ...",
                     hintText: "Etkinlik detaylarının girileceği alan...",
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0)),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
                   ),
                 ),
               ),
@@ -516,16 +411,14 @@ class _AddEventState extends State<AddEvent> {
                       elevation: 18,
                       onPressed: () => {clearAreas()},
                       child: Text("Temizle"),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
                       splashColor: Colors.blue,
                     ),
                     RaisedButton(
                       onPressed: () => {validateandsave()},
                       elevation: 18,
                       child: Text("Kaydet"),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
                       splashColor: Colors.blue,
                     ),
                   ],
@@ -562,31 +455,24 @@ class _AddEventState extends State<AddEvent> {
     if (!_duplicite) {
       await _db.isTimeOk(_selectedDate).then((value) {
         setState(() {
-          _timeisok = validateDayIsEmpty(
-              value, _selectedStartHour, _selectedFinishHour);
+          _timeisok = validateDayIsEmpty(value, _selectedStartHour, _selectedFinishHour);
         });
       });
     }
 
     setState(() {
-      // Eger istenilen gunde tum gun etkinlik varsa hata mesaji yaziliyor
+      /// Eger istenilen gunde tum gun etkinlik varsa hata mesaji yaziliyor
       errmsg = _duplicite == false ? "" : "Bu gün başka bir etkinliğiniz var";
-      // Zaman degistirilmek istenilen zaman baska etkinler ile zamani cakisiyorsa hata mesaji yaziliyor
-      errmsg +=
-          _timeisok == false ? "\nBu saatlerde başka bir etkinlik var" : "";
-      // Eger tum gun degilse baslangic ve bitis zamanlari kontrol ediliyor olumsuzluk varsa hata mesaji yaziliyor
+      /// Zaman degistirilmek istenilen zaman baska etkinler ile zamani cakisiyorsa hata mesaji yaziliyor
+      errmsg += _timeisok == false ? "\nBu saatlerde başka bir etkinlik var" : "";
+      /// Eger tum gun degilse baslangic ve bitis zamanlari kontrol ediliyor olumsuzluk varsa hata mesaji yaziliyor
       if (!_isfullday) {
-        _iscorrect = parseHours(_selectedFinishHour)[0] <
-                    parseHours(_selectedStartHour)[0] ||
-                (parseHours(_selectedFinishHour)[0] ==
-                        parseHours(_selectedStartHour)[0] &&
-                    parseHours(_selectedFinishHour)[1] <
-                        parseHours(_selectedStartHour)[1])
+        _iscorrect = parseHours(_selectedFinishHour)[0] < parseHours(_selectedStartHour)[0] ||
+                (parseHours(_selectedFinishHour)[0] == parseHours(_selectedStartHour)[0] &&
+                    parseHours(_selectedFinishHour)[1] < parseHours(_selectedStartHour)[1])
             ? false
             : true;
-        errmsg += _iscorrect == false
-            ? "\nBitiş zamanı başlangıç zamanından önce olamaz"
-            : "";
+        errmsg += _iscorrect == false ? "\nBitiş zamanı başlangıç zamanından önce olamaz" : "";
       }
     });
     String imagePaths = "";
@@ -603,7 +489,6 @@ class _AddEventState extends State<AddEvent> {
               choice: _radioValue.toString(),
               countDownIsActive: _switchValue ? 1 : 0,
               attachments: imagePaths,
-              isHTML: _isHTML.toString(),
               cc: _cc,
               bb: _bb,
               recipient: _recipient,
@@ -620,21 +505,18 @@ class _AddEventState extends State<AddEvent> {
               choice: _radioValue == null ? "0" : _radioValue.toString(),
               countDownIsActive: _switchValue ? 1 : 0,
               attachments: imagePaths,
-              isHTML: _isHTML.toString(),
               cc: _cc,
               bb: _bb,
               recipient: _recipient,
               subject: _subject,
               body: _body,
             );
-
       await _db.insertEvent(newEvent);
       await _db.createNotifications();
       _advert.showIntersitial();
       Navigator.of(context).pop();
       Navigator.of(context).pop();
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MainMenu()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MainMenu()));
       print("[ADDUNKNOWNEVENT] Form Uygun");
     } else {
       print("[ADDUNKNOWNEVENT] Form uygun değil");

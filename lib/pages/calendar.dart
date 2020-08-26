@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import "package:flutter_calendar_carousel/flutter_calendar_carousel.dart" show CalendarCarousel;
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
+import "package:flutter_calendar_carousel/flutter_calendar_carousel.dart" show CalendarCarousel;
 import 'package:intl/intl.dart' show DateFormat;
+
 import '../databasehelper/dataBaseHelper.dart';
+import '../events/addevent.dart';
 import '../events/calenderEvent.dart';
 import '../widgets/showDialog.dart';
-import '../events/addevent.dart';
 
 class FutureCalendar extends StatelessWidget {
-  DbHelper _helper = DbHelper();
+  final DbHelper _helper = DbHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,6 @@ class _CalendarState extends State<Calendar> {
   String _currentMonth = DateFormat.yMMM().format(DateTime.now());
   DateTime _targetDateTime = DateTime.now();
 
-//  List<DateTime> _markedDate = [DateTime(2018, 9, 20), DateTime(2018, 10, 11)];
   static Widget _eventIcon = new Container(
     decoration: new BoxDecoration(
         color: Colors.white,
@@ -81,45 +81,7 @@ class _CalendarState extends State<Calendar> {
             ));
       }
     });
-//    var _helper = DbHelper();
-//    var sorgu = _helper.getEventList();
-//    sorgu.then((onValue) {
-//      setState(() {
-//        for (int i = 0; i < onValue.length; i++) {
-//          var tarih = DateTime.parse(onValue[i].date);
-//          _markedDateMap.add(
-//              tarih,
-//              Event(
-//                date: tarih,
-//                title: onValue[i].title,
-//                icon: _eventIcon,
-//              ));
-//        }
-//      });
-//    });
   }
-
-  /// Add more events to _markedDateMap EventList
-//    _markedDateMap.add(
-//        new DateTime(2020, 2, 25),
-//        new Event(
-//          date: new DateTime(2020, 2, 25),
-//          title: 'Event 5',
-//          icon: _eventIcon,
-//        ));
-//
-//    _markedDateMap.addAll(new DateTime(2020, 2, 11), [
-//      new Event(
-//        date: new DateTime(2020, 2, 11),
-//        title: 'Event 1',
-//        icon: _eventIcon,
-//      ),
-//      new Event(
-//        date: new DateTime(2020, 2, 11),
-//        title: 'Event 3',
-//        icon: _eventIcon,
-//      ),
-//    ]);
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +95,6 @@ class _CalendarState extends State<Calendar> {
         color: Colors.red,
       ),
       thisMonthDayBorderColor: Colors.grey,
-      // weekDays: null, /// for pass null when you do not want to render weekDays
       headerText: 'Haftalık Takvim',
       weekFormat: true,
       markedDatesMap: _markedDateMap,
@@ -160,8 +121,6 @@ class _CalendarState extends State<Calendar> {
       todayButtonColor: Colors.transparent,
       todayBorderColor: Colors.green,
       markedDateMoreShowTotal: true, // null for not showing hidden events indicator
-//          markedDateIconMargin: 9,
-//          markedDateIconOffset: 3,
     );
 
     _calendarCarouselNoHeader = CalendarCarousel<Event>(
@@ -214,13 +173,6 @@ class _CalendarState extends State<Calendar> {
       todayTextStyle: TextStyle(
         color: Colors.blue,
       ),
-      // markedDateShowIcon: true,
-      // markedDateIconMaxShown: 2,
-      // markedDateIconBuilder: (event) {
-      //   return event.icon;
-      // },
-      // markedDateMoreShowTotal:
-      //     true,
       todayButtonColor: Colors.orange,
       selectedDayTextStyle: TextStyle(
         color: Colors.orange,
@@ -242,7 +194,7 @@ class _CalendarState extends State<Calendar> {
         });
       },
       onDayLongPressed: (DateTime date) {
-        print('long pressed date $date');
+        print('[CALENDAR] long pressed date $date');
       },
     );
 
@@ -298,7 +250,6 @@ class _CalendarState extends State<Calendar> {
             margin: EdgeInsets.symmetric(horizontal: 16.0),
             child: _calendarCarouselNoHeader,
           ),
-          //
         ],
       ),
     );

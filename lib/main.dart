@@ -1,17 +1,15 @@
-import 'package:ajanda/databasehelper/dataBaseHelper.dart';
-import 'package:ajanda/pages/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
-import 'package:rxdart/subjects.dart';
-import 'pages/mainmenu.dart';
+
 import 'helpers/ads.dart';
+import 'pages/mainmenu.dart';
+import 'databasehelper/dataBaseHelper.dart';
+import 'helpers/helperFunctions.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
 
-final BehaviorSubject<String> selectNotificationSubject =
-BehaviorSubject<String>();
 
 NotificationAppLaunchDetails notificationAppLaunchDetails;
 
@@ -31,20 +29,23 @@ Future<void> main() async  {
         }
         var db = DbHelper();
         var event = await db.getEventById(int.parse(payload));
+
+        var ccList = event.cc.split(",");
+        var bbList= event.bb.split(",");
+        var recipientsList= event.recipient.split(",");
+
         final MailOptions mailOptions = MailOptions(
           body: event.body,
           subject: event.subject,
-          recipients: [event.recipient],
-          isHTML: event.isHTML=="false"?false:true,
-          ccRecipients: [event.cc],
-          bccRecipients: [event.bb],
-          attachments: [event.attachments],
+          recipients: recipientsList,
+          ccRecipients: ccList,
+          bccRecipients: bbList,
+          attachments: stringPathsToList(event.attachments),
         );
-
         await FlutterMailer.send(mailOptions);
-        //selectNotificationSubject.add(payload);
       });
   Advert advert = Advert();
   advert.showIntersitial();
   runApp(MainMenu());
 }
+

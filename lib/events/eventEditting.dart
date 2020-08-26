@@ -1,13 +1,13 @@
 import 'package:ajanda/helpers/helperFunctions.dart';
 import 'package:flutter/material.dart';
-// local imports
-import '../pages/mainmenu.dart';
+
 import '../databasehelper/dataBaseHelper.dart';
 import '../databasemodels/events.dart';
+import '../helpers/ads.dart';
 import '../helpers/validateEmpty.dart';
+import '../pages/mainmenu.dart';
 import '../widgets/notificationtimepicker.dart';
 import '../widgets/showDialog.dart';
-import '../helpers/ads.dart';
 import 'mailSender.dart';
 
 class EventEdit extends StatefulWidget {
@@ -43,7 +43,6 @@ class _AddEventState extends State<EventEdit> {
   final _descriptioncontroller = TextEditingController();
 
   List<String> _attachments = [];
-  bool _isHTML = false;
 
   var _cc = "";
 
@@ -58,10 +57,8 @@ class _AddEventState extends State<EventEdit> {
   @override
   void initState() {
     if (widget.event.attachments != null) {
-      var deneme = widget.event.attachments.split("-");
-      for (int i = 0; i < deneme.length; i++) {
-        _attachments.add(deneme[i]);
-      }
+      _attachments = stringPathsToList(widget.event.attachments);
+
     }
 
     super.initState();
@@ -81,7 +78,6 @@ class _AddEventState extends State<EventEdit> {
   void dispose() {
     _titlecontroller.dispose();
     _descriptioncontroller.dispose();
-    // _advert.showBannerAd();
     super.dispose();
   }
 
@@ -239,7 +235,6 @@ class _AddEventState extends State<EventEdit> {
                               MaterialPageRoute(
                                   builder: (context) => EmailSender(
                                         attacs: stringPathsToList(widget.event.attachments),
-                                        isHtml: widget.event.isHTML,
                                         cctext: widget.event.cc,
                                         bbtext: widget.event.bb,
                                         recipienttext: widget.event.recipient,
@@ -249,12 +244,11 @@ class _AddEventState extends State<EventEdit> {
                             if (value != null) {
                               setState(() {
                                 _attachments = value[0];
-                                _isHTML = value[1];
-                                _cc = value[2];
-                                _bb = value[3];
-                                _recipient = value[4];
-                                _subject = value[5];
-                                _body = value[6];
+                                _cc = value[1];
+                                _bb = value[2];
+                                _recipient = value[3];
+                                _subject = value[4];
+                                _body = value[5];
                               });
                             }
                           });
@@ -372,8 +366,9 @@ class _AddEventState extends State<EventEdit> {
                       IconButton(
                           icon: Icon(Icons.info),
                           onPressed: () {
-                            showWarningDialog(context,
-                                "Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!");
+                            showWarningDialog(
+                                context:context,
+                                explanation:"Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!");
                           })
                     ],
                   ),
@@ -490,7 +485,6 @@ class _AddEventState extends State<EventEdit> {
               choice: _radioValue.toString(),
               countDownIsActive: _switchValue ? 1 : 0,
               attachments: imagePaths,
-              isHTML: _isHTML.toString(),
               cc: _cc,
               bb: _bb,
               recipient: _recipient,
@@ -508,7 +502,6 @@ class _AddEventState extends State<EventEdit> {
               choice: _radioValue == null ? "0" : _radioValue.toString(),
               countDownIsActive: _switchValue ? 1 : 0,
               attachments: imagePaths,
-              isHTML: _isHTML.toString(),
               cc: _cc,
               bb: _bb,
               recipient: _recipient,

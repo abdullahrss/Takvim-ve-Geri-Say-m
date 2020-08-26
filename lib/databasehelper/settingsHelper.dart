@@ -1,8 +1,10 @@
-import 'package:ajanda/databasemodels/settingsModel.dart';
-import 'package:sqflite/sqflite.dart';
 import 'dart:async';
-import 'package:path_provider/path_provider.dart';
 import 'dart:io' show Directory;
+
+import 'package:ajanda/databasemodels/settingsModel.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
+
 import '../helpers/constants.dart';
 
 class SettingsDbHelper {
@@ -27,25 +29,25 @@ class SettingsDbHelper {
     }
     return _database;
   }
-
+  /// Database initialize ediliyor
   static Future<Database> initializeDatabase() async {
     Directory directory = await getApplicationDocumentsDirectory();
     String path = directory.path + 'dbsettings.db';
 
-    // Database yoksa olusturuyor varsa aciyor
+    /// Database yoksa olusturuyor varsa aciyor
     var eventsDatabase = await openDatabase(path, version: 1, onCreate: _createDb);
     return eventsDatabase;
   }
-
+  /// Database olusturuluyor
   static void _createDb(Database db, int newVersion) async {
     await db.execute('CREATE TABLE $_tablename($_columnTheme TEXT, $_columnFontName TEXT)');
   }
-
+  /// Yeni gelen theme bilgisiyle database guncelleniyor
   Future<void> updateTheme(Setting setting) async {
     var db = await this.database;
     await db.rawQuery("UPDATE $_tablename SET $_columnTheme = '${setting.theme}';");
   }
-  // Settings guncelleniyor
+  /// Settings guncelleniyor
   Future<void> updateFont(Setting setting) async {
     var db = await this.database;
     await db.rawQuery("UPDATE $_tablename SET $_columnFontName = '${setting.fontName}';");

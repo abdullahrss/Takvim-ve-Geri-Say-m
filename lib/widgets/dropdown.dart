@@ -1,10 +1,11 @@
 import 'package:ajanda/events/notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 import '../databasehelper/dataBaseHelper.dart';
 import '../databasemodels/events.dart';
-import '../pages/mainmenu.dart';
 import '../pages/detailsPage.dart';
+import '../pages/mainmenu.dart';
 
 class DropDown extends StatefulWidget {
   final Event event;
@@ -18,11 +19,6 @@ class DropDown extends StatefulWidget {
 class _DropDownState extends State<DropDown> {
   var _db = DbHelper();
   String dropdownValue = 'Detaylar';
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +44,6 @@ class _DropDownState extends State<DropDown> {
                 choice: widget.event.choice,
                 countDownIsActive: widget.event.countDownIsActive,
                 attachments: widget.event.attachments,
-                isHTML: widget.event.isHTML,
                 cc: widget.event.cc,
                 bb: widget.event.bb,
                 recipient: widget.event.recipient,
@@ -62,7 +57,8 @@ class _DropDownState extends State<DropDown> {
                             event: event,
                           )));
             } else if (newValue == 'Sil') {
-              FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
+              FlutterLocalNotificationsPlugin localNotificationsPlugin =
+                  FlutterLocalNotificationsPlugin();
               Notifications not = Notifications(localNotificationsPlugin);
               not.cancelNotification(not.localNotificationsPlugin, widget.event.id);
               _db.deleteEvent(widget.event.id);

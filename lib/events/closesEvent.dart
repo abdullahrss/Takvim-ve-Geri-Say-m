@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import '../databasehelper/dataBaseHelper.dart';
 import '../databasemodels/events.dart';
-import '../widgets/dropdown.dart';
 import '../helpers/helperFunctions.dart';
+import '../widgets/dropdown.dart';
 
 class Soclose extends StatefulWidget {
   int index = 0;
@@ -74,7 +75,7 @@ class _Closesevents extends State<Soclose> {
                                 child: Column(
                                   children: <Widget>[
                                     Padding(
-                                      padding: const EdgeInsets.only(right:16.0),
+                                      padding: const EdgeInsets.only(right: 16.0),
                                       child: Container(
                                         width: MediaQuery.of(context).size.width / 4,
                                         child: DropDown(Event(
@@ -88,7 +89,6 @@ class _Closesevents extends State<Soclose> {
                                           choice: snapshot.data[index].choice,
                                           countDownIsActive: snapshot.data[index].countDownIsActive,
                                           attachments: snapshot.data[index].attachments,
-                                          isHTML: snapshot.data[index].isHTML,
                                           cc: snapshot.data[index].cc,
                                           bb: snapshot.data[index].bb,
                                           recipient: snapshot.data[index].recipient,
@@ -98,7 +98,7 @@ class _Closesevents extends State<Soclose> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(right:16.0),
+                                      padding: const EdgeInsets.only(right: 16.0),
                                       child: Container(
                                         padding: EdgeInsets.only(top: 4.0),
                                         height: 100,

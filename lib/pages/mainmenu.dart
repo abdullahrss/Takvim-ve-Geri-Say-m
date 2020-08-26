@@ -1,28 +1,20 @@
 import 'dart:async';
-import 'package:ajanda/helpers/helperFunctions.dart';
-import 'package:dynamic_theme/dynamic_theme.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_mailer/flutter_mailer.dart';
 
-// Local importlar
-import '../helpers/backgroundProcesses.dart';
+import 'package:dynamic_theme/dynamic_theme.dart';
+
 import '../databasehelper/dataBaseHelper.dart';
-import '../events/addevent.dart';
-import '../main.dart';
-import 'countdownpage.dart';
-import 'calendar.dart';
-import '../events/closesEvent.dart';
-import '../helpers/ads.dart';
-import 'detailsPage.dart';
-import 'settings.dart';
 import '../databasehelper/settingsHelper.dart';
+import '../events/addevent.dart';
+import '../events/closesEvent.dart';
+import '../helpers/backgroundProcesses.dart';
+import 'calendar.dart';
+import 'countdownpage.dart';
+import 'settings.dart';
 
 class MainMenu extends StatelessWidget {
   MainMenu({Key key}) : super(key: key);
-  var _sdb = SettingsDbHelper();
+  final _sdb = SettingsDbHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -68,12 +60,6 @@ class MainMenuBody extends StatefulWidget {
 }
 
 class _MainMenuBodyState extends State<MainMenuBody> {
-  // Admob
-  final Advert _advert = Advert();
-
-  // Notification
-  FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
   // Database
   var _db = DbHelper();
 
@@ -86,18 +72,12 @@ class _MainMenuBodyState extends State<MainMenuBody> {
   int radioValue;
   Timer timer;
 
-  // Mail sender
-  // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   @override
   void initState() {
     super.initState();
-    // _configureSelectNotificationSubject();
     // Background processes
     _backGroundProcesses = BackGroundProcesses();
     _backGroundProcesses.startBgServicesManually();
-    // Ads
-    // _advert.showBannerAd();
     // Active processes
     _db.openNotificationBar();
     timer = Timer.periodic(Duration(minutes: 1), (timer) {
@@ -107,32 +87,9 @@ class _MainMenuBodyState extends State<MainMenuBody> {
 
   @override
   void dispose() {
-    // _advert.closeBannerAd();
     timer.cancel();
-    // selectNotificationSubject.close();
     super.dispose();
   }
-
-//  void _configureSelectNotificationSubject() {
-//    print("totaly spreedsheat");
-//    selectNotificationSubject.stream.listen((String payload) async {
-//      var event = await _db.getEventById(int.parse(payload));
-//      print("TOTALLY SPREADSHEET");
-//      Navigator.push(
-//        context,
-//        MaterialPageRoute(builder: (context) => Details(event:event)),
-//      );
-//      await sendMail(
-//        subject: event.subject,
-//        recipientMails: [event.recipient],
-//        bodyText: event.body,
-//        ccMails: [event.cc],
-//        bbcMails: [event.bb],
-//        attachs: stringPathsToList(event.attachments),
-//        isHtml: event.isHTML == "false" ? false : true,
-//      );
-//    });
-//  }
 
   List<Widget> _widgetOptions = <Widget>[
     Soclose.byorder(_selectedOrder),
@@ -153,9 +110,8 @@ class _MainMenuBodyState extends State<MainMenuBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // key: _scaffoldKey,
       floatingActionButton: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 100.0),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 50.0),
         child: FloatingActionButton(
           onPressed: () {
             Navigator.push(
@@ -290,7 +246,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                         Navigator.pop(context);
                       },
                     ),
-                    Text("Yakın tarihler başta"),
+                    Text("Gelecek tarihler başta"),
                   ],
                 ),
                 Row(
@@ -303,7 +259,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                         Navigator.pop(context);
                       },
                     ),
-                    Text("Uzak tarihler başta"),
+                    Text("Geçmiş tarihler başta"),
                   ],
                 ),
               ],
@@ -323,49 +279,5 @@ class _MainMenuBodyState extends State<MainMenuBody> {
         );
       },
     );
-  }
-  Future<void> sendMail({
-    String bodyText,
-    @required String subject,
-    @required List<String> recipientMails,
-    List<String> ccMails,
-    List<String> bbcMails,
-    List<String> attachs,
-    bool isHtml,
-  }) async {
-//    final Email email = Email(
-//      body: bodyText,
-//      subject: subject,
-//      recipients: recipientMails,
-//      cc: ccMails,
-//      bcc: bbcMails,
-//      attachmentPaths: attachs,
-//      isHTML: isHtml,
-//    );
-//
-//    String platformResponse;
-//    try {
-//      await FlutterEmailSender.send(email);
-//      platformResponse = 'Mail işlemi yapıldı.';
-//    } catch (error) {
-//      platformResponse = error.toString();
-//    }
-    final MailOptions mailOptions = MailOptions(
-      body: bodyText,
-      subject: subject,
-      recipients: recipientMails,
-      isHTML: isHtml,
-      bccRecipients: bbcMails,
-      ccRecipients: ccMails,
-      attachments: attachs,
-    );
-
-    await FlutterMailer.send(mailOptions);
-
-    if (!mounted) {return;}
-
-//    _scaffoldKey.currentState.showSnackBar(SnackBar(
-//      content: Text(platformResponse),
-//    ));
   }
 }

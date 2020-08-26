@@ -1,19 +1,9 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import '../databasehelper/dataBaseHelper.dart';
 
 class Notifications {
   final FlutterLocalNotificationsPlugin localNotificationsPlugin;
 
   Notifications(this.localNotificationsPlugin);
-
-  var _db = DbHelper();
-
-  void initalizeNotifications() async {
-    var initalizeAndroid = AndroidInitializationSettings("app_icon");
-    var initalizeIOS = IOSInitializationSettings();
-    var initSettings = InitializationSettings(initalizeAndroid, initalizeIOS);
-    await localNotificationsPlugin.initialize(initSettings);
-  }
 
   Future countDownNotification(
       FlutterLocalNotificationsPlugin plugin, String message, String subtext, int id) async {
@@ -32,7 +22,6 @@ class Notifications {
     );
     var iosChannel = IOSNotificationDetails();
     var platformChannel = NotificationDetails(androidChannel, iosChannel);
-    initalizeNotifications();
     subtext = "<b>" + subtext + "<//b>";
     await plugin.show(id, message, subtext, platformChannel);
   }
@@ -53,7 +42,6 @@ class Notifications {
     );
     var iosChannel = IOSNotificationDetails();
     var platformChannel = NotificationDetails(androidChannel, iosChannel);
-    initalizeNotifications();
     await localNotificationsPlugin.schedule(
       id,
       message,
@@ -168,19 +156,5 @@ class Notifications {
           return date;
         }
     }
-  }
-
-  Future getEventForNot() async {
-    var events = await _db.getEventList();
-    var element = events[0];
-
-    DateTime now = DateTime.now().add(Duration(seconds: 5));
-    await singleNotification(
-      localNotificationsPlugin,
-      now,
-      element.title,
-      element.desc,
-      element.id,
-    );
   }
 }

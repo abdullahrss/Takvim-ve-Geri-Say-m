@@ -1,6 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import '../databasemodels/events.dart';
-import '../helpers/ads.dart';
 import '../events/eventEditting.dart';
 
 class Details extends StatefulWidget {
@@ -13,14 +14,6 @@ class Details extends StatefulWidget {
 }
 
 class _DetailsState extends State<Details> {
-  final Advert _advert = Advert();
-
-  @override
-  void initState() {
-    super.initState();
-    _advert.closeBannerAd();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,24 +48,26 @@ class _DetailsState extends State<Details> {
                                   style: TextStyle(fontSize: 35.0),
                                 ),
                               ),
-                              //Container(child: DropDown(index))
                             ]),
                       ),
-                      if(widget.event.recipient != null)
-                        Row(children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              "   Mail atılacak kişi: "+widget.event.recipient
-                              ,style: TextStyle(fontSize: 15),),
-                          )
-                        ],),
+                      if (widget.event.recipient != null)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "   Mail atılacak kişi: " + widget.event.recipient,
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.start,
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(children: <Widget>[
                           Text(
                             widget.event.date +
                                 "${widget.event.startTime != "null" ? ("  " + widget.event.startTime + "-" + widget.event.finishTime) : " - Tüm gün"}",
-                            style: new TextStyle(fontSize: 15),
+                            style: TextStyle(fontSize: 15),
                           ),
                         ]),
                       ),
@@ -94,7 +89,6 @@ class _DetailsState extends State<Details> {
                         SizedBox(
                           height: 15.0,
                         ),
-                        //Spacer()
                       ],
                     ),
                   ),
@@ -109,29 +103,29 @@ class _DetailsState extends State<Details> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => (EventEdit(event: Event(
-                                    id: widget.event.id,
-                                    title: widget.event.title,
-                                    date: widget.event.date,
-                                    startTime: widget.event.startTime,
-                                    finishTime: widget.event.finishTime,
-                                    desc: widget.event.desc,
-                                    isActive: widget.event.isActive,
-                                    choice: widget.event.choice,
-                                    countDownIsActive: widget.event.countDownIsActive,
-                                    attachments: widget.event.attachments,
-                                    isHTML: widget.event.isHTML,
-                                    cc: widget.event.cc,
-                                    bb: widget.event.bb,
-                                    recipient: widget.event.recipient,
-                                    subject: widget.event.subject,
-                                    body: widget.event.body,
-                                  ),))));
+                                  builder: (context) => (EventEdit(
+                                        event: Event(
+                                          id: widget.event.id,
+                                          title: widget.event.title,
+                                          date: widget.event.date,
+                                          startTime: widget.event.startTime,
+                                          finishTime: widget.event.finishTime,
+                                          desc: widget.event.desc,
+                                          isActive: widget.event.isActive,
+                                          choice: widget.event.choice,
+                                          countDownIsActive: widget.event.countDownIsActive,
+                                          attachments: widget.event.attachments,
+                                          cc: widget.event.cc,
+                                          bb: widget.event.bb,
+                                          recipient: widget.event.recipient,
+                                          subject: widget.event.subject,
+                                          body: widget.event.body,
+                                        ),
+                                      ))));
                         },
                         elevation: 18,
                         child: Text("Düzenle"),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
                         splashColor: Colors.blue,
                       ),
                     ],
