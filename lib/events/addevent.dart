@@ -116,8 +116,6 @@ class _AddEventState extends State<AddEvent> {
                 ),
               ),
               Container(
-                //width: MediaQuery.of(context).size.width - 126,
-                //height: 100,
                 padding: EdgeInsets.fromLTRB(22.0, 4.0, 22.0, 4.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,

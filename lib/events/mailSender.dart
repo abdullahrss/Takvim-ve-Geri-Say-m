@@ -1,8 +1,6 @@
-import 'dart:async';
 import 'dart:io';
 import 'package:ajanda/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EmailSender extends StatefulWidget {
@@ -42,8 +40,6 @@ class _EmailSender extends State<EmailSender> {
   final _subjectController = TextEditingController();
 
   final _bodyController = TextEditingController();
-
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -186,34 +182,7 @@ class _EmailSender extends State<EmailSender> {
       ),
     );
   }
-  // ----------------------------------gereksiz-----------------------------
-  Future<void> send() async {
-    final Email email = Email(
-      body: _bodyController.text,
-      subject: _subjectController.text,
-      recipients: [_recipientController.text],
-      cc: [_ccController.text],
-      bcc: [_bbcController.text],
-      attachmentPaths: attachments,
-      isHTML: isHTML,
-    );
 
-    String platformResponse;
-
-    try {
-      await FlutterEmailSender.send(email);
-      platformResponse = 'Mail Gönderildi.';
-    } catch (error) {
-      platformResponse = error.toString();
-    }
-
-    if (!mounted) return;
-
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(platformResponse),
-    ));
-  }
-  //----------------------------------------------------------------------
   void save() {
     if (_recipientController.text == "") {
       showWarningDialog(context, 'Alıcı mail boş bırakılmaz!');

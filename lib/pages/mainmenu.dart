@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_mailer/flutter_mailer.dart';
 
 // Local importlar
 import '../helpers/backgroundProcesses.dart';
@@ -15,6 +16,7 @@ import 'countdownpage.dart';
 import 'calendar.dart';
 import '../events/closesEvent.dart';
 import '../helpers/ads.dart';
+import 'detailsPage.dart';
 import 'settings.dart';
 import '../databasehelper/settingsHelper.dart';
 
@@ -85,12 +87,12 @@ class _MainMenuBodyState extends State<MainMenuBody> {
   Timer timer;
 
   // Mail sender
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _configureSelectNotificationSubject();
+    // _configureSelectNotificationSubject();
     // Background processes
     _backGroundProcesses = BackGroundProcesses();
     _backGroundProcesses.startBgServicesManually();
@@ -107,29 +109,30 @@ class _MainMenuBodyState extends State<MainMenuBody> {
   void dispose() {
     // _advert.closeBannerAd();
     timer.cancel();
-    selectNotificationSubject.close();
+    // selectNotificationSubject.close();
     super.dispose();
   }
 
-  void _configureSelectNotificationSubject() {
-    selectNotificationSubject.stream.listen((String payload) async {
-      var event = await _db.getEventById(int.parse(payload));
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => MainMenu()),
-      ).then((value) async{
-        await sendMail(
-            subject: event.subject,
-            recipientMails: [event.recipient],
-            bodyText: event.body,
-            ccMails: [event.cc],
-            bbcMails: [event.bb],
-            attachs: stringPathsToList(event.attachments),
-        isHtml: event.isHTML == "false" ? false : true,
-        );
-      });
-    });
-  }
+//  void _configureSelectNotificationSubject() {
+//    print("totaly spreedsheat");
+//    selectNotificationSubject.stream.listen((String payload) async {
+//      var event = await _db.getEventById(int.parse(payload));
+//      print("TOTALLY SPREADSHEET");
+//      Navigator.push(
+//        context,
+//        MaterialPageRoute(builder: (context) => Details(event:event)),
+//      );
+//      await sendMail(
+//        subject: event.subject,
+//        recipientMails: [event.recipient],
+//        bodyText: event.body,
+//        ccMails: [event.cc],
+//        bbcMails: [event.bb],
+//        attachs: stringPathsToList(event.attachments),
+//        isHtml: event.isHTML == "false" ? false : true,
+//      );
+//    });
+//  }
 
   List<Widget> _widgetOptions = <Widget>[
     Soclose.byorder(_selectedOrder),
@@ -150,7 +153,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
+      // key: _scaffoldKey,
       floatingActionButton: Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 100.0),
         child: FloatingActionButton(
@@ -330,29 +333,39 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     List<String> attachs,
     bool isHtml,
   }) async {
-    final Email email = Email(
+//    final Email email = Email(
+//      body: bodyText,
+//      subject: subject,
+//      recipients: recipientMails,
+//      cc: ccMails,
+//      bcc: bbcMails,
+//      attachmentPaths: attachs,
+//      isHTML: isHtml,
+//    );
+//
+//    String platformResponse;
+//    try {
+//      await FlutterEmailSender.send(email);
+//      platformResponse = 'Mail işlemi yapıldı.';
+//    } catch (error) {
+//      platformResponse = error.toString();
+//    }
+    final MailOptions mailOptions = MailOptions(
       body: bodyText,
       subject: subject,
       recipients: recipientMails,
-      cc: ccMails,
-      bcc: bbcMails,
-      attachmentPaths: attachs,
       isHTML: isHtml,
+      bccRecipients: bbcMails,
+      ccRecipients: ccMails,
+      attachments: attachs,
     );
 
-    String platformResponse;
-
-    try {
-      await FlutterEmailSender.send(email);
-      platformResponse = 'Mail işlemi yapıldı.';
-    } catch (error) {
-      platformResponse = error.toString();
-    }
+    await FlutterMailer.send(mailOptions);
 
     if (!mounted) {return;}
 
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(platformResponse),
-    ));
+//    _scaffoldKey.currentState.showSnackBar(SnackBar(
+//      content: Text(platformResponse),
+//    ));
   }
 }

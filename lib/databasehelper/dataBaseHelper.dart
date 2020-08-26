@@ -339,6 +339,7 @@ class DbHelper {
   }
 
   Future clearoldevent() async {
+    var not = Notifications(flutterLocalNotificationsPlugin);
     await getEventList().then((value) {
       for (int i = 0; i < value.length; i++) {
         var targetTime = value[i].startTime == "null"
@@ -350,14 +351,17 @@ class DbHelper {
           } else {
             deleteOldEventHour(value[i].date, value[i].startTime);
           }
+          not.cancelNotification(flutterLocalNotificationsPlugin, value[i].id);
         }
       }
     });
   }
 
-  Future clearDb() async {
+  Future clearDb() async { // butun notificationlarda silinecek
+    var not = Notifications(flutterLocalNotificationsPlugin);
     Database db = await this.database;
-    db.rawQuery('DELETE FROM $_tablename');
+    await db.rawQuery('DELETE FROM $_tablename');
+    not.cancelAllNotifications(flutterLocalNotificationsPlugin);
   }
 
   Future closeDb() => _database.close();
