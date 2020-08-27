@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:ajanda/widgets/showDialog.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 
 class EmailSender extends StatefulWidget {
   final List<String> attacs;
@@ -62,15 +62,11 @@ class _EmailSender extends State<EmailSender> {
         title: Text('Mail gönderme'),
         actions: <Widget>[
           IconButton(
-              icon: Icon(
-                Icons.help,
-                size: 36,
-              ),
+              icon: Icon(Icons.help,size: 36,),
               onPressed: () {
                 showWarningDialog(
                     context: context,
-                    explanation:
-                        "Eğer birden fazla alıcı, cc veya bbc değeri girecekseniz her mail arasına virgül koymalısınız.\n\n(örnek: ornek@gmail.com , ornek2@gmail.com)");
+                    explanation: "Eğer birden fazla alıcı, cc veya bbc değeri girecekseniz her mail arasına virgül koymalısınız.\n\n(örnek: ornek@gmail.com , ornek2@gmail.com)");
               })
         ],
       ),
@@ -144,7 +140,7 @@ class _EmailSender extends State<EmailSender> {
                       child: RaisedButton(
                         color: Colors.blue,
                         elevation: 18,
-                        onPressed: _picker,
+                        onPressed: _picker_image,
                         child: Row(
                           children: <Widget>[
                             Icon(
@@ -167,7 +163,7 @@ class _EmailSender extends State<EmailSender> {
                       width: MediaQuery.of(context).size.width / 3 + 16,
                       child: RaisedButton(
                         color: Colors.blue,
-                        onPressed: save,
+                        onPressed: _picker_file,
                         elevation: 18,
                         child: Row(
                           children: <Widget>[
@@ -236,7 +232,7 @@ class _EmailSender extends State<EmailSender> {
     }
   }
 
-  void _picker() async {
+  void _picker_image() async {
     ImagePicker imagePicker = ImagePicker();
     final File pick = await ImagePicker.pickImage(source: ImageSource.gallery);
     // final PickedFile pick = await imagePicker.getImage(source: ImageSource.gallery);
@@ -244,4 +240,16 @@ class _EmailSender extends State<EmailSender> {
       attachments.add(pick.path);
     });
   }
+
+
+void _picker_file() async {
+  List<File> files = await FilePicker.getMultiFile(
+    type: FileType.custom,
+  );
+  setState(() {
+      for(int i = 0;i<files.length;i++){
+        attachments.add(files[i].path);
+      }
+    });
+}
 }
