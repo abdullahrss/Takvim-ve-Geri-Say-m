@@ -67,7 +67,6 @@ class _AddEventState extends State<AddEvent> {
 
   var _body = "";
 
-
   @override
   void initState() {
     super.initState();
@@ -90,7 +89,10 @@ class _AddEventState extends State<AddEvent> {
         title: Text("Yeni Etkinlik Ekle"),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.help,size: 36,),
+            icon: Icon(
+              Icons.help,
+              size: 36,
+            ),
             onPressed: () => showButtonAboutDialog(context),
           ),
         ],
@@ -241,20 +243,45 @@ class _AddEventState extends State<AddEvent> {
                       child: IconButton(
                         icon: Icon(Icons.mail),
                         onPressed: () async {
-                          await Navigator.push(
-                                  context, MaterialPageRoute(builder: (context) => EmailSender()))
-                              .then((value) {
-                            if (value != null) {
-                              setState(() {
-                                _attachments = value[0];
-                                _cc = value[1];
-                                _bb = value[2];
-                                _recipient = value[3];
-                                _subject = value[4];
-                                _body = value[5];
-                              });
-                            }
-                          });
+                          if (_recipient != "") {
+                            await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EmailSender(
+                                          attacs: _attachments,
+                                          cctext: _cc,
+                                          bbtext: _bb,
+                                          recipienttext: _recipient,
+                                          subjecttext: _subject,
+                                          bodytext: _body,
+                                        ))).then((value) {
+                              if (value != null) {
+                                setState(() {
+                                  _attachments = value[0];
+                                  _cc = value[1];
+                                  _bb = value[2];
+                                  _recipient = value[3];
+                                  _subject = value[4];
+                                  _body = value[5];
+                                });
+                              }
+                            });
+                          } else {
+                            await Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => EmailSender()))
+                                .then((value) {
+                              if (value != null) {
+                                setState(() {
+                                  _attachments = value[0];
+                                  _cc = value[1];
+                                  _bb = value[2];
+                                  _recipient = value[3];
+                                  _subject = value[4];
+                                  _body = value[5];
+                                });
+                              }
+                            });
+                          }
                         },
                       ),
                     ),
@@ -272,7 +299,7 @@ class _AddEventState extends State<AddEvent> {
               if (!_iscorrect || _duplicite || !_timeisok)
                 Container(
                   width: MediaQuery.of(context).size.width - 40,
-                  height: 50,
+                  //height: 75,
                   alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.fromLTRB(20.0, 4.0, 20.0, 4.0),
                   child: Text(
@@ -463,8 +490,10 @@ class _AddEventState extends State<AddEvent> {
     setState(() {
       /// Eger istenilen gunde tum gun etkinlik varsa hata mesaji yaziliyor
       errmsg = _duplicite == false ? "" : "Bu gün başka bir etkinliğiniz var";
+
       /// Zaman degistirilmek istenilen zaman baska etkinler ile zamani cakisiyorsa hata mesaji yaziliyor
       errmsg += _timeisok == false ? "\nBu saatlerde başka bir etkinlik var" : "";
+
       /// Eger tum gun degilse baslangic ve bitis zamanlari kontrol ediliyor olumsuzluk varsa hata mesaji yaziliyor
       if (!_isfullday) {
         _iscorrect = parseHours(_selectedFinishHour)[0] < parseHours(_selectedStartHour)[0] ||
