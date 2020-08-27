@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:ajanda/widgets/showDialog.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -61,11 +62,15 @@ class _EmailSender extends State<EmailSender> {
         title: Text('Mail gönderme'),
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.help,size: 36,),
+              icon: Icon(
+                Icons.help,
+                size: 36,
+              ),
               onPressed: () {
                 showWarningDialog(
                     context: context,
-                    explanation: "Eğer birden fazla alıcı, cc veya bbc değeri girecekseniz her mail arasına virgül koymalısınız.\n\n(örnek: ornek@gmail.com , ornek2@gmail.com)");
+                    explanation:
+                        "Eğer birden fazla alıcı, cc veya bbc değeri girecekseniz her mail arasına virgül koymalısınız.\n\n(örnek: ornek@gmail.com , ornek2@gmail.com)");
               })
         ],
       ),
@@ -131,46 +136,80 @@ class _EmailSender extends State<EmailSender> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    RaisedButton(
-                      color: Colors.blue,
-                      elevation: 18,
-                      onPressed: _picker,
-                      child: Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.image,
-                            color: Colors.white,
-                          ),
-                          Text(
-                            "  Resim ekle",
-                            style: TextStyle(color: Colors.white),
-                          )
-                        ],
+                    Container(
+                      width: MediaQuery.of(context).size.width / 3 + 16,
+                      child: RaisedButton(
+                        color: Colors.blue,
+                        elevation: 18,
+                        onPressed: _picker,
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.image,
+                              color: Colors.white,
+                            ),
+                            Text(
+                              "  Resim ekle",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(color: Colors.white),
+                            )
+                          ],
+                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+                        splashColor: Colors.blue,
                       ),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-                      splashColor: Colors.blue,
                     ),
-                    RaisedButton(
-                      color: Colors.blue,
-                      onPressed: save,
-                      elevation: 18,
-                      child: Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.save,
-                            color: Colors.white,
-                          ),
-                          Text("  Kaydet", style: TextStyle(color: Colors.white)),
-                        ],
+                    Container(
+                      width: MediaQuery.of(context).size.width / 3 + 16,
+                      child: RaisedButton(
+                        color: Colors.blue,
+                        onPressed: save,
+                        elevation: 18,
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.insert_drive_file,
+                              color: Colors.white,
+                            ),
+                            Text(
+                              "  Dosya Ekle",
+                              style: TextStyle(color: Colors.white),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+                        splashColor: Colors.blue,
                       ),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-                      splashColor: Colors.blue,
                     ),
                   ],
+                ),
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  width: MediaQuery.of(context).size.width / 3,
+                  child: RaisedButton(
+                    color: Colors.blue,
+                    onPressed: save,
+                    elevation: 18,
+                    child: Row(
+                      children: <Widget>[
+                        Icon(
+                          Icons.save,
+                          color: Colors.white,
+                        ),
+                        Text("  Kaydet", style: TextStyle(color: Colors.white)),
+                      ],
+                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+                    splashColor: Colors.blue,
+                  ),
                 ),
               ),
             ],
