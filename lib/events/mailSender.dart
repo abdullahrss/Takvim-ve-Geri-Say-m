@@ -248,6 +248,10 @@ void _picker_file() async {
   );
   setState(() {
       for(int i = 0;i<files.length;i++){
+        if(files[i].path.endsWith(".png") || files[i].path.endsWith(".jpeg") || files[i].path.endsWith(".jpg") || files[i].path.endsWith(".gif")){
+          showWarningDialog(context: context, explanation: "Resimleri resim ekle butonundan ekleyiniz.");
+          continue;
+        }
         attachments.add(files[i].path);
       }
     });
