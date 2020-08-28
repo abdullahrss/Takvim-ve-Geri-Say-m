@@ -62,7 +62,7 @@ class _EmailSender extends State<EmailSender> {
         title: Text('Mail gönderme'),
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.help,size: 36,),
+              icon: Icon(Icons.help_outline,size: 36,),
               onPressed: () {
                 showWarningDialog(
                     context: context,
@@ -126,7 +126,7 @@ class _EmailSender extends State<EmailSender> {
                 ),
               ),
               ...attachments.map(
-                (item) => Text(
+                    (item) => Text(
                   item,
                   overflow: TextOverflow.fade,
                 ),
@@ -242,11 +242,11 @@ class _EmailSender extends State<EmailSender> {
   }
 
 
-void _picker_file() async {
-  List<File> files = await FilePicker.getMultiFile(
-    type: FileType.custom,
-  );
-  setState(() {
+  void _picker_file() async {
+    List<File> files = await FilePicker.getMultiFile(
+      type: FileType.custom,
+    );
+    setState(() {
       for(int i = 0;i<files.length;i++){
         if(files[i].path.endsWith(".png") || files[i].path.endsWith(".jpeg") || files[i].path.endsWith(".jpg") || files[i].path.endsWith(".gif")){
           showWarningDialog(context: context, explanation: "Resimleri resim ekle butonundan ekleyiniz.");
@@ -255,5 +255,5 @@ void _picker_file() async {
         attachments.add(files[i].path);
       }
     });
-}
+  }
 }

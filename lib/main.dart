@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'helpers/ads.dart';
 import 'pages/mainmenu.dart';
@@ -44,6 +45,9 @@ Future<void> main() async  {
         );
         await FlutterMailer.send(mailOptions);
       });
+  if (await Permission.notification.status.isDenied) {
+    openAppSettings();
+  }
   Advert advert = Advert();
   advert.showIntersitial();
   runApp(MainMenu());

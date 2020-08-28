@@ -1,3 +1,4 @@
+import 'package:ajanda/widgets/navigateToSettings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,9 +12,10 @@ import '../widgets/notificationtimepicker.dart';
 import '../widgets/showDialog.dart';
 
 class AddEvent extends StatefulWidget {
+  final int warningstatus;
   var date;
 
-  AddEvent({inputDate}) {
+  AddEvent({inputDate, this.warningstatus}) {
     date = inputDate;
   }
 
@@ -51,20 +53,16 @@ class _AddEventState extends State<AddEvent> {
 
   var _radioValue;
   bool _switchValue = false;
-
+  bool dialogValue = false;
+  /// Baslik ve aciklama kontrolleri
   final _titlecontroller = TextEditingController();
   final _descriptioncontroller = TextEditingController();
-
+  /// Mail degiskenleri
   List<String> _attachments = [];
-
   var _cc = "";
-
   var _bb = "";
-
   var _recipient = "";
-
   var _subject = "";
-
   var _body = "";
 
   @override
@@ -90,7 +88,7 @@ class _AddEventState extends State<AddEvent> {
         actions: <Widget>[
           IconButton(
             icon: Icon(
-              Icons.help,
+              Icons.help_outline,
               size: 36,
             ),
             onPressed: () => showButtonAboutDialog(context),
@@ -128,6 +126,8 @@ class _AddEventState extends State<AddEvent> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
                         Row(
                           children: <Widget>[
@@ -377,6 +377,9 @@ class _AddEventState extends State<AddEvent> {
               // Sabit bildirim
               InkWell(
                 onTap: () {
+                  if(widget.warningstatus==0){
+                    NavigateToSettings();
+                  }
                   setState(() {
                     _switchValue = !_switchValue;
                   });
@@ -455,7 +458,6 @@ class _AddEventState extends State<AddEvent> {
           )),
     );
   }
-
   List<int> parseHours(String value) {
     List<String> strHours = value.split(":");
     List<int> intHours = [];

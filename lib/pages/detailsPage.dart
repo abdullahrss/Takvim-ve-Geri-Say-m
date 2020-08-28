@@ -15,6 +15,13 @@ class Details extends StatefulWidget {
 
 class _DetailsState extends State<Details> {
   @override
+  void initState() {
+    super.initState();
+    print("bro :" + widget.event.recipient);
+    print(widget.event.recipient.length);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -50,7 +57,7 @@ class _DetailsState extends State<Details> {
                               ),
                             ]),
                       ),
-                      if (widget.event.recipient != null)
+                      if (widget.event.recipient != "" || widget.event.recipient.length != 0)
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Text(

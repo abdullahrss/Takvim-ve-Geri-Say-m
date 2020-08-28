@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 Future<void> showMyDialog(context, {String title, String message, Function function}) async {
   return showDialog<void>(
@@ -93,7 +94,7 @@ Future<void> showButtonAboutDialog(context) async {
                           fontSize: 18,
                         ),
                         textAlign: TextAlign.left,
-                        maxLines: 3,
+                        maxLines: 5,
                       ),
                     ),
                   ),
@@ -114,7 +115,7 @@ Future<void> showButtonAboutDialog(context) async {
                             fontSize: 18,
                           ),
                           textAlign: TextAlign.left,
-                          maxLines: 3,
+                          maxLines: 5,
                         ),
                       )),
                 ],
@@ -134,7 +135,7 @@ Future<void> showButtonAboutDialog(context) async {
                             fontSize: 18,
                           ),
                           textAlign: TextAlign.left,
-                          maxLines: 4,
+                          maxLines: 5,
                         ),
                       )),
                 ],
@@ -154,3 +155,4 @@ Future<void> showButtonAboutDialog(context) async {
     },
   );
 }
+

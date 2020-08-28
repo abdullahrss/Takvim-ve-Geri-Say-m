@@ -44,7 +44,7 @@ class MainMenu extends StatelessWidget {
                 return MaterialApp(
                   debugShowCheckedModeBanner: false,
                   theme: theme,
-                  home: MainMenuBody(),
+                  home: MainMenuBody(warning: snapshot.data[0].warning,),
                   // navigatorKey: navigatorKey,
                 );
               });
@@ -55,6 +55,11 @@ class MainMenu extends StatelessWidget {
 }
 
 class MainMenuBody extends StatefulWidget {
+
+  final int warning;
+
+  const MainMenuBody({Key key, this.warning}) : super(key: key);
+
   @override
   _MainMenuBodyState createState() => _MainMenuBodyState();
 }
@@ -70,7 +75,26 @@ class _MainMenuBodyState extends State<MainMenuBody> {
   int _selectedIndex = 0;
   static int _selectedOrder = 0;
   int radioValue;
+
+  // Timer
   Timer timer;
+
+  // Navigation
+  int bottomSelectedIndex = 0;
+  PageController pageController = PageController(
+    initialPage: 0,
+    keepPage: true,
+  );
+
+  Widget buildPageView() {
+    return PageView(
+      controller: pageController,
+      onPageChanged: (index) {
+        pageChanged(index);
+      },
+      children: _widgetOptions,
+    );
+  }
 
   @override
   void initState() {
@@ -87,6 +111,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
 
   @override
   void dispose() {
+    pageController.dispose();
     timer.cancel();
     super.dispose();
   }
@@ -104,6 +129,15 @@ class _MainMenuBodyState extends State<MainMenuBody> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      pageController.animateToPage(index,
+          duration: Duration(milliseconds: 500), curve: Curves.ease);
+    });
+  }
+
+  void pageChanged(int index) {
+    setState(() {
+      _selectedIndex = index;
+      bottomSelectedIndex = index;
     });
   }
 
@@ -116,7 +150,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AddEvent()),
+              MaterialPageRoute(builder: (context) => AddEvent(warningstatus: widget.warning,)),
             );
           },
           child: Icon(
@@ -159,9 +193,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
               })
         ],
       ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
+      body: buildPageView(),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

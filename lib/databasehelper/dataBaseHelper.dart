@@ -109,7 +109,8 @@ class DbHelper {
 
   Future<Event> getEventById(int id) async {
     var db = await this.database;
-    var result = await db.rawQuery('SELECT * FROM $_tablename WHERE $_columnId=id');
+    var result = await db.rawQuery('SELECT * FROM $_tablename WHERE $_columnId=$id');
+
     Event event = Event();
     event = Event.fromMap(result[0]);
     return event;

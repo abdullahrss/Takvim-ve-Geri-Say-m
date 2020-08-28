@@ -40,10 +40,11 @@ int sortByDate(Event e1, Event e2) {
 }
 
 void printEvent(Event e) {
-  print("title : ${e.title} type : ${e.title.runtimeType}"
-      "recipient : ${e.recipient} type : ${e.recipient.runtimeType}"
-      "cc : ${e.cc} type : ${e.cc.runtimeType}"
-      "bb : ${e.bb} type : ${e.bb.runtimeType}"
-      "subject : ${e.subject.runtimeType} type : ${e.subject.runtimeType}"
-      "attachments : ${e.attachments} type : ${e.attachments.runtimeType}");
+  print("id : ${e.id} type : ${e.id.runtimeType}\n"
+      "title : ${e.title} type : ${e.title.runtimeType}\n"
+      "recipient : ${e.recipient} type : ${e.recipient.runtimeType}\n"
+      "cc : ${e.cc} type : ${e.cc.runtimeType}\n"
+      "bb : ${e.bb} type : ${e.bb.runtimeType}\n"
+      "subject : ${e.subject.runtimeType} type : ${e.subject.runtimeType}\n"
+      "attachments : ${e.attachments} type : ${e.attachments.runtimeType}\n");
 }

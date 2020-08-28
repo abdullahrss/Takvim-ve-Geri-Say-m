@@ -15,7 +15,7 @@ class Notifications {
       importance: Importance.Max,
       priority: Priority.Max,
       autoCancel: false,
-      ongoing: false,
+      ongoing: true,
       // notifications
       onlyAlertOnce: true,
       styleInformation: DefaultStyleInformation(true, true),
