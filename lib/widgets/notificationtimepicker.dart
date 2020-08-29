@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationPicker extends StatefulWidget {
 
@@ -10,7 +9,6 @@ class NotificationPicker extends StatefulWidget {
 }
 
 class _NotificationPickerState extends State<NotificationPicker> {
-  FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   var radioGroupValue;
 
@@ -82,11 +80,6 @@ class _NotificationPickerState extends State<NotificationPicker> {
                   style: TextStyle(color: Colors.black, fontSize: 20),
                 ),
                 onPressed: () async {
-//                  DateTime datetime = DateTime.now().add(Duration(seconds: 3));
-//                  Notifications not = await Notifications(localNotificationsPlugin);
-//                  await not.initalizeNotifications();
-//                  await not.singleNotification(await not.localNotificationsPlugin, datetime,
-//                      "deniyoz", "subtext", not.hashCode,0);
                   Navigator.of(context).pop();
                 },
               ),
