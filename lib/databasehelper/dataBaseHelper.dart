@@ -31,6 +31,9 @@ class DbHelper {
   static final String _columnRecipient = EventConstants.COLUMN_RECIPIENT;
   static final String _columnSubject = EventConstants.COLUMN_SUBJECT;
   static final String _columnBody = EventConstants.COLUMN_BODY;
+  static final String _columnPeriodic = EventConstants.COLUMN_PERIODIC;
+  static final String _columnFrequency = EventConstants.COLUMN_FREQUENCY;
+
 
   DbHelper._createInstance();
 
@@ -59,7 +62,7 @@ class DbHelper {
 
   static void _createDb(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $_tablename ( $_columnId INTEGER PRIMARY KEY NOT NULL,$_columnTitle TEXT ,$_columnDate TEXT,$_columnStartTime TEXT,$_columnFinishTime TEXT,$_columnDesc TEXT,$_columnIsActive INTEGER, $_columnNotification TEXT, $_columnCountdownIsActive INTEGER, $_columnAttachments TEXT,$_columnCc TEXT, $_columnBb TEXT, $_columnRecipient TEXT, $_columnSubject TEXT, $_columnBody TEXT);');
+        'CREATE TABLE $_tablename ( $_columnId INTEGER PRIMARY KEY NOT NULL,$_columnTitle TEXT ,$_columnDate TEXT,$_columnStartTime TEXT,$_columnFinishTime TEXT,$_columnDesc TEXT,$_columnIsActive INTEGER, $_columnNotification TEXT, $_columnCountdownIsActive INTEGER, $_columnAttachments TEXT,$_columnCc TEXT, $_columnBb TEXT, $_columnRecipient TEXT, $_columnSubject TEXT, $_columnBody TEXT,$_columnPeriodic INTEGER, $_columnFrequency TEXT);');
   }
 
   // Databaseden tüm eventleri alma
@@ -323,22 +326,7 @@ class DbHelper {
     return result;
   }
 
-  // Zamanı check ediyor
-  Future<List<Event>> isTimeOk(String date) async {
-    Database db = await this.database;
-    var result = await db.rawQuery(
-        "SELECT $_columnId,$_columnStartTime,$_columnFinishTime FROM $_tablename WHERE $_columnDate='$date' ");
-    int count = result.length;
-
-    List<Event> resultList = List<Event>();
-
-    for (var i = 0; i < count; i++) {
-      resultList.add(Event.fromMap(result[i]));
-    }
-    return resultList;
-  }
-
-  Future clearoldevent() async {
+  Future clearOldEvents() async {
     var not = Notifications(flutterLocalNotificationsPlugin);
     await getEventList().then((value) {
       for (int i = 0; i < value.length; i++) {

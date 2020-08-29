@@ -133,7 +133,7 @@ class _SettingsState extends State<Settings> {
                         message:
                             'Bütün tarihi geçmiş etkinlikleri silmek istediğinize emin misiniz.',
                         function: () async {
-                      await _db.clearoldevent();
+                      await _db.clearOldEvents();
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => MainMenu()),

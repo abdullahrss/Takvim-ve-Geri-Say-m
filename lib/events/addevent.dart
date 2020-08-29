@@ -6,7 +6,6 @@ import '../databasehelper/dataBaseHelper.dart';
 import '../databasemodels/events.dart';
 import '../events/mailSender.dart';
 import '../helpers/ads.dart';
-import '../helpers/validateEmpty.dart';
 import '../pages/mainmenu.dart';
 import '../widgets/notificationtimepicker.dart';
 import '../widgets/showDialog.dart';
@@ -49,14 +48,17 @@ class _AddEventState extends State<AddEvent> {
   bool _isfullday = false;
   bool _duplicite = false;
   bool _iscountdownchecked = false;
-  bool _timeisok = true;
+  bool _options = false;
+  bool _periodicCheckboxValue = false;
 
   var _radioValue;
   bool _switchValue = false;
   bool dialogValue = false;
+
   /// Baslik ve aciklama kontrolleri
   final _titlecontroller = TextEditingController();
   final _descriptioncontroller = TextEditingController();
+
   /// Mail degiskenleri
   List<String> _attachments = [];
   var _cc = "";
@@ -64,6 +66,11 @@ class _AddEventState extends State<AddEvent> {
   var _recipient = "";
   var _subject = "";
   var _body = "";
+
+  /// Periyodik etkinlik degiskenleri
+  int _periodic = 0;
+  String _frequency;
+  IconData _iconData = Icons.arrow_drop_down;
 
   @override
   void initState() {
@@ -296,7 +303,7 @@ class _AddEventState extends State<AddEvent> {
                 ),
               ),
               // Hata mesaji alani
-              if (!_iscorrect || _duplicite || !_timeisok)
+              if (!_iscorrect || _duplicite)
                 Container(
                   width: MediaQuery.of(context).size.width - 40,
                   //height: 75,
@@ -307,116 +314,166 @@ class _AddEventState extends State<AddEvent> {
                     style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                   ),
                 ),
-              // Butun gun secenegi
               Container(
-                  padding: const EdgeInsets.fromLTRB(20.0, 4.0, 20.0, 0),
-                  child: Column(
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            _isfullday = !_isfullday;
-                          });
-                        },
-                        child: Row(
-                          children: <Widget>[
-                            Checkbox(
-                              value: _isfullday,
-                              onChanged: (value) => {
-                                setState(() {
-                                  _isfullday = value;
-                                })
-                              },
-                            ),
-                            Text(
-                              "Bütün gün",
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Geri sayim aktiflestirmesi
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            _iscountdownchecked = !_iscountdownchecked;
-                          });
-                        },
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              Checkbox(
-                                value: _iscountdownchecked,
-                                onChanged: (bool value) {
-                                  setState(() {
-                                    _iscountdownchecked = value;
-                                  });
-                                },
-                              ),
-                              Text(
-                                "Geri sayım etkinleştir",
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              IconButton(
-                                  icon: Icon(Icons.info),
-                                  onPressed: () {
-                                    showWarningDialog(
-                                        context: context,
-                                        explanation:
-                                            "Geri sayım sayfasında etkinliğinize ne kadar süre kaldığını görebilirsiniz.");
-                                  }),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  )),
-              // Sabit bildirim
-              InkWell(
-                onTap: () {
-                  if(widget.warningstatus==0){
-                    NavigateToSettings();
-                  }
-                  setState(() {
-                    _switchValue = !_switchValue;
-                  });
-                },
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(22.0, 4.0, 20.0, 0),
+                padding: const EdgeInsets.fromLTRB(10.0, 4.0, 20.0, 0),
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      _options = !_options;
+                      if (_options) {
+                        _iconData = Icons.arrow_drop_up;
+                      } else {
+                        _iconData = Icons.arrow_drop_down;
+                      }
+                    });
+                  },
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Checkbox(
-                        value: _switchValue,
-                        onChanged: (val) {
-                          setState(() {
-                            _switchValue = val;
-                          });
-                        },
-                      ),
+                      Icon(_iconData),
                       Text(
-                        "Sabit bildirim",
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                        "Seçenekler",
+                        style: TextStyle(fontSize: 20),
                       ),
-                      IconButton(
-                          icon: Icon(Icons.info),
-                          onPressed: () {
-                            showWarningDialog(
-                                context: context,
-                                explanation:
-                                    "Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!");
-                          })
                     ],
                   ),
                 ),
               ),
+              // Butun gun secenegi
+              if (_options)
+                Container(
+                    padding: const EdgeInsets.fromLTRB(20.0, 4.0, 20.0, 0),
+                    child: Column(
+                      children: <Widget>[
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              _isfullday = !_isfullday;
+                            });
+                          },
+                          child: Row(
+                            children: <Widget>[
+                              Checkbox(
+                                value: _isfullday,
+                                onChanged: (value) => {
+                                  setState(() {
+                                    _isfullday = value;
+                                  })
+                                },
+                              ),
+                              Text(
+                                "Bütün gün",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Geri sayim aktiflestirmesi
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              _iscountdownchecked = !_iscountdownchecked;
+                            });
+                          },
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Checkbox(
+                                  value: _iscountdownchecked,
+                                  onChanged: (bool value) {
+                                    setState(() {
+                                      _iscountdownchecked = value;
+                                    });
+                                  },
+                                ),
+                                Text(
+                                  "Geri sayım etkinleştir",
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                                IconButton(
+                                    icon: Icon(Icons.info),
+                                    onPressed: () {
+                                      showWarningDialog(
+                                          context: context,
+                                          explanation:
+                                              "Geri sayım sayfasında etkinliğinize ne kadar süre kaldığını görebilirsiniz.");
+                                    }),
+                              ],
+                            ),
+                          ),
+                        ),
+                        // Sabit bildirim
+                        InkWell(
+                          onTap: () {
+                            if (widget.warningstatus == 0) {
+                              navigateToSettingsDialog(context);
+                            }
+                            setState(() {
+                              _switchValue = !_switchValue;
+                            });
+                          },
+                          child: Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Checkbox(
+                                  value: _switchValue,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      _switchValue = val;
+                                    });
+                                  },
+                                ),
+                                Text(
+                                  "Sabit bildirim",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                IconButton(
+                                    icon: Icon(Icons.info),
+                                    onPressed: () {
+                                      showWarningDialog(
+                                          context: context,
+                                          explanation:
+                                              "Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!");
+                                    })
+                              ],
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              _periodicCheckboxValue = !_periodicCheckboxValue;
+                            });
+                            // TODO:Navigate to popup or something like that
+                          },
+                          child: Row(
+                            children: <Widget>[
+                              Checkbox(
+                                value: _periodicCheckboxValue,
+                                onChanged: (v) {
+                                  setState(() {
+                                    _periodicCheckboxValue = v;
+                                  });
+                                },
+                              ),
+                              Text(
+                                "Periyodik bildirimler",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )),
               // Etkinlik aciklamasi
               Container(
                 padding: EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 0),
@@ -458,6 +515,7 @@ class _AddEventState extends State<AddEvent> {
           )),
     );
   }
+
   List<int> parseHours(String value) {
     List<String> strHours = value.split(":");
     List<int> intHours = [];
@@ -481,20 +539,10 @@ class _AddEventState extends State<AddEvent> {
         _duplicite = value;
       });
     });
-    if (!_duplicite) {
-      await _db.isTimeOk(_selectedDate).then((value) {
-        setState(() {
-          _timeisok = validateDayIsEmpty(value, _selectedStartHour, _selectedFinishHour);
-        });
-      });
-    }
 
     setState(() {
       /// Eger istenilen gunde tum gun etkinlik varsa hata mesaji yaziliyor
       errmsg = _duplicite == false ? "" : "Bu gün başka bir etkinliğiniz var";
-
-      /// Zaman degistirilmek istenilen zaman baska etkinler ile zamani cakisiyorsa hata mesaji yaziliyor
-      errmsg += _timeisok == false ? "\nBu saatlerde başka bir etkinlik var" : "";
 
       /// Eger tum gun degilse baslangic ve bitis zamanlari kontrol ediliyor olumsuzluk varsa hata mesaji yaziliyor
       if (!_isfullday) {
@@ -510,7 +558,7 @@ class _AddEventState extends State<AddEvent> {
     for (int i = 0; i < _attachments.length; i++) {
       imagePaths += "${_attachments[i]}-";
     }
-    if (state.validate() && _iscorrect && (!_duplicite) && _timeisok) {
+    if (state.validate() && _iscorrect && (!_duplicite)) {
       var newEvent = (_isfullday)
           ? Event(
               title: _titlecontroller.text,
@@ -525,6 +573,8 @@ class _AddEventState extends State<AddEvent> {
               recipient: _recipient,
               subject: _subject,
               body: _body,
+              periodic: _periodic,
+              frequency: _frequency,
             )
           : Event(
               title: _titlecontroller.text,
@@ -541,6 +591,8 @@ class _AddEventState extends State<AddEvent> {
               recipient: _recipient,
               subject: _subject,
               body: _body,
+              periodic: _periodic,
+              frequency: _frequency,
             );
       await _db.insertEvent(newEvent);
       await _db.createNotifications();

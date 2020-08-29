@@ -1,18 +1,20 @@
 import '../helpers/constants.dart';
 
 class Event {
-  // etkinlik detaylari
+  /// Etkinlik detaylari
   int _id;
   String _title;
   String _date;
   String _startTime;
   String _finishTime;
   String _desc;
-  // geri sayim ve bildirimler icin gerekli degiskenler
+
+  /// Geri sayim ve bildirimler icin gerekli degiskenler
   int _isActive;
   String _choice;
   int _countDownIsActive;
-  // mail icin gerekli bilgiler
+
+  /// Mail icin gerekli bilgiler
   String _attachments;
   String _cc;
   String _bb;
@@ -20,22 +22,29 @@ class Event {
   String _subject;
   String _body;
 
-  Event(
-      {int id,
-      String title,
-      String date,
-      String startTime,
-      String finishTime,
-      String desc,
-      int isActive,
-      String choice,
-      int countDownIsActive,
-      String attachments,
-      String cc,
-      String bb,
-      String recipient,
-      String subject,
-      String body}) {
+  /// Periyodik islemler icin gerekli bilgiler
+  int _periodic;
+  String _frequency;
+
+  /// Constructor
+  Event({int id,
+    String title,
+    String date,
+    String startTime,
+    String finishTime,
+    String desc,
+    int isActive,
+    String choice,
+    int countDownIsActive,
+    String attachments,
+    String cc,
+    String bb,
+    String recipient,
+    String subject,
+    String body,
+    int periodic,
+    String frequency,
+  }) {
     this._id = id;
     this._title = title;
     this._date = date;
@@ -51,8 +60,11 @@ class Event {
     this._recipient = recipient;
     this._subject = subject;
     this._body = body;
+    this._periodic = periodic;
+    this._frequency = frequency;
   }
 
+  /// Getters
   int get id => _id;
 
   String get title => _title;
@@ -83,6 +95,11 @@ class Event {
 
   String get body => _body;
 
+  int get periodic => _periodic;
+
+  String get frequency => _frequency;
+
+  /// Setters
   set id(int newId) {
     _id = newId;
   }
@@ -144,6 +161,11 @@ class Event {
     _body = bodyController;
   }
 
+  set periodic(int period) => _periodic=period;
+
+  set frequency(String freq) => _frequency =freq;
+
+  /// Event'i map objesine donusturuyor
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
 
@@ -165,10 +187,12 @@ class Event {
     map[EventConstants.COLUMN_RECIPIENT] = _recipient;
     map[EventConstants.COLUMN_SUBJECT] = _subject;
     map[EventConstants.COLUMN_BODY] = _body;
+    map[EventConstants.COLUMN_PERIODIC] = _periodic;
+    map[EventConstants.COLUMN_FREQUENCY] = _frequency;
 
     return map;
   }
-
+  /// Map objesinden event olusturan named constructor
   Event.fromMap(Map input) {
     this._id = input[EventConstants.COLUMN_ID];
     this._title = input[EventConstants.COLUMN_TITLE];
@@ -185,5 +209,7 @@ class Event {
     this._recipient = input[EventConstants.COLUMN_RECIPIENT];
     this._subject = input[EventConstants.COLUMN_SUBJECT];
     this._body = input[EventConstants.COLUMN_BODY];
+    this._periodic = input[EventConstants.COLUMN_PERIODIC];
+    this._frequency = input[EventConstants.COLUMN_FREQUENCY];
   }
 }

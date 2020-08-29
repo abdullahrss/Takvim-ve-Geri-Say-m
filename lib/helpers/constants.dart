@@ -15,6 +15,8 @@ class EventConstants{
   static const String COLUMN_RECIPIENT = "recipient";
   static const String COLUMN_SUBJECT = "subject";
   static const String COLUMN_BODY = "body";
+  static const String COLUMN_PERIODIC = "periodic";
+  static const String COLUMN_FREQUENCY = "frequcency";
 }
 class SettingsConstants{
   static const String TABLE_NAME = "tblsettings" ;

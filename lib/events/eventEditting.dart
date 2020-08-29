@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../databasehelper/dataBaseHelper.dart';
 import '../databasemodels/events.dart';
 import '../helpers/ads.dart';
-import '../helpers/validateEmpty.dart';
 import '../pages/mainmenu.dart';
 import '../widgets/notificationtimepicker.dart';
 import '../widgets/showDialog.dart';
@@ -35,7 +34,6 @@ class _AddEventState extends State<EventEdit> {
   bool _isfullday = false;
   bool _duplicite = false;
   bool _iscountdownchecked = false;
-  bool _timeisok = true;
   var _radioValue;
   bool _switchValue;
 
@@ -265,7 +263,7 @@ class _AddEventState extends State<EventEdit> {
                   thickness: 3,
                 ),
               ),
-              if (!_iscorrect || _duplicite || !_timeisok || errmsg != "")
+              if (!_iscorrect || _duplicite || errmsg != "")
                 Container(
                   width: MediaQuery.of(context).size.width - 40,
                   height: 50,
@@ -439,22 +437,11 @@ class _AddEventState extends State<EventEdit> {
         _duplicite = value;
       });
     });
-    // Eger tum gun suren etkinlik yoksa istenilen etkinlik saatlerinin uygunluguna bakıyor
-    if (!_duplicite) {
-      await _db.isTimeOk(widget.event.date).then((value) {
-        setState(() {
-          _timeisok = validateDayIsEmpty(value, _selectedStartHour, _selectedFinishHour,
-              id: widget.event.id);
-        });
-      });
-    }
-    // Olasi hatalarin mesajlari olusturuluyor
+    /// Olasi hatalarin mesajlari olusturuluyor
     setState(() {
-      // Eger istenilen gunde tum gun etkinlik varsa hata mesaji yaziliyor
+      /// Eger istenilen gunde tum gun etkinlik varsa hata mesaji yaziliyor
       errmsg = _duplicite == false ? "" : "Bu gün başka bir etkinliğiniz var\n";
-      // Zaman degistirilmek istenilen zaman baska etkinler ile zamani cakisiyorsa hata mesaji yaziliyor
-      errmsg += _timeisok == false ? "Bu saatlerde başka bir etkinlik var\n" : "";
-      // Eger tum gun degilse baslangic ve bitis zamanlari kontrol ediliyor olumsuzluk varsa hata mesaji yaziliyor
+      /// Eger tum gun degilse baslangic ve bitis zamanlari kontrol ediliyor olumsuzluk varsa hata mesaji yaziliyor
       try {
         if (!_isfullday) {
           _iscorrect = parseHours(_selectedFinishHour)[0] < parseHours(_selectedStartHour)[0] ||
@@ -466,7 +453,7 @@ class _AddEventState extends State<EventEdit> {
         }
       } catch (e) {
         print("[ERROR] [EVENTEDITTING] $e");
-        // Tüm gün olan eventi tüm günden cikartip saat secilmezse
+        /// Tüm gün olan eventi tüm günden cikartip saat secilmezse
         errmsg += "Tüm gün işaretli değilse saat girmelisiniz\n";
       }
     });
@@ -474,7 +461,7 @@ class _AddEventState extends State<EventEdit> {
     for (int i = 0; i < _attachments.length; i++) {
       imagePaths += "${_attachments[i]}-";
     }
-    if (state.validate() && (_iscorrect) && (_timeisok) && (errmsg == "")) {
+    if (state.validate() && (_iscorrect) && (errmsg == "")) {
       var newEvent = _isfullday
           ? Event(
               id: widget.event.id,
@@ -490,6 +477,8 @@ class _AddEventState extends State<EventEdit> {
               recipient: _recipient,
               subject: _subject,
               body: _body,
+              periodic: 0,
+              frequency: "",
             )
           : Event(
               id: widget.event.id,
@@ -507,6 +496,8 @@ class _AddEventState extends State<EventEdit> {
               recipient: _recipient,
               subject: _subject,
               body: _body,
+              periodic: 0,
+              frequency: "",
             );
       _db.updateEvent(newEvent);
       _db.createNotifications();

@@ -1,33 +1,32 @@
 import 'package:flutter/material.dart';
 
-class NavigateToSettings extends StatefulWidget {
+void navigateToSettingsDialog(context) {
+  bool val = false;
+  showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              actions: <Widget>[
+                Text("ATTANTION PLS"),
+                Text("STAY BEHIND THE YELLOW LINE"),
+                Row(
+                  children: <Widget>[
+                    FlatButton(
+                      child:Text("okay brah"),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    Checkbox(
+                      value: val,
+                      onChanged: (v) => setState((){val=v;}),
+                    ),
 
-  @override
-  _NavigateToSettingsState createState() => _NavigateToSettingsState();
-}
-
-class _NavigateToSettingsState extends State<NavigateToSettings> {
-
-
-  @override
-  Widget build(BuildContext context) {
-    bool checkboxvalue = false;
-    return Dialog(
-      child: Column(
-        children: <Widget>[
-          Text("DİKKKAKAWT"),
-          Text("DİKKAT ETZSENE OLM"),
-          Row(
-            children: <Widget>[
-              Checkbox(
-                value: checkboxvalue,
-                onChanged: (v) => setState((){checkboxvalue=v;}),
-              ),
-              Text("GET OUT"),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+                  ],
+                ),
+              ],
+            );
+          },
+        );
+      });
 }

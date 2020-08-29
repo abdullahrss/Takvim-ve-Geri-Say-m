@@ -114,6 +114,8 @@ class _CalanderEventstate extends State<CalanderEvent> {
                                         recipient: snapshot.data[index].recipient,
                                         subject: snapshot.data[index].subject,
                                         body: snapshot.data[index].body,
+                                        periodic: snapshot.data[index].periodic,
+                                        frequency: snapshot.data[index].frequency,
                                       )),
                                     ),
                                     Container(

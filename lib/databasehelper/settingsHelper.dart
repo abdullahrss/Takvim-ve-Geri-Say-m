@@ -10,10 +10,6 @@ import '../helpers/constants.dart';
 class SettingsDbHelper {
   static SettingsDbHelper _databaseHelper; // Database'in tekil olmasi icin
   static Database _database;
-  static final String _tablename = SettingsConstants.TABLE_NAME;
-  static final String _columnTheme = SettingsConstants.COLUMN_THEME;
-  static final String _columnFontName = SettingsConstants.COLUMN_FONTNAME;
-  static final String _columnWarning = SettingsConstants.COLUMN_WARNING;
 
   SettingsDbHelper._createInstance();
 
@@ -43,34 +39,34 @@ class SettingsDbHelper {
 
   /// Database olusturuluyor
   static void _createDb(Database db, int newVersion) async {
-    await db.execute('CREATE TABLE $_tablename($_columnTheme TEXT, $_columnFontName TEXT,$_columnWarning INTEGER)');
+    await db.execute('CREATE TABLE ${SettingsConstants.TABLE_NAME}(${SettingsConstants.COLUMN_THEME} TEXT, ${SettingsConstants.COLUMN_FONTNAME} TEXT,${SettingsConstants.COLUMN_WARNING} INTEGER)');
   }
 
   /// Yeni gelen theme bilgisiyle database guncelleniyor
   Future<void> updateTheme(Setting setting) async {
     var db = await this.database;
-    await db.rawQuery("UPDATE $_tablename SET $_columnTheme = '${setting.theme}';");
+    await db.rawQuery("UPDATE ${SettingsConstants.TABLE_NAME} SET ${SettingsConstants.COLUMN_THEME} = '${setting.theme}';");
   }
 
   /// Font settings'i guncelleniyor
   Future<void> updateFont(Setting setting) async {
     var db = await this.database;
-    await db.rawQuery("UPDATE $_tablename SET $_columnFontName = '${setting.fontName}';");
+    await db.rawQuery("UPDATE ${SettingsConstants.TABLE_NAME} SET ${SettingsConstants.COLUMN_FONTNAME} = '${setting.fontName}';");
   }
 
   /// Warning Settings'i guncelleniyor
   Future<void> updateWarning(int e) async {
     var db = await this.database;
-    await db.rawQuery("UPDATE $_tablename SET $_columnWarning = $e;");
+    await db.rawQuery("UPDATE ${SettingsConstants.TABLE_NAME} SET ${SettingsConstants.COLUMN_WARNING} = $e;");
   }
 
   Future<List<Setting>> getSettings() async {
     Database db = await this.database;
-    var settingsMapList = await db.rawQuery("SELECT * FROM $_tablename");
+    var settingsMapList = await db.rawQuery("SELECT * FROM ${SettingsConstants.TABLE_NAME}");
     if (settingsMapList.length == 0 || settingsMapList == []) {
       await db.rawQuery(
-          "INSERT INTO $_tablename ($_columnTheme,$_columnFontName,$_columnWarning) VALUES('light','DoppioOne',0);");
-      settingsMapList = await db.rawQuery("SELECT * FROM $_tablename");
+          "INSERT INTO ${SettingsConstants.TABLE_NAME} (${SettingsConstants.COLUMN_THEME},${SettingsConstants.COLUMN_FONTNAME},${SettingsConstants.COLUMN_WARNING}) VALUES('light','DoppioOne',0);");
+      settingsMapList = await db.rawQuery("SELECT * FROM ${SettingsConstants.TABLE_NAME}");
     }
     List<Setting> settingList = List<Setting>();
     for (int i = 0; i < settingsMapList.length; i++) {
