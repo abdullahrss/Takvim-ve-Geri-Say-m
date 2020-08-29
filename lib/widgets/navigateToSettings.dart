@@ -1,6 +1,8 @@
+import 'package:ajanda/databasehelper/settingsHelper.dart';
 import 'package:flutter/material.dart';
 
 void navigateToSettingsDialog(context) {
+  var sdb = SettingsDbHelper();
   bool val = false;
   showDialog(
       context: context,
@@ -14,14 +16,18 @@ void navigateToSettingsDialog(context) {
                 Row(
                   children: <Widget>[
                     FlatButton(
-                      child:Text("okay brah"),
-                      onPressed: () => Navigator.pop(context),
+                      child: Text("okay brah"),
+                      onPressed: () {
+                        sdb.updateWarning(val?1:0);                 
+                        Navigator.pop(context);
+                      },
                     ),
                     Checkbox(
                       value: val,
-                      onChanged: (v) => setState((){val=v;}),
+                      onChanged: (v) => setState(() {
+                        val = v;
+                      }),
                     ),
-
                   ],
                 ),
               ],
