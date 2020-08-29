@@ -77,12 +77,9 @@ class _AddEventState extends State<EventEdit> {
 
     widget.event.periodic = _periodRadio;
 
-    print(widget.event.frequency.length);
-
-
     for(int i = 0;i<widget.event.frequency.length;i++){
       if (widget.event.frequency[i] == "0" ){
-          _periodicDays.add(false);
+        _periodicDays.add(false);
       }
       else{
         _periodicDays.add(true);
@@ -194,8 +191,8 @@ class _AddEventState extends State<EventEdit> {
                             setState(() {
                               _selectedFinishHour =
                                   (value.hour.toString().length == 1
-                                          ? "0" + value.hour.toString()
-                                          : value.hour.toString()) +
+                                      ? "0" + value.hour.toString()
+                                      : value.hour.toString()) +
                                       ":" +
                                       (value.minute.toString().length == 1
                                           ? "0" + value.minute.toString()
@@ -211,8 +208,8 @@ class _AddEventState extends State<EventEdit> {
                             setState(() {
                               _selectedStartHour =
                                   (value.hour.toString().length == 1
-                                          ? "0" + value.hour.toString()
-                                          : value.hour.toString()) +
+                                      ? "0" + value.hour.toString()
+                                      : value.hour.toString()) +
                                       ":" +
                                       (value.minute.toString().length == 1
                                           ? "0" + value.minute.toString()
@@ -266,14 +263,14 @@ class _AddEventState extends State<EventEdit> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => EmailSender(
-                                        attacs: stringPathsToList(
-                                            widget.event.attachments),
-                                        cctext: widget.event.cc,
-                                        bbtext: widget.event.bb,
-                                        recipienttext: widget.event.recipient,
-                                        subjecttext: widget.event.subject,
-                                        bodytext: widget.event.body,
-                                      ))).then((value) {
+                                    attacs: stringPathsToList(
+                                        widget.event.attachments),
+                                    cctext: widget.event.cc,
+                                    bbtext: widget.event.bb,
+                                    recipienttext: widget.event.recipient,
+                                    subjecttext: widget.event.subject,
+                                    bodytext: widget.event.body,
+                                  ))).then((value) {
                             if (value != null) {
                               setState(() {
                                 _attachments = value[0];
@@ -539,7 +536,7 @@ class _AddEventState extends State<EventEdit> {
                               InkWell(
                                 onTap: () async {
                                   DayPickerForPeriodic dayPicker =
-                                  DayPickerForPeriodic();
+                                  DayPickerForPeriodic(days: _periodicDays,);
                                   await showDialog(
                                       context: context, child: dayPicker);
                                   setState(() {
@@ -651,11 +648,11 @@ class _AddEventState extends State<EventEdit> {
       try {
         if (!_isfullday) {
           _iscorrect = parseHours(_selectedFinishHour)[0] <
-                      parseHours(_selectedStartHour)[0] ||
-                  (parseHours(_selectedFinishHour)[0] ==
-                          parseHours(_selectedStartHour)[0] &&
-                      parseHours(_selectedFinishHour)[1] <
-                          parseHours(_selectedStartHour)[1])
+              parseHours(_selectedStartHour)[0] ||
+              (parseHours(_selectedFinishHour)[0] ==
+                  parseHours(_selectedStartHour)[0] &&
+                  parseHours(_selectedFinishHour)[1] <
+                      parseHours(_selectedStartHour)[1])
               ? false
               : true;
           errmsg += _iscorrect == false
@@ -682,41 +679,41 @@ class _AddEventState extends State<EventEdit> {
     if (state.validate() && (_iscorrect) && (!_duplicite)) {
       var newEvent = _isfullday
           ? Event(
-              id: widget.event.id,
-              title: _titlecontroller.text,
-              date: _selectedDate,
-              desc: _descriptioncontroller.text,
-              isActive: _iscountdownchecked ? 1 : 0,
-              choice: _radioValue.toString(),
-              countDownIsActive: _switchValue ? 1 : 0,
-              attachments: imagePaths,
-              cc: _cc,
-              bb: _bb,
-              recipient: _recipient,
-              subject: _subject,
-              body: _body,
-              periodic: _periodRadio,
-              frequency: _frequency,
-            )
+        id: widget.event.id,
+        title: _titlecontroller.text,
+        date: _selectedDate,
+        desc: _descriptioncontroller.text,
+        isActive: _iscountdownchecked ? 1 : 0,
+        choice: _radioValue.toString(),
+        countDownIsActive: _switchValue ? 1 : 0,
+        attachments: imagePaths,
+        cc: _cc,
+        bb: _bb,
+        recipient: _recipient,
+        subject: _subject,
+        body: _body,
+        periodic: _periodRadio,
+        frequency: _frequency,
+      )
           : Event(
-              id: widget.event.id,
-              title: _titlecontroller.text,
-              date: _selectedDate,
-              startTime: _selectedStartHour,
-              finishTime: _selectedFinishHour,
-              desc: _descriptioncontroller.text,
-              isActive: _iscountdownchecked ? 1 : 0,
-              choice: _radioValue == null ? "0" : _radioValue.toString(),
-              countDownIsActive: _switchValue ? 1 : 0,
-              attachments: imagePaths,
-              cc: _cc,
-              bb: _bb,
-              recipient: _recipient,
-              subject: _subject,
-              body: _body,
-              periodic: _periodRadio,
-              frequency: _frequency,
-            );
+        id: widget.event.id,
+        title: _titlecontroller.text,
+        date: _selectedDate,
+        startTime: _selectedStartHour,
+        finishTime: _selectedFinishHour,
+        desc: _descriptioncontroller.text,
+        isActive: _iscountdownchecked ? 1 : 0,
+        choice: _radioValue == null ? "0" : _radioValue.toString(),
+        countDownIsActive: _switchValue ? 1 : 0,
+        attachments: imagePaths,
+        cc: _cc,
+        bb: _bb,
+        recipient: _recipient,
+        subject: _subject,
+        body: _body,
+        periodic: _periodRadio,
+        frequency: _frequency,
+      );
       _db.updateEvent(newEvent);
       _db.createNotifications();
       Navigator.of(context).pop();
