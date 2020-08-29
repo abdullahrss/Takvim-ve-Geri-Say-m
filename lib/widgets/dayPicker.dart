@@ -5,6 +5,8 @@ class DayPickerForPeriodic extends StatefulWidget {
 
   List<bool> days;
 
+  DayPickerForPeriodic({Key key, this.days}) : super(key: key);
+
   @override
   _DayPickerForPeriodicState createState() => _DayPickerForPeriodicState();
 }
@@ -22,6 +24,15 @@ class _DayPickerForPeriodicState extends State<DayPickerForPeriodic> {
   @override
   void initState() {
     super.initState();
+    if(widget.days!=null){
+      _pazartesi = widget.days[0];
+      _sali = widget.days[1];
+      _carsamba = widget.days[2];
+      _persembe = widget.days[3];
+      _cuma = widget.days[4];
+      _cumartesi = widget.days[5];
+      _pazar = widget.days[6];
+    }
   }
 
 
