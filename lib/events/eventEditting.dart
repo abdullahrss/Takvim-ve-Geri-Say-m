@@ -1,6 +1,8 @@
 import 'package:ajanda/helpers/helperFunctions.dart';
 import 'package:flutter/material.dart';
-
+import 'package:ajanda/widgets/dayPicker.dart';
+import 'package:ajanda/widgets/navigateToSettings.dart';
+import 'package:flutter/cupertino.dart';
 import '../databasehelper/dataBaseHelper.dart';
 import '../databasemodels/events.dart';
 import '../helpers/ads.dart';
@@ -10,9 +12,10 @@ import '../widgets/showDialog.dart';
 import 'mailSender.dart';
 
 class EventEdit extends StatefulWidget {
+  final int warningstatus;
   final Event event;
 
-  const EventEdit({Key key, this.event}) : super(key: key);
+  const EventEdit({Key key, this.event,this.warningstatus}) : super(key: key);
 
   @override
   _AddEventState createState() => _AddEventState();
@@ -34,29 +37,34 @@ class _AddEventState extends State<EventEdit> {
   bool _isfullday = false;
   bool _duplicite = false;
   bool _iscountdownchecked = false;
+  bool _options = false;
+  bool _periodicCheckboxValue = false;
+
   var _radioValue;
   bool _switchValue;
 
   final _titlecontroller = TextEditingController();
   final _descriptioncontroller = TextEditingController();
-
+  /// Mail degiskenleri
   List<String> _attachments = [];
-
   var _cc = "";
-
   var _bb = "";
-
   var _recipient = "";
-
   var _subject = "";
-
   var _body = "";
+
+  /// Periyodik etkinlik degiskenleri
+  int _periodRadio = 0;
+  String _frequency;
+  List<bool> _periodicDays = [];
+  IconData _iconData = Icons.arrow_drop_down;
+  IconData _iconData2 = Icons.arrow_drop_down;
+
 
   @override
   void initState() {
     if (widget.event.attachments != null) {
       _attachments = stringPathsToList(widget.event.attachments);
-
     }
 
     super.initState();
@@ -66,6 +74,22 @@ class _AddEventState extends State<EventEdit> {
     _selectedStartHour = widget.event.startTime;
     _selectedDate = widget.event.date;
     _iscountdownchecked = widget.event.isActive == 1 ? true : false;
+
+    widget.event.periodic = _periodRadio;
+
+    print(widget.event.frequency.length);
+
+
+    for(int i = 0;i<widget.event.frequency.length;i++){
+      if (widget.event.frequency[i] == "0" ){
+          _periodicDays.add(false);
+      }
+      else{
+        _periodicDays.add(true);
+      }
+
+    }
+
     setState(() {
       _switchValue = widget.event.countDownIsActive == 1 ? true : false;
       _isfullday = _selectedStartHour == "null" ? true : false;
@@ -101,7 +125,9 @@ class _AddEventState extends State<EventEdit> {
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
-                      return value.isEmpty ? "Etkinlik ismi boş bırakılamaz" : null;
+                      return value.isEmpty
+                          ? "Etkinlik ismi boş bırakılamaz"
+                          : null;
                     },
                   )),
               Container(
@@ -161,32 +187,36 @@ class _AddEventState extends State<EventEdit> {
                         if (!_isfullday) {
                           showTimePicker(
                             context: context,
-                            initialTime:
-                                TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
+                            initialTime: TimeOfDay(
+                                hour: DateTime.now().hour,
+                                minute: DateTime.now().minute),
                           ).then((value) {
                             setState(() {
-                              _selectedFinishHour = (value.hour.toString().length == 1
-                                      ? "0" + value.hour.toString()
-                                      : value.hour.toString()) +
-                                  ":" +
-                                  (value.minute.toString().length == 1
-                                      ? "0" + value.minute.toString()
-                                      : value.minute.toString());
+                              _selectedFinishHour =
+                                  (value.hour.toString().length == 1
+                                          ? "0" + value.hour.toString()
+                                          : value.hour.toString()) +
+                                      ":" +
+                                      (value.minute.toString().length == 1
+                                          ? "0" + value.minute.toString()
+                                          : value.minute.toString());
                             });
                           });
                           showTimePicker(
                             context: context,
-                            initialTime:
-                                TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
+                            initialTime: TimeOfDay(
+                                hour: DateTime.now().hour,
+                                minute: DateTime.now().minute),
                           ).then((value) {
                             setState(() {
-                              _selectedStartHour = (value.hour.toString().length == 1
-                                      ? "0" + value.hour.toString()
-                                      : value.hour.toString()) +
-                                  ":" +
-                                  (value.minute.toString().length == 1
-                                      ? "0" + value.minute.toString()
-                                      : value.minute.toString());
+                              _selectedStartHour =
+                                  (value.hour.toString().length == 1
+                                          ? "0" + value.hour.toString()
+                                          : value.hour.toString()) +
+                                      ":" +
+                                      (value.minute.toString().length == 1
+                                          ? "0" + value.minute.toString()
+                                          : value.minute.toString());
                             });
                           });
                         }
@@ -204,7 +234,11 @@ class _AddEventState extends State<EventEdit> {
                               var day = value.day.toString().length == 1
                                   ? "0" + value.day.toString()
                                   : value.day.toString();
-                              _selectedDate = value.year.toString() + "-" + month + "-" + day;
+                              _selectedDate = value.year.toString() +
+                                  "-" +
+                                  month +
+                                  "-" +
+                                  day;
                             });
                           }
                         });
@@ -232,7 +266,8 @@ class _AddEventState extends State<EventEdit> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => EmailSender(
-                                        attacs: stringPathsToList(widget.event.attachments),
+                                        attacs: stringPathsToList(
+                                            widget.event.attachments),
                                         cctext: widget.event.cc,
                                         bbtext: widget.event.bb,
                                         recipienttext: widget.event.recipient,
@@ -263,7 +298,7 @@ class _AddEventState extends State<EventEdit> {
                   thickness: 3,
                 ),
               ),
-              if (!_iscorrect || _duplicite || errmsg != "")
+              if (!_iscorrect || _duplicite )
                 Container(
                   width: MediaQuery.of(context).size.width - 40,
                   height: 50,
@@ -271,36 +306,66 @@ class _AddEventState extends State<EventEdit> {
                   padding: const EdgeInsets.fromLTRB(20.0, 4.0, 20.0, 4.0),
                   child: Text(
                     errmsg,
-                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold),
                   ),
                 ),
               // Butun gun secenegi
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    _isfullday = !_isfullday;
-                  });
-                },
-                child: Container(
+              Container(
+                padding: const EdgeInsets.fromLTRB(10.0, 4.0, 20.0, 0),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        _options = !_options;
+                        if (_options) {
+                          _iconData = Icons.arrow_drop_up;
+                        } else {
+                          _iconData = Icons.arrow_drop_down;
+                        }
+                      });
+                    },
+                    child: Row(
+                      children: <Widget>[
+                        Icon(_iconData),
+                        Text(
+                          "Seçenekler",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              if (_options)
+                Container(
                     padding: const EdgeInsets.fromLTRB(20.0, 4.0, 20.0, 0),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Checkbox(
-                              value: _isfullday,
-                              onChanged: (value) => {
-                                setState(() {
-                                  _isfullday = value;
-                                })
-                              },
-                            ),
-                            Text(
-                              "Bütün gün",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                          ],
+                        // Butun gun secenegi
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              _isfullday = !_isfullday;
+                            });
+                          },
+                          child: Row(
+                            children: <Widget>[
+                              Checkbox(
+                                value: _isfullday,
+                                onChanged: (value) => {
+                                  setState(() {
+                                    _isfullday = value;
+                                  })
+                                },
+                              ),
+                              Text(
+                                "Bütün gün",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
                         ),
                         // Geri sayim aktiflestirmesi
                         InkWell(
@@ -325,53 +390,183 @@ class _AddEventState extends State<EventEdit> {
                                 ),
                                 Text(
                                   "Geri sayım etkinleştir",
-                                  style: TextStyle(fontSize: 18),
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                                IconButton(
+                                    icon: Icon(Icons.info),
+                                    onPressed: () {
+                                      showWarningDialog(
+                                          context: context,
+                                          explanation:
+                                          "Geri sayım sayfasında etkinliğinize ne kadar süre kaldığını görebilirsiniz.");
+                                    }),
+                              ],
+                            ),
+                          ),
+                        ),
+                        // Sabit bildirim
+                        InkWell(
+                          onTap: () {
+                            if (widget.warningstatus == 0) {
+                              navigateToSettingsDialog(context);
+                            }
+                            setState(() {
+                              _switchValue = !_switchValue;
+                            });
+                          },
+                          child: Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Checkbox(
+                                  value: _switchValue,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      _switchValue = val;
+                                    });
+                                  },
+                                ),
+                                Text(
+                                  "Sabit bildirim",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                IconButton(
+                                    icon: Icon(Icons.info),
+                                    onPressed: () {
+                                      showWarningDialog(
+                                          context: context,
+                                          explanation:
+                                          "Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!");
+                                    })
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 6.0),
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                _periodicCheckboxValue =
+                                !_periodicCheckboxValue;
+                                if (_periodicCheckboxValue) {
+                                  _iconData2 = Icons.arrow_drop_up;
+                                } else {
+                                  _iconData2 = Icons.arrow_drop_down;
+                                }
+                              });
+                            },
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  _iconData2,
+                                  size: 36,
+                                ),
+                                Text(
+                                  "Periyodik Etkinlik",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                         ),
+                        if (_periodicCheckboxValue)
+                          Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(left: 16.0),
+                                child: InkWell(
+                                  onTap: () => setSelectedRadio(1),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Radio(
+                                        value: 1,
+                                        groupValue: _periodRadio,
+                                        onChanged: (val) {
+                                          setSelectedRadio(val);
+                                        },
+                                      ),
+                                      Text("Günlük",
+                                          style: TextStyle(fontSize: 20)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 16.0),
+                                child: InkWell(
+                                  onTap: () => setSelectedRadio(2),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Radio(
+                                        value: 2,
+                                        groupValue: _periodRadio,
+                                        onChanged: (val) {
+                                          setSelectedRadio(val);
+                                        },
+                                      ),
+                                      Text("Haftalık",
+                                          style: TextStyle(fontSize: 20)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 16.0),
+                                child: InkWell(
+                                  onTap: () => setSelectedRadio(3),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Radio(
+                                        value: 3,
+                                        groupValue: _periodRadio,
+                                        onChanged: (val) {
+                                          setSelectedRadio(val);
+                                        },
+                                      ),
+                                      Text("Aylık",
+                                          style: TextStyle(fontSize: 20)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () async {
+                                  DayPickerForPeriodic dayPicker =
+                                  DayPickerForPeriodic();
+                                  await showDialog(
+                                      context: context, child: dayPicker);
+                                  setState(() {
+                                    _periodicDays = dayPicker.days;
+                                  });
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 29.0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Icon(
+                                        Icons.calendar_today,
+                                      ),
+                                      Text(
+                                        "  Özel",
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                       ],
                     )),
-              ),
-              // Sabit bildirim
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    _switchValue = !_switchValue;
-                  });
-                },
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(22.0, 4.0, 20.0, 0),
-                  child: Row(
-                    children: <Widget>[
-                      Checkbox(
-                        value: _switchValue,
-                        onChanged: (val) {
-                          setState(() {
-                            _switchValue = val;
-                          });
-                        },
-                      ),
-                      Text(
-                        "Sabit bildirim",
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      IconButton(
-                          icon: Icon(Icons.info),
-                          onPressed: () {
-                            showWarningDialog(
-                                context:context,
-                                explanation:"Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!");
-                          })
-                    ],
-                  ),
-                ),
-              ),
               // Etkinlik aciklamasi
               Container(
                 padding: EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 0),
@@ -382,7 +577,8 @@ class _AddEventState extends State<EventEdit> {
                   decoration: InputDecoration(
                     labelText: "Etkinlik açıklaması ...",
                     hintText: "Etkinlik detaylarının girileceği alan...",
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0)),
                   ),
                 ),
               ),
@@ -396,14 +592,16 @@ class _AddEventState extends State<EventEdit> {
                       elevation: 18,
                       onPressed: () => {clearAreas()},
                       child: Text("Temizle"),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0)),
                       splashColor: Colors.blue,
                     ),
                     RaisedButton(
                       onPressed: () => {validateandsave()},
                       elevation: 18,
                       child: Text("Kaydet"),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0)),
                       splashColor: Colors.blue,
                     ),
                   ],
@@ -412,6 +610,12 @@ class _AddEventState extends State<EventEdit> {
             ],
           )),
     );
+  }
+
+  setSelectedRadio(int val) {
+    setState(() {
+      _periodRadio = val;
+    });
   }
 
   List<int> parseHours(String value) {
@@ -437,22 +641,30 @@ class _AddEventState extends State<EventEdit> {
         _duplicite = value;
       });
     });
+
     /// Olasi hatalarin mesajlari olusturuluyor
     setState(() {
       /// Eger istenilen gunde tum gun etkinlik varsa hata mesaji yaziliyor
       errmsg = _duplicite == false ? "" : "Bu gün başka bir etkinliğiniz var\n";
+
       /// Eger tum gun degilse baslangic ve bitis zamanlari kontrol ediliyor olumsuzluk varsa hata mesaji yaziliyor
       try {
         if (!_isfullday) {
-          _iscorrect = parseHours(_selectedFinishHour)[0] < parseHours(_selectedStartHour)[0] ||
-                  (parseHours(_selectedFinishHour)[0] == parseHours(_selectedStartHour)[0] &&
-                      parseHours(_selectedFinishHour)[1] < parseHours(_selectedStartHour)[1])
+          _iscorrect = parseHours(_selectedFinishHour)[0] <
+                      parseHours(_selectedStartHour)[0] ||
+                  (parseHours(_selectedFinishHour)[0] ==
+                          parseHours(_selectedStartHour)[0] &&
+                      parseHours(_selectedFinishHour)[1] <
+                          parseHours(_selectedStartHour)[1])
               ? false
               : true;
-          errmsg += _iscorrect == false ? "Bitiş zamanı başlangıç zamanından önce olamaz\n" : "";
+          errmsg += _iscorrect == false
+              ? "Bitiş zamanı başlangıç zamanından önce olamaz\n"
+              : "";
         }
       } catch (e) {
         print("[ERROR] [EVENTEDITTING] $e");
+
         /// Tüm gün olan eventi tüm günden cikartip saat secilmezse
         errmsg += "Tüm gün işaretli değilse saat girmelisiniz\n";
       }
@@ -461,7 +673,13 @@ class _AddEventState extends State<EventEdit> {
     for (int i = 0; i < _attachments.length; i++) {
       imagePaths += "${_attachments[i]}-";
     }
-    if (state.validate() && (_iscorrect) && (errmsg == "")) {
+    if(_periodicDays.length != null)
+      for (int i = 0; i < _periodicDays.length; i++) {
+        setState(() {
+          _frequency += _periodicDays[i] ? "1" : "0";
+        });
+      }
+    if (state.validate() && (_iscorrect) && (!_duplicite)) {
       var newEvent = _isfullday
           ? Event(
               id: widget.event.id,
@@ -477,8 +695,8 @@ class _AddEventState extends State<EventEdit> {
               recipient: _recipient,
               subject: _subject,
               body: _body,
-              periodic: 0,
-              frequency: "",
+              periodic: _periodRadio,
+              frequency: _frequency,
             )
           : Event(
               id: widget.event.id,
@@ -496,8 +714,8 @@ class _AddEventState extends State<EventEdit> {
               recipient: _recipient,
               subject: _subject,
               body: _body,
-              periodic: 0,
-              frequency: "",
+              periodic: _periodRadio,
+              frequency: _frequency,
             );
       _db.updateEvent(newEvent);
       _db.createNotifications();
@@ -505,7 +723,8 @@ class _AddEventState extends State<EventEdit> {
       Navigator.of(context).pop();
       Navigator.of(context).pop();
       _advert.showIntersitial();
-      Navigator.push(context, MaterialPageRoute(builder: (context) => MainMenuBody()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => MainMenuBody()));
       print("[EVENTEDITTING] Form Uygun");
     } else {
       print("[EVENTEDITTING] Form uygun değil");
