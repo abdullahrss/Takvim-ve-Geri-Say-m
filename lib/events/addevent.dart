@@ -50,6 +50,21 @@ class _AddEventState extends State<AddEvent> {
   bool _iscountdownchecked = false;
   bool _options = false;
   bool _periodicCheckboxValue = false;
+  bool _spelicaldate = false;
+  int  _periodradio;
+//  int _daily = 1;
+//  int _weekly = 2;
+//  int _montly = 3;
+
+  bool _pazartesi;
+  bool _sali;
+  bool _carsamba;
+  bool _persembe;
+  bool _cuma;
+  bool _cumartesi;
+  bool _pazar;
+
+  bool _special = false;
 
   var _radioValue;
   bool _switchValue = false;
@@ -71,21 +86,178 @@ class _AddEventState extends State<AddEvent> {
   int _periodic = 0;
   String _frequency;
   IconData _iconData = Icons.arrow_drop_down;
+  IconData _iconData2 = Icons.arrow_drop_down;
+
 
   @override
   void initState() {
     super.initState();
+    _periodradio = 0;
+    _pazartesi = false;
+    _sali =false;
+    _carsamba = false;
+    _persembe = false;
+    _cuma = false;
+    _cumartesi = false;
+    _pazar = false;
     setState(() {
       widget.date != null ? _selectedDate = widget.date : print("[ADDEVENT] widget.date null");
     });
   }
 
+  setSelectedRadio(int val) {
+    setState(() {
+      _periodradio = val;
+    });
+  }
+
+  setPazartesi(bool val){
+    setState(() {
+      _pazartesi = val;
+    });
+  }
+  setSali(bool val){
+    setState(() {
+      _sali = val;
+    });
+  }
+  setCarsamba(bool val){
+    setState(() {
+      _carsamba = val;
+    });
+  }
+  setPersembe(bool val){
+    setState(() {
+      _persembe = val;
+    });
+  }
+  setCuma(bool val){
+    setState(() {
+      _cuma = val;
+    });
+  }
+
+  setCumartesia(bool val){
+    setState(() {
+      _cumartesi = val;
+    });
+  }
+  setPazar(bool val){
+    setState(() {
+      _pazar = val;
+    });
+  }
   @override
   void dispose() {
     _titlecontroller.dispose();
     _descriptioncontroller.dispose();
     super.dispose();
   }
+
+
+  Future<void> _showMyDialog33() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Gün seçiniz!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Row(children: <Widget>[
+                  Checkbox(
+                    value: _pazartesi,
+                    onChanged:(value) =>{
+                      setPazartesi(value)
+                    } ,
+                  ),
+                  Text("Pazartesi"),
+
+                ],),
+                Row(children: <Widget>[
+                  Checkbox(
+                    value: _sali,
+                    onChanged:(value) =>{
+                      setSali(value)
+                    } ,
+                  ),
+                  Text("Salı"),
+
+                ],),
+                Row(children: <Widget>[
+                  Checkbox(
+                    value: _carsamba,
+                    onChanged:(value) =>{
+                      setCarsamba(value)
+                    } ,
+                  ),
+                  Text("Çarşamba"),
+
+                ],),
+                Row(children: <Widget>[
+                  Checkbox(
+                    value: _persembe,
+                    onChanged:(value) =>{
+                      setPersembe(value)
+                    } ,
+                  ),
+                  Text("Perşembe"),
+
+                ],),Row(children: <Widget>[
+                  Checkbox(
+                    value: _cuma,
+                    onChanged:(value) =>{
+                      setCuma(value)
+                    } ,
+                  ),
+                  Text("Cuma"),
+
+                ],)
+                ,Row(children: <Widget>[
+                  Checkbox(
+                    value: _cumartesi,
+                    onChanged:(value) =>{
+                      setCumartesia(value)
+                    } ,
+                  ),
+                  Text("cumartesi"),
+
+                ],)
+                ,Row(children: <Widget>[
+                  Checkbox(
+                    value: _pazar,
+                    onChanged:(value) =>{
+                      setPazar(value)
+                    } ,
+                  ),
+                  Text("Pazar"),
+
+                ],)
+
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Geri'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('Tamam'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+
+          ],
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -316,25 +488,28 @@ class _AddEventState extends State<AddEvent> {
                 ),
               Container(
                 padding: const EdgeInsets.fromLTRB(10.0, 4.0, 20.0, 0),
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      _options = !_options;
-                      if (_options) {
-                        _iconData = Icons.arrow_drop_up;
-                      } else {
-                        _iconData = Icons.arrow_drop_down;
-                      }
-                    });
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      Icon(_iconData),
-                      Text(
-                        "Seçenekler",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ],
+                child: Padding(
+                  padding: const EdgeInsets.only(left:8.0),
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        _options = !_options;
+                        if (_options) {
+                          _iconData = Icons.arrow_drop_up;
+                        } else {
+                          _iconData = Icons.arrow_drop_down;
+                        }
+                      });
+                    },
+                    child: Row(
+                      children: <Widget>[
+                        Icon(_iconData),
+                        Text(
+                          "Seçenekler",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -446,32 +621,123 @@ class _AddEventState extends State<AddEvent> {
                             ),
                           ),
                         ),
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              _periodicCheckboxValue = !_periodicCheckboxValue;
-                            });
-                            // TODO:Navigate to popup or something like that
-                          },
+                        Padding(
+                          padding: const EdgeInsets.only(left:6.0),
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                _periodicCheckboxValue = !_periodicCheckboxValue;
+                                if (_periodicCheckboxValue) {
+                                  _iconData2 = Icons.arrow_drop_up;
+                                } else {
+                                  _iconData2 = Icons.arrow_drop_down;
+                                }
+                              });
+                              // TODO:Navigate to popup or something like that
+                            },
+                            child: Row(
+                              children: <Widget>[
+                                Icon(_iconData2,size: 36,),
+                                Text(
+                                  "Periyodik Etkinlik",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        if(_periodicCheckboxValue)
+                        Padding(
+                          padding: const EdgeInsets.only(left:16.0),
                           child: Row(
                             children: <Widget>[
-                              Checkbox(
-                                value: _periodicCheckboxValue,
-                                onChanged: (v) {
+                              InkWell(
+                                onTap: (){
                                   setState(() {
-                                    _periodicCheckboxValue = v;
+                                    _periodradio != _periodradio;
                                   });
                                 },
-                              ),
-                              Text(
-                                "Periyodik bildirimler",
-                                style: TextStyle(
-                                  fontSize: 20,
+                                child: Radio(
+                                  value: 1,
+                                  groupValue: _periodradio,
+                                  onChanged: (val) {
+                                    setSelectedRadio(val);
+                                  },
                                 ),
                               ),
+                              Text("Günlük",style: TextStyle(fontSize: 20)),
                             ],
                           ),
                         ),
+                        if(_periodicCheckboxValue)
+                        Padding(
+                          padding: const EdgeInsets.only(left:16.0),
+                          child: Row(
+                            children: <Widget>[InkWell(
+                              onTap: (){
+                                setState(() {
+                                  _periodradio != _periodradio;
+                                });
+                              },
+                              child: Radio(
+                                value: 2,
+                                groupValue: _periodradio,
+                                onChanged: (val) {
+                                  setSelectedRadio(val);
+                                },
+                              ),
+                            ),
+                              Text("Haftalık",style: TextStyle(fontSize: 20)),],
+                          ),
+                        ),
+                        if(_periodicCheckboxValue)
+                        Padding(
+                          padding: const EdgeInsets.only(left:16.0),
+                          child: Row(
+                            children: <Widget>[InkWell(
+                              onTap: (){
+                                setState(() {
+                                  _periodradio != _periodradio;
+                                });
+                              },
+                              child: Radio(
+                                value: 3,
+                                groupValue:_periodradio ,
+                                onChanged: (val) {
+                                  setSelectedRadio(val);
+                                },
+                              ),
+                            ),
+                              Text("Aylık",style: TextStyle(fontSize: 20)),],
+                          ),
+                        ),
+                        if(_periodicCheckboxValue)
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                _showMyDialog33();
+                                _spelicaldate = !_spelicaldate;
+
+                              });
+                              // TODO:Navigate to popup or something like that
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(left:29.0),
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(Icons.calendar_today,),
+                                  Text(
+                                    "  Özel",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                       ],
                     )),
               // Etkinlik aciklamasi
