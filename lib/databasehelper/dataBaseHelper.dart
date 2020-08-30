@@ -272,6 +272,7 @@ class DbHelper {
           await updateSingleColumn(eventList[i].id, _columnCountdownIsActive, "0");
           continue;
         } else {
+          print("top :${eventList[i].title} -- ${eventList[i].date} // ${eventList[i].periodic}");
           switch (eventList[i].periodic) {
             case 1:
               {
@@ -296,9 +297,11 @@ class DbHelper {
               }
             default:
               {
-                int j = targetTime.weekday - 1;
+                int j = targetTime.weekday==7?0:targetTime.weekday-1;
                 int control = 0;
+                print("initalize j : $j");
                 while (j < 7) {
+                  print("f :"+eventList[i].frequency[j]+" "+j.toString());
                   if (eventList[i].frequency[j] == "1") {
                     int addition = ((j + 1) - targetTime.weekday) == 0
                         ? (7)
