@@ -21,7 +21,7 @@ class _SettingsState extends State<Settings> {
   List<String> _fontNamesList = [
     "Bangers",
     "DancingScript",
-    "DoppioOne",
+    "IndieFlower",
     "Dosis",
     "Inconsolata",
     "LibreBaskerville",

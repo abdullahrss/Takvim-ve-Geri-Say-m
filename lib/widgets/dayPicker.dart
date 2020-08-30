@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class DayPickerForPeriodic extends StatefulWidget {
 
-  List<bool> days;
+  List<bool> days = [];
 
   DayPickerForPeriodic({Key key, this.days}) : super(key: key);
 

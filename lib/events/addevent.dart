@@ -545,6 +545,7 @@ class _AddEventState extends State<AddEvent> {
                                   await showDialog(context: context, child: dayPicker);
                                   setState(() {
                                     _periodicDays = dayPicker.days;
+                                    _periodicDays==null?_periodRadio=0:_periodRadio=4;
                                   });
                                 },
                                 child: Padding(

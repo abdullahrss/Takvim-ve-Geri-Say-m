@@ -16,7 +16,9 @@ void navigateToSettingsDialog(context) async {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                      "Sabit bildirim bazen düzgün çalışmayabilir. Düzgün çalışması için bilidirimleri açık olduğuna emin olun\n\nNot: Xiaomi telefonlarda uygulama ayarlarında Otomatik başlatma seçeneğinin açık olduğuna emin olun.",style: TextStyle(fontSize: 20),),
+                    "Sabit bildirim bazen düzgün çalışmayabilir. Düzgün çalışması için bilidirimleri açık olduğuna emin olun\n\nNot: Xiaomi telefonlarda uygulama ayarlarında Otomatik başlatma seçeneğinin açık olduğuna emin olun.",
+                    style: TextStyle(fontSize: 20),
+                  ),
                 ),
                 Row(
                   children: <Widget>[
@@ -27,11 +29,10 @@ void navigateToSettingsDialog(context) async {
                       ),
                       onPressed: () async {
                         await sdb.updateWarning(val ? 1 : 0);
-
                       },
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(right:8.0),
+                      padding: const EdgeInsets.only(right: 8.0),
                       child: Checkbox(
                         value: val,
                         onChanged: (v) => setState(() {
@@ -46,13 +47,13 @@ void navigateToSettingsDialog(context) async {
                   children: <Widget>[
                     FlatButton(
                       child: Text("Tamam"),
-                      onPressed: () async{
+                      onPressed: () async {
                         Navigator.pop(context);
                       },
                     ),
                     FlatButton(
                       child: Text("Ayarlara Git"),
-                      onPressed: () async{
+                      onPressed: () async {
                         openAppSettings();
                       },
                     )
