@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io' show Directory;
 
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -33,7 +32,6 @@ class DbHelper {
   static final String _columnBody = EventConstants.COLUMN_BODY;
   static final String _columnPeriodic = EventConstants.COLUMN_PERIODIC;
   static final String _columnFrequency = EventConstants.COLUMN_FREQUENCY;
-
 
   DbHelper._createInstance();
 
@@ -163,13 +161,13 @@ class DbHelper {
       case 2:
         {
           // Yakin tarihlerin basta oldugu siralama
-          eventList.sort((a, b) => sortByDate(a,b));
+          eventList.sort((a, b) => sortByDate(a, b));
         }
         break;
       case 3:
         {
           // Uzak tarihlerin basta oldugu siralama
-          eventList.sort((a, b) => sortByDate(a,b));
+          eventList.sort((a, b) => sortByDate(a, b));
           eventList = eventList.reversed.toList();
         }
         break;
@@ -254,9 +252,9 @@ class DbHelper {
 
   Future<bool> openNotificationBar() async {
     Database db = await this.database;
-    FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    var not = Notifications(localNotificationsPlugin);
-    var result = await db.rawQuery("SELECT * FROM $_tablename WHERE $_columnCountdownIsActive=1");
+    var not = Notifications(flutterLocalNotificationsPlugin);
+    var result = await db.rawQuery(
+        "SELECT * FROM $_tablename WHERE $_columnCountdownIsActive=1 OR $_columnPeriodic!=0");
     List<Event> eventList = List<Event>();
     for (var i = 0; i < result.length; i++) {
       eventList.add(Event.fromMap(result[i]));
@@ -269,13 +267,67 @@ class DbHelper {
           ? DateTime.parse("${eventList[i].date}")
           : DateTime.parse("${eventList[i].date} ${eventList[i].startTime}");
       if (targetTime.isBefore(DateTime.now()) || (targetTime == DateTime.now())) {
-        not.cancelNotification(localNotificationsPlugin, eventList[i].id);
-        await updateSingleColumn(eventList[i].id, _columnCountdownIsActive, "0");
-        continue;
+        if (eventList[i].countDownIsActive == 1 && eventList[i].periodic == 0) {
+          not.cancelNotification(flutterLocalNotificationsPlugin, eventList[i].id);
+          await updateSingleColumn(eventList[i].id, _columnCountdownIsActive, "0");
+          continue;
+        } else {
+          switch (eventList[i].periodic) {
+            case 1:
+              {
+                targetTime = targetTime.add(Duration(days: 1));
+                eventList[i].date = targetTime.toString().split(" ")[0];
+                this.updateEvent(eventList[i]);
+                break;
+              }
+            case 2:
+              {
+                targetTime = targetTime.add(Duration(days: 7));
+                eventList[i].date = targetTime.toString().split(" ")[0];
+                this.updateEvent(eventList[i]);
+                break;
+              }
+            case 3:
+              {
+                targetTime = targetTime.add(Duration(days: 30));
+                eventList[i].date = targetTime.toString().split(" ")[0];
+                this.updateEvent(eventList[i]);
+                break;
+              }
+            default:
+              {
+                int j = targetTime.weekday - 1;
+                int control = 0;
+                while (j < 7) {
+                  if (eventList[i].frequency[j] == "1") {
+                    int addition = ((j + 1) - targetTime.weekday) == 0
+                        ? (7)
+                        : (((j + 1) - targetTime.weekday) < 0)
+                            ? ((j + 1) - targetTime.weekday + 7)
+                            : ((j + 1) - targetTime.weekday);
+                    targetTime = targetTime.add(Duration(days: addition));
+                    eventList[i].date = targetTime.toString().split(" ")[0];
+                    this.updateEvent(eventList[i]);
+                    break;
+                  }
+                  j++;
+                  if (j == 7) {
+                    control++;
+                    j = 0;
+                  }
+
+                  /// Sonsuz donguye girmesin diye kontrol
+                  if (control > 8) {
+                    break;
+                  }
+                }
+              }
+          }
+        }
       }
       var remainingTime = targetTime.difference(DateTime.now());
       await not.countDownNotification(
-          localNotificationsPlugin,
+          flutterLocalNotificationsPlugin,
           eventList[i].title,
           "ETKİNLİĞE ${remainingTime.inDays} GÜN ${remainingTime.inHours - remainingTime.inDays * 24} SAAT ${remainingTime.inMinutes - remainingTime.inHours * 60} DAKİKA KALDI",
           eventList[i].id);
@@ -286,8 +338,7 @@ class DbHelper {
   Future<void> createNotifications({Function function}) async {
     Database db = await this.database;
     var not = Notifications(flutterLocalNotificationsPlugin);
-    var events = await db.rawQuery(
-        "SELECT * FROM $_tablename WHERE $_columnNotification!='0'");
+    var events = await db.rawQuery("SELECT * FROM $_tablename WHERE $_columnNotification!='0'");
     List<Event> eventList = List<Event>();
 
     for (var i = 0; i < events.length; i++) {
@@ -345,7 +396,8 @@ class DbHelper {
     });
   }
 
-  Future clearDb() async { // butun notificationlarda silinecek
+  Future clearDb() async {
+    // butun notificationlarda silinecek
     var not = Notifications(flutterLocalNotificationsPlugin);
     Database db = await this.database;
     await db.rawQuery('DELETE FROM $_tablename');

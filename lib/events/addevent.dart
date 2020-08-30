@@ -71,8 +71,8 @@ class _AddEventState extends State<AddEvent> {
 
   /// Periyodik etkinlik degiskenleri
   int _periodRadio = 0;
-  String _frequency;
-  List<bool> _periodicDays;
+  String _frequency = "";
+  List<bool> _periodicDays = [];
   IconData _iconData = Icons.arrow_drop_down;
   IconData _iconData2 = Icons.arrow_drop_down;
 
@@ -663,6 +663,7 @@ class _AddEventState extends State<AddEvent> {
        _frequency += _periodicDays[i]?"1":"0";
      });
     }
+    _frequency.contains("1")?_periodRadio=4:print("[ADDEVENT] frequency doesnt have '1'");
     if (state.validate() && _iscorrect && (!_duplicite)) {
       var newEvent = (_isfullday)
           ? Event(

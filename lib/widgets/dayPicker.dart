@@ -47,36 +47,43 @@ class _DayPickerForPeriodicState extends State<DayPickerForPeriodic> {
           value: _pazartesi,
           onChanged: (v) => setState((){_pazartesi=v;}) ,
         ),
+        Container(padding: const EdgeInsets.only(left: 8.0,right: 8.0),child: Divider(height: 0.5,)),
         CheckboxListTile(
           title: Text("Salı"),
           value: _sali,
           onChanged: (v) => setState((){_sali=v;}),
         ),
+        Container(padding: const EdgeInsets.only(left: 8.0,right: 8.0),child: Divider(height: 0.5,)),
         CheckboxListTile(
           title: Text("Çarşamba"),
           value: _carsamba,
           onChanged: (v) => setState((){_carsamba=v;}),
         ),
+        Container(padding: const EdgeInsets.only(left: 8.0,right: 8.0),child: Divider(height: 0.5,)),
         CheckboxListTile(
           title: Text("Perşembe"),
           value: _persembe,
           onChanged: (v) => setState((){_persembe=v;}),
         ),
+        Container(padding: const EdgeInsets.only(left: 8.0,right: 8.0),child: Divider(height: 0.5,)),
         CheckboxListTile(
           title: Text("Cuma"),
           value: _cuma,
           onChanged: (v) => setState((){_cuma=v;}),
         ),
+        Container(padding: const EdgeInsets.only(left: 8.0,right: 8.0),child: Divider(height: 0.5,)),
         CheckboxListTile(
           title: Text("Cumartesi"),
           value: _cumartesi,
           onChanged: (v) => setState((){_cumartesi=v;}),
         ),
+        Container(padding: const EdgeInsets.only(left: 8.0,right: 8.0),child: Divider(height: 0.5,)),
         CheckboxListTile(
           title: Text("Pazar"),
           value: _pazar,
           onChanged: (v) => setState((){_pazar=v;}),
         ),
+        Container(padding: const EdgeInsets.only(left: 8.0,right: 8.0),child: Divider(height: 0.5,)),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[

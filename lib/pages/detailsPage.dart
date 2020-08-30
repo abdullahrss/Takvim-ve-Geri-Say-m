@@ -127,6 +127,8 @@ class _DetailsState extends State<Details> {
                                           recipient: widget.event.recipient,
                                           subject: widget.event.subject,
                                           body: widget.event.body,
+                                          periodic: widget.event.periodic,
+                                          frequency: widget.event.frequency
                                         ),
                                       ))));
                         },

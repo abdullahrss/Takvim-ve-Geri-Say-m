@@ -49,6 +49,8 @@ class _DropDownState extends State<DropDown> {
                 recipient: widget.event.recipient,
                 subject: widget.event.subject,
                 body: widget.event.body,
+                periodic: widget.event.periodic,
+                frequency: widget.event.frequency,
               );
               Navigator.push(
                   context,
