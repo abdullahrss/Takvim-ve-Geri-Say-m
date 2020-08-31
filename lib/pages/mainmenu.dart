@@ -73,7 +73,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
 
   // Locals
   int _selectedIndex = 0;
-  static int _selectedOrder;
+  static int _selectedOrder = 0;
   int radioValue;
 
   // Timer
@@ -92,12 +92,13 @@ class _MainMenuBodyState extends State<MainMenuBody> {
   ];
 
   Widget buildPageView() {
-    return PageView(
+    return PageView.builder(
+      onPageChanged: _pageChange,
       controller: pageController,
-      onPageChanged: (index) {
-        pageChanged(index);
+      itemCount: 3,
+      itemBuilder: (BuildContext context,unknown){
+        return _widgetOptions[_selectedIndex];
       },
-      children: _widgetOptions,
     );
   }
 
@@ -121,6 +122,12 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     super.dispose();
   }
 
+  void _pageChange(int index){
+    setState(() {
+      _selectedIndex = 0;
+    });
+  }
+
   set selecetedIndex(int newIndex) {
     _selectedIndex = newIndex;
   }
@@ -128,8 +135,8 @@ class _MainMenuBodyState extends State<MainMenuBody> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      pageController.animateToPage(index,
-          duration: Duration(milliseconds: 500), curve: Curves.ease);
+//      pageController.animateToPage(index,
+//          duration: Duration(milliseconds: 500), curve: Curves.ease);
     });
   }
 
@@ -142,10 +149,10 @@ class _MainMenuBodyState extends State<MainMenuBody> {
 
   void changeRadios(int e) {
     setState(() {
-      print("[MAINMENU] [changeRadios] order :$e");
       radioValue = e;
       _selectedOrder = e;
       _widgetOptions[0] = Soclose(index: e,);
+      print("[MAINMENU] [changeRadios] order :$e radioValue :$radioValue index :${_widgetOptions[0].runtimeType}");
     });
   }
 
