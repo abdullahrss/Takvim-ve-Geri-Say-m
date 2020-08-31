@@ -14,7 +14,7 @@ class DbHelper {
   static DbHelper _databaseHelper; // Database'in tekil olmasi icin
   static Database _database;
 
-  static final String _tablename = EventConstants.TABLE_NAME;
+  static final String _tableName = EventConstants.TABLE_NAME;
   static final String _columnId = EventConstants.COLUMN_ID;
   static final String _columnTitle = EventConstants.COLUMN_TITLE;
   static final String _columnDate = EventConstants.COLUMN_DATE;
@@ -60,20 +60,20 @@ class DbHelper {
 
   static void _createDb(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $_tablename ( $_columnId INTEGER PRIMARY KEY NOT NULL,$_columnTitle TEXT ,$_columnDate TEXT,$_columnStartTime TEXT,$_columnFinishTime TEXT,$_columnDesc TEXT,$_columnIsActive INTEGER, $_columnNotification TEXT, $_columnCountdownIsActive INTEGER, $_columnAttachments TEXT,$_columnCc TEXT, $_columnBb TEXT, $_columnRecipient TEXT, $_columnSubject TEXT, $_columnBody TEXT,$_columnPeriodic INTEGER, $_columnFrequency TEXT);');
+        'CREATE TABLE $_tableName ( $_columnId INTEGER PRIMARY KEY NOT NULL,$_columnTitle TEXT ,$_columnDate TEXT,$_columnStartTime TEXT,$_columnFinishTime TEXT,$_columnDesc TEXT,$_columnIsActive INTEGER, $_columnNotification TEXT, $_columnCountdownIsActive INTEGER, $_columnAttachments TEXT,$_columnCc TEXT, $_columnBb TEXT, $_columnRecipient TEXT, $_columnSubject TEXT, $_columnBody TEXT,$_columnPeriodic INTEGER, $_columnFrequency TEXT);');
   }
 
   // Databaseden tüm eventleri alma
   Future<List<Map<String, dynamic>>> getEventMapList() async {
     Database db = await this.database;
-    var result = await db.query(_tablename, orderBy: '$_columnTitle ASC');
+    var result = await db.query(_tableName, orderBy: '$_columnTitle ASC');
     return result;
   }
 
   // Insert Operation: Insert a Event object to database
   Future<int> insertEvent(Event event) async {
     Database db = await this.database;
-    var result = await db.insert(_tablename, event.toMap());
+    var result = await db.insert(_tableName, event.toMap());
     return result;
   }
 
@@ -81,36 +81,36 @@ class DbHelper {
   Future<int> updateEvent(Event event) async {
     var db = await this.database;
     var result =
-        await db.update(_tablename, event.toMap(), where: '$_columnId = ?', whereArgs: [event.id]);
+        await db.update(_tableName, event.toMap(), where: '$_columnId = ?', whereArgs: [event.id]);
     return result;
   }
 
   Future updateSingleColumn(int id, String columnName, String newValue) async {
     var db = await this.database;
-    await db.rawQuery("UPDATE $_tablename SET $columnName='$newValue' WHERE $_columnId=$id");
+    await db.rawQuery("UPDATE $_tableName SET $columnName='$newValue' WHERE $_columnId=$id");
   }
 
   // Delete Operation: Delete a Event object from database
   Future<int> deleteEvent(int id) async {
     var db = await this.database;
-    int result = await db.rawDelete('DELETE FROM $_tablename WHERE $_columnId = $id');
+    int result = await db.rawDelete('DELETE FROM $_tableName WHERE $_columnId = $id');
     return result;
   }
 
   Future<void> deleteOldEventDay(String date) async {
     var db = await this.database;
-    await db.rawQuery('DELETE FROM $_tablename WHERE $_columnDate = "$date" ');
+    await db.rawQuery('DELETE FROM $_tableName WHERE $_columnDate = "$date" ');
   }
 
   Future<void> deleteOldEventHour(String date, String hour) async {
     var db = await this.database;
     await db.rawQuery(
-        'DELETE FROM $_tablename WHERE $_columnStartTime = "$hour" AND $_columnDate = "$date" ');
+        'DELETE FROM $_tableName WHERE $_columnStartTime = "$hour" AND $_columnDate = "$date" ');
   }
 
   Future<Event> getEventById(int id) async {
     var db = await this.database;
-    var result = await db.rawQuery('SELECT * FROM $_tablename WHERE $_columnId=$id');
+    var result = await db.rawQuery('SELECT * FROM $_tableName WHERE $_columnId=$id');
 
     Event event = Event();
     event = Event.fromMap(result[0]);
@@ -120,7 +120,7 @@ class DbHelper {
   // Database deki eleman sayisini donduruyor
   Future<int> getCount() async {
     Database db = await this.database;
-    List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $_tablename');
+    List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $_tableName');
     int result = Sqflite.firstIntValue(x);
     return result;
   }
@@ -146,6 +146,7 @@ class DbHelper {
       eventList.add(Event.fromMap(eventMapList[i]));
     }
     // Listeyi istenilen sirada siralayip return edilmesi
+    print("[DATABASEHELPER] [getEventByOrder] sortStyle : $sortStyle");
     switch (sortStyle) {
       case 0:
         {
@@ -196,7 +197,7 @@ class DbHelper {
   Future<bool> isFullDay(String date, {int id}) async {
     Database db = await this.database;
     var result = await db.rawQuery(
-        "SELECT $_columnId,$_columnStartTime FROM $_tablename WHERE $_columnDate='$date'");
+        "SELECT $_columnId,$_columnStartTime FROM $_tableName WHERE $_columnDate='$date'");
     if (id != null) {
       if (result[0]["id"] == id) {
         return false;
@@ -214,7 +215,7 @@ class DbHelper {
 
   Future<List<Event>> getActiveEvents() async {
     Database db = await this.database;
-    var result = await db.rawQuery("SELECT * FROM $_tablename WHERE $_columnIsActive='1'");
+    var result = await db.rawQuery("SELECT * FROM $_tableName WHERE $_columnIsActive='1'");
     List<Event> resultList = List<Event>();
     for (var i = 0; i < result.length; i++) {
       resultList.add(Event.fromMap(result[i]));
@@ -254,7 +255,7 @@ class DbHelper {
     Database db = await this.database;
     var not = Notifications(flutterLocalNotificationsPlugin);
     var result = await db.rawQuery(
-        "SELECT * FROM $_tablename WHERE $_columnCountdownIsActive=1 OR $_columnPeriodic!=0");
+        "SELECT * FROM $_tableName WHERE $_columnCountdownIsActive=1 OR $_columnPeriodic!=0");
     List<Event> eventList = List<Event>();
     for (var i = 0; i < result.length; i++) {
       eventList.add(Event.fromMap(result[i]));
@@ -272,7 +273,6 @@ class DbHelper {
           await updateSingleColumn(eventList[i].id, _columnCountdownIsActive, "0");
           continue;
         } else {
-          print("top :${eventList[i].title} -- ${eventList[i].date} // ${eventList[i].periodic}");
           switch (eventList[i].periodic) {
             case 1:
               {
@@ -297,11 +297,10 @@ class DbHelper {
               }
             default:
               {
-                int j = targetTime.weekday==7?0:targetTime.weekday-1;
+                int j = targetTime.weekday == 7 ? 0 : targetTime.weekday - 1;
+                j<6?j++:j=0;
                 int control = 0;
-                print("initalize j : $j");
                 while (j < 7) {
-                  print("f :"+eventList[i].frequency[j]+" "+j.toString());
                   if (eventList[i].frequency[j] == "1") {
                     int addition = ((j + 1) - targetTime.weekday) == 0
                         ? (7)
@@ -318,7 +317,6 @@ class DbHelper {
                     control++;
                     j = 0;
                   }
-
                   /// Sonsuz donguye girmesin diye kontrol
                   if (control > 8) {
                     break;
@@ -341,7 +339,7 @@ class DbHelper {
   Future<void> createNotifications({Function function}) async {
     Database db = await this.database;
     var not = Notifications(flutterLocalNotificationsPlugin);
-    var events = await db.rawQuery("SELECT * FROM $_tablename WHERE $_columnNotification!='0'");
+    var events = await db.rawQuery("SELECT * FROM $_tableName WHERE $_columnNotification!='0'");
     List<Event> eventList = List<Event>();
 
     for (var i = 0; i < events.length; i++) {
@@ -355,17 +353,19 @@ class DbHelper {
           ? DateTime.parse("${event.date} ${event.startTime}")
           : DateTime.parse(event.date);
       if (DateTime.now().compareTo(datetime) == 1) {
-        print("[dataBaseHelper] [openNotificationBar] Out of time event title : ${event.title}");
+        print("[dataBaseHelper] [createNotifications] Out of time event title : ${event.title}");
         flutterLocalNotificationsPlugin.cancel(event.id);
         continue;
       }
       datetime = not.calcNotificationDate(datetime, int.parse(event.choice));
-      if (event.recipient != "" || event.recipient != null) {
-        print("[DATABASEHELPER] [openNotificationBar] anormal notification : ${event.title}");
+      print(
+          "[DATABASEHELPER] [createNotifications] event recipient :${event.recipient} - type : ${event.recipient.runtimeType}");
+      if (event.recipient != "") {
+        print("[DATABASEHELPER] [createNotifications] anormal notification : ${event.title}");
         await not.singleNotificationWithMail(flutterLocalNotificationsPlugin, datetime, event.title,
             "Yollayacağınız e-mail'in vakti geldi.", event.id);
       } else {
-        print("[DATABASEHELPER] [openNotificationBar] normal notification : ${event.title}");
+        print("[DATABASEHELPER] [createNotifications] normal notification : ${event.title}");
         await not.singleNotification(flutterLocalNotificationsPlugin, datetime, event.title,
             not.calcSingleNotificationBodyText(event.choice), event.id);
       }
@@ -403,7 +403,7 @@ class DbHelper {
     // butun notificationlarda silinecek
     var not = Notifications(flutterLocalNotificationsPlugin);
     Database db = await this.database;
-    await db.rawQuery('DELETE FROM $_tablename');
+    await db.rawQuery('DELETE FROM $_tableName');
     not.cancelAllNotifications(flutterLocalNotificationsPlugin);
   }
 

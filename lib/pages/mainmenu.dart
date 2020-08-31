@@ -73,7 +73,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
 
   // Locals
   int _selectedIndex = 0;
-  static int _selectedOrder = 0;
+  static int _selectedOrder;
   int radioValue;
 
   // Timer
@@ -85,6 +85,11 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     initialPage: 0,
     keepPage: true,
   );
+  List<Widget> _widgetOptions = <Widget>[
+    Soclose(index: _selectedOrder),
+    FutureCalendar(),
+    CountDownPage(),
+  ];
 
   Widget buildPageView() {
     return PageView(
@@ -116,12 +121,6 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     super.dispose();
   }
 
-  List<Widget> _widgetOptions = <Widget>[
-    Soclose.byorder(_selectedOrder),
-    FutureCalendar(),
-    CountDownPage(),
-  ];
-
   set selecetedIndex(int newIndex) {
     _selectedIndex = newIndex;
   }
@@ -138,6 +137,15 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     setState(() {
       _selectedIndex = index;
       bottomSelectedIndex = index;
+    });
+  }
+
+  void changeRadios(int e) {
+    setState(() {
+      print("[MAINMENU] [changeRadios] order :$e");
+      radioValue = e;
+      _selectedOrder = e;
+      _widgetOptions[0] = Soclose(index: e,);
     });
   }
 
@@ -161,7 +169,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
         ),
       ),
       appBar: AppBar(
-        title: Text('Takvim Uygulaması'),
+        title: Text('Takvim ve Geri Sayım'),
         //centerTitle: true,
         actions: <Widget>[
           if (_selectedIndex == 0)
@@ -223,13 +231,6 @@ class _MainMenuBodyState extends State<MainMenuBody> {
         onTap: _onItemTapped,
       ),
     );
-  }
-
-  void changeRadios(int e) {
-    setState(() {
-      radioValue = e;
-      _widgetOptions[0] = Soclose.byorder(e);
-    });
   }
 
   Future<void> showMySortDialog(context) async {

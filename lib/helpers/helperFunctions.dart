@@ -28,15 +28,15 @@ int sortByDate(Event e1, Event e2) {
   DateTime d2 = e2.startTime != "null"
       ? DateTime.parse("${e2.date} ${e2.startTime}")
       : DateTime.parse(e2.date);
-
-  /// Once olma durumu
-  if (d1.isBefore(d2))
-    return 1;
-
-  /// Sonra olma durumu
-  else if (d1.isAfter(d2)) return 0;
-  /// Esit olma durumu
-  return 1;
+  return d1.compareTo(d2);
+//  /// Once olma durumu
+//  if (d1.isBefore(d2))
+//    return 1;
+//
+//  /// Sonra olma durumu
+//  else if (d1.isAfter(d2)) return 0;
+//  /// Esit olma durumu
+//  return 1;
 }
 
 void printEvent(Event e) {

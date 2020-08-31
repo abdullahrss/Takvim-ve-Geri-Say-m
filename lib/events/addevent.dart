@@ -8,7 +8,7 @@ import '../databasemodels/events.dart';
 import '../events/mailSender.dart';
 import '../helpers/ads.dart';
 import '../pages/mainmenu.dart';
-import '../widgets/notificationtimepicker.dart';
+import '../widgets/notificationTimePicker.dart';
 import '../widgets/showDialog.dart';
 import '../widgets/dayPicker.dart';
 
@@ -187,13 +187,17 @@ class _AddEventState extends State<AddEvent> {
                                 TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
                           ).then((value) {
                             setState(() {
-                              _selectedFinishHour = ((value.hour.toString().length == 1)
-                                      ? ("0" + value.hour.toString())
-                                      : value.hour.toString()) +
-                                  ":" +
-                                  ((value.minute.toString().length == 1)
-                                      ? ("0" + value.minute.toString())
-                                      : value.minute.toString());
+                              try{
+                                _selectedFinishHour = ((value.hour.toString().length == 1)
+                                    ? ("0" + value.hour.toString())
+                                    : value.hour.toString()) +
+                                    ":" +
+                                    ((value.minute.toString().length == 1)
+                                        ? ("0" + value.minute.toString())
+                                        : value.minute.toString());
+                              }catch(e){
+                                print("[ERROR] [ADDEVENT] [showTimePicker] [_selectedFinishHour] $e");
+                              }
                             });
                           });
                           showTimePicker(
@@ -202,13 +206,17 @@ class _AddEventState extends State<AddEvent> {
                                 TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
                           ).then((value) {
                             setState(() {
-                              _selectedStartHour = ((value.hour.toString().length == 1)
-                                      ? ("0" + value.hour.toString())
-                                      : value.hour.toString()) +
-                                  ":" +
-                                  ((value.minute.toString().length == 1)
-                                      ? ("0" + value.minute.toString())
-                                      : value.minute.toString());
+                              try{
+                                _selectedStartHour = ((value.hour.toString().length == 1)
+                                    ? ("0" + value.hour.toString())
+                                    : value.hour.toString()) +
+                                    ":" +
+                                    ((value.minute.toString().length == 1)
+                                        ? ("0" + value.minute.toString())
+                                        : value.minute.toString());
+                              }catch(e){
+                                print("[ERROR] [ADDEVENT] [showTimePicker] [_selectedStartHour] $e");
+                              }
                             });
                           });
                         }
@@ -222,15 +230,19 @@ class _AddEventState extends State<AddEvent> {
                             lastDate: DateTime(2025),
                           ).then((value) {
                             setState(() {
-                              _selectedDate = value.year.toString() +
-                                  "-" +
-                                  ((value.month.toString().length == 1)
-                                      ? ("0" + value.month.toString())
-                                      : value.month.toString()) +
-                                  "-" +
-                                  (value.day.toString().length == 1
-                                      ? "0" + value.day.toString()
-                                      : value.day.toString());
+                              try{
+                                _selectedDate = value.year.toString() +
+                                    "-" +
+                                    ((value.month.toString().length == 1)
+                                        ? ("0" + value.month.toString())
+                                        : value.month.toString()) +
+                                    "-" +
+                                    (value.day.toString().length == 1
+                                        ? "0" + value.day.toString()
+                                        : value.day.toString());
+                              }catch(e){
+                                print("[ERROR] [ADDEVENT] [showDatePicker] $e");
+                              }
                             });
                           });
                       },
@@ -545,7 +557,12 @@ class _AddEventState extends State<AddEvent> {
                                   await showDialog(context: context, child: dayPicker);
                                   setState(() {
                                     _periodicDays = dayPicker.days;
-                                    _periodicDays==null?_periodRadio=0:_periodRadio=4;
+                                    if(_periodicDays==null){
+                                      _periodicDays = [];
+                                      _periodRadio=0;
+                                    }else{
+                                      _periodRadio=4;
+                                    }
                                   });
                                 },
                                 child: Padding(

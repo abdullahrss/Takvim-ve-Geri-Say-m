@@ -7,7 +7,7 @@ import '../databasehelper/dataBaseHelper.dart';
 import '../databasemodels/events.dart';
 import '../helpers/ads.dart';
 import '../pages/mainmenu.dart';
-import '../widgets/notificationtimepicker.dart';
+import '../widgets/notificationTimePicker.dart';
 import '../widgets/showDialog.dart';
 import 'mailSender.dart';
 
@@ -55,7 +55,7 @@ class _AddEventState extends State<EventEdit> {
 
   /// Periyodik etkinlik degiskenleri
   int _periodRadio = 0;
-  String _frequency;
+  String _frequency = "";
   List<bool> _periodicDays = [];
   IconData _iconData = Icons.arrow_drop_down;
   IconData _iconData2 = Icons.arrow_drop_down;
@@ -74,8 +74,7 @@ class _AddEventState extends State<EventEdit> {
     _selectedStartHour = widget.event.startTime;
     _selectedDate = widget.event.date;
     _iscountdownchecked = widget.event.isActive == 1 ? true : false;
-
-    widget.event.periodic = _periodRadio;
+    _periodRadio = widget.event.periodic;
 
     for(int i = 0;i<widget.event.frequency.length;i++){
       if (widget.event.frequency[i] == "0" ){
@@ -541,6 +540,7 @@ class _AddEventState extends State<EventEdit> {
                                       context: context, child: dayPicker);
                                   setState(() {
                                     _periodicDays = dayPicker.days;
+
                                   });
                                 },
                                 child: Padding(

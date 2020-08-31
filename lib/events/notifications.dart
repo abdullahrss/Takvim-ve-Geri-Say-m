@@ -16,7 +16,7 @@ class Notifications {
       priority: Priority.Max,
       autoCancel: false,
       ongoing: true,
-      // notifications
+      enableVibration: false,
       onlyAlertOnce: true,
       styleInformation: DefaultStyleInformation(true, true),
     );
@@ -43,7 +43,7 @@ class Notifications {
     var iosChannel = IOSNotificationDetails();
     var platformChannel = NotificationDetails(androidChannel, iosChannel);
     await localNotificationsPlugin.schedule(
-      id,
+      id+5000,
       message,
       subtext,
       datetime,
@@ -62,14 +62,13 @@ class Notifications {
       priority: Priority.Max,
       autoCancel: false,
       ongoing: false,
-      // notifications
       onlyAlertOnce: true,
     );
     var iosChannel = IOSNotificationDetails();
     var platformChannel = NotificationDetails(androidChannel, iosChannel);
     print("[NOTIFICATIONS] [onSelectNotification] creating notification ");
     await localNotificationsPlugin.schedule(
-      id,
+      id+5000,
       message,
       subtext,
       datetime,

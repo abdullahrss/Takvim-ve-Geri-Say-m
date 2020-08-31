@@ -22,14 +22,9 @@ void navigateToSettingsDialog(context) async {
                 ),
                 Row(
                   children: <Widget>[
-                    FlatButton(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("Bir daha gösterme"),
-                      ),
-                      onPressed: () async {
-                        await sdb.updateWarning(val ? 1 : 0);
-                      },
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Bir daha gösterme"),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0),
@@ -48,6 +43,7 @@ void navigateToSettingsDialog(context) async {
                     FlatButton(
                       child: Text("Tamam"),
                       onPressed: () async {
+                        await sdb.updateWarning(val ? 1 : 0);
                         Navigator.pop(context);
                       },
                     ),

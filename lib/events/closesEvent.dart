@@ -9,7 +9,7 @@ import '../widgets/dropdown.dart';
 class Soclose extends StatefulWidget {
   int index = 0;
 
-  Soclose.byorder(this.index);
+  Soclose({this.index});
 
   @override
   _Closesevents createState() => _Closesevents();
@@ -17,11 +17,6 @@ class Soclose extends StatefulWidget {
 
 class _Closesevents extends State<Soclose> {
   var _db = DbHelper();
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +43,6 @@ class _Closesevents extends State<Soclose> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
                               Container(
-                                width: MediaQuery.of(context).size.width / 2 - 16,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: <Widget>[
@@ -71,50 +65,42 @@ class _Closesevents extends State<Soclose> {
                                 ),
                               ),
                               Container(
-                                width: MediaQuery.of(context).size.width / 2 - 32,
+                                padding: const EdgeInsets.only(top: 12.0),
                                 child: Column(
                                   children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 16.0),
-                                      child: Container(
-                                        width: MediaQuery.of(context).size.width / 4,
-                                        child: DropDown(Event(
-                                          id: snapshot.data[index].id,
-                                          title: snapshot.data[index].title,
-                                          date: snapshot.data[index].date,
-                                          startTime: snapshot.data[index].startTime,
-                                          finishTime: snapshot.data[index].finishTime,
-                                          desc: snapshot.data[index].desc,
-                                          isActive: snapshot.data[index].isActive,
-                                          choice: snapshot.data[index].choice,
-                                          countDownIsActive: snapshot.data[index].countDownIsActive,
-                                          attachments: snapshot.data[index].attachments,
-                                          cc: snapshot.data[index].cc,
-                                          bb: snapshot.data[index].bb,
-                                          recipient: snapshot.data[index].recipient,
-                                          subject: snapshot.data[index].subject,
-                                          body: snapshot.data[index].body,
-                                          periodic: snapshot.data[index].periodic,
-                                          frequency: snapshot.data[index].frequency,
-                                        )),
-                                      ),
+                                    Container(
+                                      child: DropDown(Event(
+                                        id: snapshot.data[index].id,
+                                        title: snapshot.data[index].title,
+                                        date: snapshot.data[index].date,
+                                        startTime: snapshot.data[index].startTime,
+                                        finishTime: snapshot.data[index].finishTime,
+                                        desc: snapshot.data[index].desc,
+                                        isActive: snapshot.data[index].isActive,
+                                        choice: snapshot.data[index].choice,
+                                        countDownIsActive: snapshot.data[index].countDownIsActive,
+                                        attachments: snapshot.data[index].attachments,
+                                        cc: snapshot.data[index].cc,
+                                        bb: snapshot.data[index].bb,
+                                        recipient: snapshot.data[index].recipient,
+                                        subject: snapshot.data[index].subject,
+                                        body: snapshot.data[index].body,
+                                        periodic: snapshot.data[index].periodic,
+                                        frequency: snapshot.data[index].frequency,
+                                      )),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 16.0),
-                                      child: Container(
-                                        padding: EdgeInsets.only(top: 4.0),
-                                        height: 100,
-                                        width: 100,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(8.0),
-                                          color: Colors.blue,
-                                        ),
-                                        child: Text(
-                                          calcRemaining(snapshot.data[index].date,
-                                              snapshot.data[index].startTime),
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(fontSize: 25),
-                                        ),
+                                    Container(
+                                      height: 100,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8.0),
+                                        color: Colors.blue,
+                                      ),
+                                      child: Text(
+                                        calcRemaining(snapshot.data[index].date,
+                                            snapshot.data[index].startTime),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontSize: 25),
                                       ),
                                     ),
                                   ],
