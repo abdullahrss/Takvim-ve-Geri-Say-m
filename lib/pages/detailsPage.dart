@@ -14,12 +14,35 @@ class Details extends StatefulWidget {
 }
 
 class _DetailsState extends State<Details> {
-  @override
-  void initState() {
-    super.initState();
-    print("bro :" + widget.event.recipient);
-    print(widget.event.recipient.length);
+  Map<int, String> _periodicTexts = {
+    0: "",
+    1: "Günlük tekrarlı",
+    2: "Haftalık tekrarlı",
+    3: "Aylık tekrarlı",
+  };
+
+  String calcDays(String frequency) {
+    Map<int, String> weekdayToDay = {
+      0: "Pazartesi",
+      1: "Salı",
+      2: "Çarşamba",
+      3: "Perşembe",
+      4: "Cuma",
+      5: "Cumartesi",
+      6: "Pazar"
+    };
+
+    String result="";
+
+    for (int i = 0; i < frequency.length; i++) {
+      if(frequency[i]=="1"){
+        result+="${weekdayToDay[i]} ";
+      }
+    }
+    result +="günleri tekrar eder.";
+    return result;
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +59,7 @@ class _DetailsState extends State<Details> {
         child: Card(
           child: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Column(
+            child: ListView(
               children: <Widget>[
                 Card(
                   elevation: 25,
@@ -61,11 +84,27 @@ class _DetailsState extends State<Details> {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            "   Mail atılacak kişi: " + widget.event.recipient,
+                            "   Mail atılacak kişi: " + widget.event.recipient+"\n",
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.start,
-                            style: TextStyle(fontSize: 15),
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      if (widget.event.periodic != 0)
+                        Container(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              widget.event.periodic != 4
+                                  ? _periodicTexts[widget.event.periodic]
+                                  : calcDays(widget.event.frequency),
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 18),
+                            ),
                           ),
                         ),
                       Padding(
@@ -74,7 +113,7 @@ class _DetailsState extends State<Details> {
                           Text(
                             widget.event.date +
                                 "${widget.event.startTime != "null" ? ("  " + widget.event.startTime + "-" + widget.event.finishTime) : " - Tüm gün"}",
-                            style: TextStyle(fontSize: 15),
+                            style: TextStyle(fontSize: 18),
                           ),
                         ]),
                       ),
@@ -90,7 +129,7 @@ class _DetailsState extends State<Details> {
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text(widget.event.desc, maxLines: 1000),
+                            child: Text(widget.event.desc,),
                           ),
                         ),
                         SizedBox(
@@ -112,24 +151,23 @@ class _DetailsState extends State<Details> {
                               MaterialPageRoute(
                                   builder: (context) => (EventEdit(
                                         event: Event(
-                                          id: widget.event.id,
-                                          title: widget.event.title,
-                                          date: widget.event.date,
-                                          startTime: widget.event.startTime,
-                                          finishTime: widget.event.finishTime,
-                                          desc: widget.event.desc,
-                                          isActive: widget.event.isActive,
-                                          choice: widget.event.choice,
-                                          countDownIsActive: widget.event.countDownIsActive,
-                                          attachments: widget.event.attachments,
-                                          cc: widget.event.cc,
-                                          bb: widget.event.bb,
-                                          recipient: widget.event.recipient,
-                                          subject: widget.event.subject,
-                                          body: widget.event.body,
-                                          periodic: widget.event.periodic,
-                                          frequency: widget.event.frequency
-                                        ),
+                                            id: widget.event.id,
+                                            title: widget.event.title,
+                                            date: widget.event.date,
+                                            startTime: widget.event.startTime,
+                                            finishTime: widget.event.finishTime,
+                                            desc: widget.event.desc,
+                                            isActive: widget.event.isActive,
+                                            choice: widget.event.choice,
+                                            countDownIsActive: widget.event.countDownIsActive,
+                                            attachments: widget.event.attachments,
+                                            cc: widget.event.cc,
+                                            bb: widget.event.bb,
+                                            recipient: widget.event.recipient,
+                                            subject: widget.event.subject,
+                                            body: widget.event.body,
+                                            periodic: widget.event.periodic,
+                                            frequency: widget.event.frequency),
                                       ))));
                         },
                         elevation: 18,

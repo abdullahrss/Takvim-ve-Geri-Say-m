@@ -60,6 +60,13 @@ class _EmailSender extends State<EmailSender> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Mail gönderme'),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: (){
+              List<dynamic> sendBack = sendBackFunc();
+              Navigator.pop(context, sendBack);
+            },
+      ),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.help_outline,size: 36,),
@@ -140,7 +147,7 @@ class _EmailSender extends State<EmailSender> {
                       child: RaisedButton(
                         color: Colors.blue,
                         elevation: 18,
-                        onPressed: _picker_image,
+                        onPressed: _pickerImage,
                         child: Row(
                           children: <Widget>[
                             Icon(
@@ -163,7 +170,7 @@ class _EmailSender extends State<EmailSender> {
                       width: MediaQuery.of(context).size.width / 3 + 16,
                       child: RaisedButton(
                         color: Colors.blue,
-                        onPressed: _picker_file,
+                        onPressed: _pickerFile,
                         elevation: 18,
                         child: Row(
                           children: <Widget>[
@@ -214,6 +221,16 @@ class _EmailSender extends State<EmailSender> {
       ),
     );
   }
+  List<dynamic> sendBackFunc(){
+    List<dynamic> sendBack = [];
+    sendBack.add(attachments);
+    sendBack.add(_ccController.text);
+    sendBack.add(_bbcController.text);
+    sendBack.add(_recipientController.text);
+    sendBack.add(_subjectController.text);
+    sendBack.add(_bodyController.text);
+    return sendBack;
+  }
 
   void save() {
     if (_recipientController.text == "") {
@@ -221,39 +238,39 @@ class _EmailSender extends State<EmailSender> {
     } else if (_subjectController.text == "") {
       showWarningDialog(context: context, explanation: 'Konu boş bırakılamaz!');
     } else {
-      List<dynamic> sendBack = [];
-      sendBack.add(attachments);
-      sendBack.add(_ccController.text);
-      sendBack.add(_bbcController.text);
-      sendBack.add(_recipientController.text);
-      sendBack.add(_subjectController.text);
-      sendBack.add(_bodyController.text);
+      List<dynamic> sendBack = sendBackFunc();
       Navigator.pop(context, sendBack);
     }
   }
 
-  void _picker_image() async {
-    ImagePicker imagePicker = ImagePicker();
-    final File pick = await ImagePicker.pickImage(source: ImageSource.gallery);
-    // final PickedFile pick = await imagePicker.getImage(source: ImageSource.gallery);
-    setState(() {
-      attachments.add(pick.path);
-    });
+  void _pickerImage() async {
+    try{
+      final File pick = await ImagePicker.pickImage(source: ImageSource.gallery);
+      setState(() {
+        attachments.add(pick.path);
+      });
+    }catch(e){
+      print("[ERROR] [MAILSENDER] [_pickerImage] $e");
+    }
   }
 
 
-  void _picker_file() async {
-    List<File> files = await FilePicker.getMultiFile(
-      type: FileType.custom,
-    );
-    setState(() {
-      for(int i = 0;i<files.length;i++){
-        if(files[i].path.endsWith(".png") || files[i].path.endsWith(".jpeg") || files[i].path.endsWith(".jpg") || files[i].path.endsWith(".gif")){
-          showWarningDialog(context: context, explanation: "Resimleri resim ekle butonundan ekleyiniz.");
-          continue;
+  void _pickerFile() async {
+    try{
+      List<File> files = await FilePicker.getMultiFile(
+        type: FileType.custom,
+      );
+      setState(() {
+        for(int i = 0;i<files.length;i++){
+          if(files[i].path.endsWith(".png") || files[i].path.endsWith(".jpeg") || files[i].path.endsWith(".jpg") || files[i].path.endsWith(".gif")){
+            showWarningDialog(context: context, explanation: "Resimleri resim ekle butonundan ekleyiniz.");
+            continue;
+          }
+          attachments.add(files[i].path);
         }
-        attachments.add(files[i].path);
-      }
-    });
+      });
+    }catch(e){
+      print("[ERROR] [MAILSENDER] [_pickerFile] $e");
+    }
   }
 }

@@ -29,7 +29,6 @@ class _DropDownState extends State<DropDown> {
         iconSize: 24,
         style: TextStyle(color: Colors.black, fontSize: 18),
         onChanged: (String newValue) {
-          print("dropdown rec : ${widget.event.recipient}");
           setState(() {
             dropdownValue = newValue;
             if (newValue == 'Detaylar') {

@@ -124,7 +124,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
 
   void _pageChange(int index){
     setState(() {
-      _selectedIndex = 0;
+      _selectedIndex = index;
     });
   }
 
@@ -135,8 +135,6 @@ class _MainMenuBodyState extends State<MainMenuBody> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-//      pageController.animateToPage(index,
-//          duration: Duration(milliseconds: 500), curve: Curves.ease);
     });
   }
 
@@ -151,8 +149,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     setState(() {
       radioValue = e;
       _selectedOrder = e;
-      _widgetOptions[0] = Soclose(index: e,);
-      print("[MAINMENU] [changeRadios] order :$e radioValue :$radioValue index :${_widgetOptions[0].runtimeType}");
+      // _widgetOptions[0] = Soclose(index: e,);
     });
   }
 

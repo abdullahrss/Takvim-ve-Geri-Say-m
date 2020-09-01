@@ -269,7 +269,7 @@ class _AddEventState extends State<EventEdit> {
                                     recipienttext: widget.event.recipient,
                                     subjecttext: widget.event.subject,
                                     bodytext: widget.event.body,
-                                  ))).then((value) {
+                                  ))).then((value) async{
                             if (value != null) {
                               setState(() {
                                 _attachments = value[0];
