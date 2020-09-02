@@ -70,14 +70,14 @@ class DbHelper {
     return result;
   }
 
-  // Insert Operation: Insert a Event object to database
+  // Event ekleme
   Future<int> insertEvent(Event event) async {
     Database db = await this.database;
     var result = await db.insert(_tableName, event.toMap());
     return result;
   }
 
-  // Update Operation: Update a Event object and save it to database
+  // Eventi güncelleme
   Future<int> updateEvent(Event event) async {
     var db = await this.database;
     var result =
@@ -90,7 +90,7 @@ class DbHelper {
     await db.rawQuery("UPDATE $_tableName SET $columnName='$newValue' WHERE $_columnId=$id");
   }
 
-  // Delete Operation: Delete a Event object from database
+  // IDsiyle event silme
   Future<int> deleteEvent(int id) async {
     var db = await this.database;
     int result = await db.rawDelete('DELETE FROM $_tableName WHERE $_columnId = $id');
@@ -194,49 +194,6 @@ class DbHelper {
     return false;
   }
 
-  Future<bool> isFullDay(String date, {int id}) async {
-    Database db = await this.database;
-    var result = await db.rawQuery(
-        "SELECT $_columnId,$_columnStartTime FROM $_tableName WHERE $_columnDate='$date'");
-    if (id != null) {
-      if (result[0]["id"] == id) {
-        return false;
-      }
-    }
-    if (result.length == 0) {
-      return false;
-    }
-    if (result[0]["startTime"] == null) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  Future<List<Event>> getActiveEvents() async {
-    Database db = await this.database;
-    var result = await db.rawQuery("SELECT * FROM $_tableName WHERE $_columnIsActive='1'");
-    List<Event> resultList = List<Event>();
-    for (var i = 0; i < result.length; i++) {
-      resultList.add(Event.fromMap(result[i]));
-    }
-    return resultList;
-  }
-
-  Future<List<Event>> getEventsForCalender(String date) async {
-    var eventList = await getEventList();
-    int count = eventList.length;
-
-    List<Event> resultList = List<Event>();
-
-    for (var i = 0; i < count; i++) {
-      if (eventList[i].date == date) {
-        resultList.add(eventList[i]);
-      }
-    }
-    return resultList;
-  }
-
   Future<List<Event>> getEventCalander(String date) async {
     var eventList = await getEventList();
     int count = eventList.length;
@@ -252,78 +209,51 @@ class DbHelper {
   }
 
   Future<bool> openNotificationBar() async {
+    /// Database aciliyor
     Database db = await this.database;
+
+    /// Notification objesi olusturuluyor
     var not = Notifications(flutterLocalNotificationsPlugin);
+
+    /// Gerekli sartlari [countDownIsActive(Sabit bildirim) - periodic(Periyotlu event)] saglayan eventler databaseden aliniyor
     var result = await db.rawQuery(
         "SELECT * FROM $_tableName WHERE $_columnCountdownIsActive=1 OR $_columnPeriodic!=0");
+
+    /// Eventler listeye ekleniyor
     List<Event> eventList = List<Event>();
     for (var i = 0; i < result.length; i++) {
       eventList.add(Event.fromMap(result[i]));
     }
+
+    /// Eger gerekli sartlari saglayan event yoksa return edilip fonksiyondan cikiliyor
     if (eventList.length == 0) {
       return false;
     }
+
+    /// Sartlari saglayan eventler uzerinde yapilan islemler
     for (var i = 0; i < eventList.length; i++) {
+      /// Eger sabit bildirim acik degilse arka planda calismamasi icin pass geciliyor
+      if (eventList[i].countDownIsActive == 0) {
+        continue;
+      }
+
+      /// Gun ve saatler birlestirilip tam tarih aliniyor
       var targetTime = eventList[i].startTime == "null"
           ? DateTime.parse("${eventList[i].date}")
           : DateTime.parse("${eventList[i].date} ${eventList[i].startTime}");
+
+      /// Eger etkinlik tarihi gecmis ise
       if (targetTime.isBefore(DateTime.now()) || (targetTime == DateTime.now())) {
-        if (eventList[i].countDownIsActive == 1 && eventList[i].periodic == 0) {
+        /// Periyodik degilse etkinlik siliniyor ve db guncellenerek sabit bildirim kapatiliyor
+        if (eventList[i].periodic == 0) {
           not.cancelNotification(flutterLocalNotificationsPlugin, eventList[i].id);
           await updateSingleColumn(eventList[i].id, _columnCountdownIsActive, "0");
           continue;
-        } else {
-          switch (eventList[i].periodic) {
-            case 1:
-              {
-                targetTime = targetTime.add(Duration(days: 1));
-                eventList[i].date = targetTime.toString().split(" ")[0];
-                this.updateEvent(eventList[i]);
-                break;
-              }
-            case 2:
-              {
-                targetTime = targetTime.add(Duration(days: 7));
-                eventList[i].date = targetTime.toString().split(" ")[0];
-                this.updateEvent(eventList[i]);
-                break;
-              }
-            case 3:
-              {
-                targetTime = targetTime.add(Duration(days: 30));
-                eventList[i].date = targetTime.toString().split(" ")[0];
-                this.updateEvent(eventList[i]);
-                break;
-              }
-            default:
-              {
-                int j = targetTime.weekday == 7 ? 0 : targetTime.weekday - 1;
-                j<6?j++:j=0;
-                int control = 0;
-                while (j < 7) {
-                  if (eventList[i].frequency[j] == "1") {
-                    int addition = ((j + 1) - targetTime.weekday) == 0
-                        ? (7)
-                        : (((j + 1) - targetTime.weekday) < 0)
-                            ? ((j + 1) - targetTime.weekday + 7)
-                            : ((j + 1) - targetTime.weekday);
-                    targetTime = targetTime.add(Duration(days: addition));
-                    eventList[i].date = targetTime.toString().split(" ")[0];
-                    this.updateEvent(eventList[i]);
-                    break;
-                  }
-                  j++;
-                  if (j == 7) {
-                    control++;
-                    j = 0;
-                  }
-                  /// Sonsuz donguye girmesin diye kontrol
-                  if (control > 8) {
-                    break;
-                  }
-                }
-              }
-          }
+        }
+
+        /// Eger periyodik ise periyod surelerine bakiliyor
+        else {
+          await this.controlDates().then((value) => targetTime=value);
         }
       }
       var remainingTime = targetTime.difference(DateTime.now());
@@ -336,7 +266,7 @@ class DbHelper {
     return true;
   }
 
-  Future<void> createNotifications({Function function}) async {
+  Future<void> createNotifications() async {
     Database db = await this.database;
     var not = Notifications(flutterLocalNotificationsPlugin);
     var events = await db.rawQuery("SELECT * FROM $_tableName WHERE $_columnNotification!='0'");
@@ -354,14 +284,13 @@ class DbHelper {
           : DateTime.parse(event.date);
       if (DateTime.now().compareTo(datetime) == 1) {
         print("[dataBaseHelper] [createNotifications] Out of time event title : ${event.title}");
-        flutterLocalNotificationsPlugin.cancel(event.id);
+        flutterLocalNotificationsPlugin
+            .cancel(event.id); // zaman gectikten sonra notificasyonun kapanmasinin sebebi
         continue;
       }
       datetime = not.calcNotificationDate(datetime, int.parse(event.choice));
-      print(
-          "[DATABASEHELPER] [createNotifications] event recipient :${event.recipient} - type : ${event.recipient.runtimeType}");
       if (event.recipient != "") {
-        print("[DATABASEHELPER] [createNotifications] anormal notification : ${event.title}");
+        print("[DATABASEHELPER] [createNotifications] e-mail notification : ${event.title}");
         await not.singleNotificationWithMail(flutterLocalNotificationsPlugin, datetime, event.title,
             "Yollayacağınız e-mail'in vakti geldi.", event.id);
       } else {
@@ -370,6 +299,92 @@ class DbHelper {
             not.calcSingleNotificationBodyText(event.choice), event.id);
       }
     }
+  }
+
+  Future<DateTime> controlDates() async {
+    Database db = await this.database;
+    var events = await db.rawQuery("SELECT * FROM $_tableName WHERE $_columnPeriodic!=0");
+    DateTime eventDate;
+    List<Event> eventList = List<Event>();
+    events.forEach((element) {
+      eventList.add(Event.fromMap(element));
+    });
+    for (Event event in eventList) {
+      eventDate = event.startTime == "null"
+          ? DateTime.parse("${event.date}")
+          : DateTime.parse("${event.date} ${event.startTime}");
+      if(eventDate.isAfter(DateTime.now())){
+        continue;
+      }
+      switch (event.periodic) {
+
+        /// Gunluk periyod
+        case 1:
+          {
+            eventDate = eventDate.add(Duration(days: 1));
+            event.date = eventDate.toString().split(" ")[0];
+            this.updateEvent(event);
+            break;
+          }
+
+        /// Haftalik periyod
+        case 2:
+          {
+            eventDate = eventDate.add(Duration(days: 7));
+            event.date = eventDate.toString().split(" ")[0];
+            this.updateEvent(event);
+            break;
+          }
+
+        /// Aylik periyod
+        case 3:
+          {
+            eventDate = eventDate.add(Duration(days: 30));
+            event.date = eventDate.toString().split(" ")[0];
+            this.updateEvent(event);
+            break;
+          }
+
+        /// Ozel periyod
+        default:
+          {
+            /// Etkinlik zamani gectigi icin bir sonraki gunden baslayarak frekansa bakiliyor
+            int j = eventDate.weekday == 7 ? 0 : eventDate.weekday - 1;
+            j < 6 ? j++ : j = 0;
+
+            /// Sonsuz donguye girmemesi icin kontrol
+            int control = 0;
+            while (j < 7) {
+              /// Eger frekansta 1 degerini bulduysa aradaki fark kadar gun date'e eklenip bir sonraki
+              /// tarih belirleniyor ve date guncelleniyor
+              if (event.frequency[j] == "1") {
+                int addition = ((j + 1) - eventDate.weekday) == 0
+                    ? (7)
+                    : (((j + 1) - eventDate.weekday) < 0)
+                        ? ((j + 1) - eventDate.weekday + 7)
+                        : ((j + 1) - eventDate.weekday);
+                eventDate = eventDate.add(Duration(days: addition));
+                print(eventDate.toString().split(" ")[0]);
+                event.date = eventDate.toString().split(" ")[0];
+                print(event.date);
+                this.updateEvent(event);
+                break;
+              }
+              j++;
+              if (j == 7) {
+                control++;
+                j = 0;
+              }
+
+              /// Sonsuz donguye girmesin diye kontrol
+              if (control > 8) {
+                break;
+              }
+            }
+          }
+      }
+    }
+    return eventDate;
   }
 
   // Istenilen bir sql sorgusunu calistiriyor

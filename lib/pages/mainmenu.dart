@@ -81,7 +81,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
 
   // Navigation
   int bottomSelectedIndex = 0;
-  PageController pageController = PageController(
+  final PageController pageController = PageController(
     initialPage: 0,
     keepPage: true,
   );
@@ -90,17 +90,6 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     FutureCalendar(),
     CountDownPage(),
   ];
-
-  Widget buildPageView() {
-    return PageView.builder(
-      onPageChanged: _pageChange,
-      controller: pageController,
-      itemCount: 3,
-      itemBuilder: (BuildContext context,unknown){
-        return _widgetOptions[_selectedIndex];
-      },
-    );
-  }
 
   @override
   void initState() {
@@ -112,6 +101,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     _db.openNotificationBar();
     timer = Timer.periodic(Duration(minutes: 1), (timer) {
       _db.openNotificationBar();
+      _db.controlDates();
     });
   }
 
@@ -122,26 +112,31 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     super.dispose();
   }
 
+
+  Widget buildPageView() {
+    return PageView.builder(
+      onPageChanged: _pageChange,
+      controller: pageController,
+      itemCount: 3,
+      physics: ScrollPhysics(),
+      itemBuilder: (BuildContext context,int itemIndex){
+        return _widgetOptions[itemIndex];
+      },
+      scrollDirection: Axis.horizontal,
+    );
+  }
+
   void _pageChange(int index){
     setState(() {
       _selectedIndex = index;
+      bottomSelectedIndex = index;
     });
-  }
-
-  set selecetedIndex(int newIndex) {
-    _selectedIndex = newIndex;
   }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-    });
-  }
-
-  void pageChanged(int index) {
-    setState(() {
-      _selectedIndex = index;
-      bottomSelectedIndex = index;
+      pageController.jumpToPage(_selectedIndex);
     });
   }
 
@@ -149,7 +144,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     setState(() {
       radioValue = e;
       _selectedOrder = e;
-      // _widgetOptions[0] = Soclose(index: e,);
+      _widgetOptions[0] = Soclose(index: radioValue,);
     });
   }
 

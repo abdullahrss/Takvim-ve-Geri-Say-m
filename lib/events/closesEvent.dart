@@ -42,8 +42,7 @@ class _Closesevents extends State<Soclose> {
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
-                              Flexible(
-                                flex: 1,
+                              Expanded(
                                 child: Container(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -62,14 +61,15 @@ class _Closesevents extends State<Soclose> {
                                         snapshot.data[index].desc,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(fontSize: 15),
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                        ),
                                       ),
                                     ],
                                   ),
                                 ),
                               ),
-                              Flexible(
-                                flex: 1,
+                              Expanded(
                                 child: Container(
                                   padding: const EdgeInsets.only(top: 12.0),
                                   child: Column(
@@ -96,17 +96,24 @@ class _Closesevents extends State<Soclose> {
                                         )),
                                       ),
                                       Container(
-                                        height: 100,
-                                        width: 100,
+                                        height: 105,
+                                        width: 105,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(8.0),
-                                          color: Colors.blue,
+                                          color: (calcRemaining(snapshot.data[index].date,
+                                                      snapshot.data[index].startTime)
+                                                  .contains("Geçti"))
+                                              ? Colors.blueGrey
+                                              : Colors.blue,
                                         ),
-                                        child: Text(
-                                          calcRemaining(snapshot.data[index].date,
-                                              snapshot.data[index].startTime),
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(fontSize: 25),
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            calcRemaining(snapshot.data[index].date,
+                                                snapshot.data[index].startTime),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(fontSize: 22),
+                                          ),
                                         ),
                                       ),
                                     ],

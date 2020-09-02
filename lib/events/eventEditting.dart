@@ -15,7 +15,7 @@ class EventEdit extends StatefulWidget {
   final int warningstatus;
   final Event event;
 
-  const EventEdit({Key key, this.event,this.warningstatus}) : super(key: key);
+  const EventEdit({Key key, this.event, this.warningstatus}) : super(key: key);
 
   @override
   _AddEventState createState() => _AddEventState();
@@ -35,7 +35,6 @@ class _AddEventState extends State<EventEdit> {
 
   bool _iscorrect = true;
   bool _isfullday = false;
-  bool _duplicite = false;
   bool _iscountdownchecked = false;
   bool _options = false;
   bool _periodicCheckboxValue = false;
@@ -45,6 +44,7 @@ class _AddEventState extends State<EventEdit> {
 
   final _titlecontroller = TextEditingController();
   final _descriptioncontroller = TextEditingController();
+
   /// Mail degiskenleri
   List<String> _attachments = [];
   var _cc = "";
@@ -60,7 +60,6 @@ class _AddEventState extends State<EventEdit> {
   IconData _iconData = Icons.arrow_drop_down;
   IconData _iconData2 = Icons.arrow_drop_down;
 
-
   @override
   void initState() {
     if (widget.event.attachments != null) {
@@ -70,20 +69,26 @@ class _AddEventState extends State<EventEdit> {
     super.initState();
     _titlecontroller.text = widget.event.title;
     _descriptioncontroller.text = widget.event.desc;
-    _selectedFinishHour = widget.event.finishTime;
-    _selectedStartHour = widget.event.startTime;
-    _selectedDate = widget.event.date;
-    _iscountdownchecked = widget.event.isActive == 1 ? true : false;
-    _periodRadio = widget.event.periodic;
+    setState(() {
+      _selectedFinishHour = widget.event.finishTime;
+      _selectedStartHour = widget.event.startTime;
+      _selectedDate = widget.event.date;
+      _iscountdownchecked = widget.event.isActive == 1 ? true : false;
+      _periodRadio = widget.event.periodic;
+      _recipient = widget.event.recipient;
+      _subject = widget.event.subject;
+      _body = widget.event.body;
+      _cc = widget.event.cc;
+      _bb = widget.event.bb;
+      _attachments = stringPathsToList(widget.event.attachments);
+    });
 
-    for(int i = 0;i<widget.event.frequency.length;i++){
-      if (widget.event.frequency[i] == "0" ){
+    for (int i = 0; i < widget.event.frequency.length; i++) {
+      if (widget.event.frequency[i] == "0") {
         _periodicDays.add(false);
-      }
-      else{
+      } else {
         _periodicDays.add(true);
       }
-
     }
 
     setState(() {
@@ -121,9 +126,7 @@ class _AddEventState extends State<EventEdit> {
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
-                      return value.isEmpty
-                          ? "Etkinlik ismi boş bırakılamaz"
-                          : null;
+                      return value.isEmpty ? "Etkinlik ismi boş bırakılamaz" : null;
                     },
                   )),
               Container(
@@ -183,36 +186,32 @@ class _AddEventState extends State<EventEdit> {
                         if (!_isfullday) {
                           showTimePicker(
                             context: context,
-                            initialTime: TimeOfDay(
-                                hour: DateTime.now().hour,
-                                minute: DateTime.now().minute),
+                            initialTime:
+                                TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
                           ).then((value) {
                             setState(() {
-                              _selectedFinishHour =
-                                  (value.hour.toString().length == 1
+                              _selectedFinishHour = (value.hour.toString().length == 1
                                       ? "0" + value.hour.toString()
                                       : value.hour.toString()) +
-                                      ":" +
-                                      (value.minute.toString().length == 1
-                                          ? "0" + value.minute.toString()
-                                          : value.minute.toString());
+                                  ":" +
+                                  (value.minute.toString().length == 1
+                                      ? "0" + value.minute.toString()
+                                      : value.minute.toString());
                             });
                           });
                           showTimePicker(
                             context: context,
-                            initialTime: TimeOfDay(
-                                hour: DateTime.now().hour,
-                                minute: DateTime.now().minute),
+                            initialTime:
+                                TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
                           ).then((value) {
                             setState(() {
-                              _selectedStartHour =
-                                  (value.hour.toString().length == 1
+                              _selectedStartHour = (value.hour.toString().length == 1
                                       ? "0" + value.hour.toString()
                                       : value.hour.toString()) +
-                                      ":" +
-                                      (value.minute.toString().length == 1
-                                          ? "0" + value.minute.toString()
-                                          : value.minute.toString());
+                                  ":" +
+                                  (value.minute.toString().length == 1
+                                      ? "0" + value.minute.toString()
+                                      : value.minute.toString());
                             });
                           });
                         }
@@ -230,11 +229,7 @@ class _AddEventState extends State<EventEdit> {
                               var day = value.day.toString().length == 1
                                   ? "0" + value.day.toString()
                                   : value.day.toString();
-                              _selectedDate = value.year.toString() +
-                                  "-" +
-                                  month +
-                                  "-" +
-                                  day;
+                              _selectedDate = value.year.toString() + "-" + month + "-" + day;
                             });
                           }
                         });
@@ -262,14 +257,13 @@ class _AddEventState extends State<EventEdit> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => EmailSender(
-                                    attacs: stringPathsToList(
-                                        widget.event.attachments),
-                                    cctext: widget.event.cc,
-                                    bbtext: widget.event.bb,
-                                    recipienttext: widget.event.recipient,
-                                    subjecttext: widget.event.subject,
-                                    bodytext: widget.event.body,
-                                  ))).then((value) async{
+                                        attacs: stringPathsToList(widget.event.attachments),
+                                        cctext: widget.event.cc,
+                                        bbtext: widget.event.bb,
+                                        recipienttext: widget.event.recipient,
+                                        subjecttext: widget.event.subject,
+                                        bodytext: widget.event.body,
+                                      ))).then((value) async {
                             if (value != null) {
                               setState(() {
                                 _attachments = value[0];
@@ -294,7 +288,7 @@ class _AddEventState extends State<EventEdit> {
                   thickness: 3,
                 ),
               ),
-              if (!_iscorrect || _duplicite )
+              if (!_iscorrect)
                 Container(
                   width: MediaQuery.of(context).size.width - 40,
                   height: 50,
@@ -302,8 +296,7 @@ class _AddEventState extends State<EventEdit> {
                   padding: const EdgeInsets.fromLTRB(20.0, 4.0, 20.0, 4.0),
                   child: Text(
                     errmsg,
-                    style: TextStyle(
-                        color: Colors.red, fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                   ),
                 ),
               // Butun gun secenegi
@@ -394,7 +387,7 @@ class _AddEventState extends State<EventEdit> {
                                       showWarningDialog(
                                           context: context,
                                           explanation:
-                                          "Geri sayım sayfasında etkinliğinize ne kadar süre kaldığını görebilirsiniz.");
+                                              "Geri sayım sayfasında etkinliğinize ne kadar süre kaldığını görebilirsiniz.");
                                     }),
                               ],
                             ),
@@ -436,7 +429,7 @@ class _AddEventState extends State<EventEdit> {
                                       showWarningDialog(
                                           context: context,
                                           explanation:
-                                          "Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!");
+                                              "Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!");
                                     })
                               ],
                             ),
@@ -447,8 +440,7 @@ class _AddEventState extends State<EventEdit> {
                           child: InkWell(
                             onTap: () {
                               setState(() {
-                                _periodicCheckboxValue =
-                                !_periodicCheckboxValue;
+                                _periodicCheckboxValue = !_periodicCheckboxValue;
                                 if (_periodicCheckboxValue) {
                                   _iconData2 = Icons.arrow_drop_up;
                                 } else {
@@ -488,8 +480,7 @@ class _AddEventState extends State<EventEdit> {
                                           setSelectedRadio(val);
                                         },
                                       ),
-                                      Text("Günlük",
-                                          style: TextStyle(fontSize: 20)),
+                                      Text("Günlük", style: TextStyle(fontSize: 20)),
                                     ],
                                   ),
                                 ),
@@ -507,8 +498,7 @@ class _AddEventState extends State<EventEdit> {
                                           setSelectedRadio(val);
                                         },
                                       ),
-                                      Text("Haftalık",
-                                          style: TextStyle(fontSize: 20)),
+                                      Text("Haftalık", style: TextStyle(fontSize: 20)),
                                     ],
                                   ),
                                 ),
@@ -526,21 +516,25 @@ class _AddEventState extends State<EventEdit> {
                                           setSelectedRadio(val);
                                         },
                                       ),
-                                      Text("Aylık",
-                                          style: TextStyle(fontSize: 20)),
+                                      Text("Aylık", style: TextStyle(fontSize: 20)),
                                     ],
                                   ),
                                 ),
                               ),
                               InkWell(
                                 onTap: () async {
-                                  DayPickerForPeriodic dayPicker =
-                                  DayPickerForPeriodic(days: _periodicDays,);
-                                  await showDialog(
-                                      context: context, child: dayPicker);
+                                  DayPickerForPeriodic dayPicker = DayPickerForPeriodic(
+                                    days: _periodicDays,
+                                  );
+                                  await showDialog(context: context, child: dayPicker);
                                   setState(() {
                                     _periodicDays = dayPicker.days;
-
+                                    if(_periodicDays==null){
+                                      _periodicDays = [];
+                                      _periodRadio=0;
+                                    }else{
+                                      _periodRadio=4;
+                                    }
                                   });
                                 },
                                 child: Padding(
@@ -574,8 +568,7 @@ class _AddEventState extends State<EventEdit> {
                   decoration: InputDecoration(
                     labelText: "Etkinlik açıklaması ...",
                     hintText: "Etkinlik detaylarının girileceği alan...",
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0)),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
                   ),
                 ),
               ),
@@ -589,16 +582,14 @@ class _AddEventState extends State<EventEdit> {
                       elevation: 18,
                       onPressed: () => {clearAreas()},
                       child: Text("Temizle"),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
                       splashColor: Colors.blue,
                     ),
                     RaisedButton(
                       onPressed: () => {validateandsave()},
                       elevation: 18,
                       child: Text("Kaydet"),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
                       splashColor: Colors.blue,
                     ),
                   ],
@@ -632,32 +623,20 @@ class _AddEventState extends State<EventEdit> {
 
   void validateandsave() async {
     final FormState state = _formKey.currentState;
-    // Duzenlecenek event'in oldugu gun tum gun suren etkinlik var mi diye bakiyor
-    await _db.isFullDay(widget.event.date, id: widget.event.id).then((value) {
-      setState(() {
-        _duplicite = value;
-      });
-    });
 
     /// Olasi hatalarin mesajlari olusturuluyor
     setState(() {
-      /// Eger istenilen gunde tum gun etkinlik varsa hata mesaji yaziliyor
-      errmsg = _duplicite == false ? "" : "Bu gün başka bir etkinliğiniz var\n";
+
 
       /// Eger tum gun degilse baslangic ve bitis zamanlari kontrol ediliyor olumsuzluk varsa hata mesaji yaziliyor
       try {
         if (!_isfullday) {
-          _iscorrect = parseHours(_selectedFinishHour)[0] <
-              parseHours(_selectedStartHour)[0] ||
-              (parseHours(_selectedFinishHour)[0] ==
-                  parseHours(_selectedStartHour)[0] &&
-                  parseHours(_selectedFinishHour)[1] <
-                      parseHours(_selectedStartHour)[1])
+          _iscorrect = parseHours(_selectedFinishHour)[0] < parseHours(_selectedStartHour)[0] ||
+                  (parseHours(_selectedFinishHour)[0] == parseHours(_selectedStartHour)[0] &&
+                      parseHours(_selectedFinishHour)[1] < parseHours(_selectedStartHour)[1])
               ? false
               : true;
-          errmsg += _iscorrect == false
-              ? "Bitiş zamanı başlangıç zamanından önce olamaz\n"
-              : "";
+          errmsg += _iscorrect == false ? "Bitiş zamanı başlangıç zamanından önce olamaz\n" : "";
         }
       } catch (e) {
         print("[ERROR] [EVENTEDITTING] $e");
@@ -670,58 +649,57 @@ class _AddEventState extends State<EventEdit> {
     for (int i = 0; i < _attachments.length; i++) {
       imagePaths += "${_attachments[i]}-";
     }
-    if(_periodicDays.length != null)
+    if (_periodicDays.length != null)
       for (int i = 0; i < _periodicDays.length; i++) {
         setState(() {
           _frequency += _periodicDays[i] ? "1" : "0";
         });
       }
-    if (state.validate() && (_iscorrect) && (!_duplicite)) {
+    if (state.validate() && (_iscorrect)) {
       var newEvent = _isfullday
           ? Event(
-        id: widget.event.id,
-        title: _titlecontroller.text,
-        date: _selectedDate,
-        desc: _descriptioncontroller.text,
-        isActive: _iscountdownchecked ? 1 : 0,
-        choice: _radioValue.toString(),
-        countDownIsActive: _switchValue ? 1 : 0,
-        attachments: imagePaths,
-        cc: _cc,
-        bb: _bb,
-        recipient: _recipient,
-        subject: _subject,
-        body: _body,
-        periodic: _periodRadio,
-        frequency: _frequency,
-      )
+              id: widget.event.id,
+              title: _titlecontroller.text,
+              date: _selectedDate,
+              desc: _descriptioncontroller.text,
+              isActive: _iscountdownchecked ? 1 : 0,
+              choice: _radioValue.toString(),
+              countDownIsActive: _switchValue ? 1 : 0,
+              attachments: imagePaths,
+              cc: _cc,
+              bb: _bb,
+              recipient: _recipient,
+              subject: _subject,
+              body: _body,
+              periodic: _periodRadio,
+              frequency: _frequency,
+            )
           : Event(
-        id: widget.event.id,
-        title: _titlecontroller.text,
-        date: _selectedDate,
-        startTime: _selectedStartHour,
-        finishTime: _selectedFinishHour,
-        desc: _descriptioncontroller.text,
-        isActive: _iscountdownchecked ? 1 : 0,
-        choice: _radioValue == null ? "0" : _radioValue.toString(),
-        countDownIsActive: _switchValue ? 1 : 0,
-        attachments: imagePaths,
-        cc: _cc,
-        bb: _bb,
-        recipient: _recipient,
-        subject: _subject,
-        body: _body,
-        periodic: _periodRadio,
-        frequency: _frequency,
-      );
+              id: widget.event.id,
+              title: _titlecontroller.text,
+              date: _selectedDate,
+              startTime: _selectedStartHour,
+              finishTime: _selectedFinishHour,
+              desc: _descriptioncontroller.text,
+              isActive: _iscountdownchecked ? 1 : 0,
+              choice: _radioValue == null ? "0" : _radioValue.toString(),
+              countDownIsActive: _switchValue ? 1 : 0,
+              attachments: imagePaths,
+              cc: _cc,
+              bb: _bb,
+              recipient: _recipient,
+              subject: _subject,
+              body: _body,
+              periodic: _periodRadio,
+              frequency: _frequency,
+            );
       _db.updateEvent(newEvent);
       _db.createNotifications();
       Navigator.of(context).pop();
       Navigator.of(context).pop();
       Navigator.of(context).pop();
       _advert.showIntersitial();
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MainMenuBody()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MainMenuBody()));
       print("[EVENTEDITTING] Form Uygun");
     } else {
       print("[EVENTEDITTING] Form uygun değil");

@@ -119,17 +119,24 @@ class _CalanderEventstate extends State<CalanderEvent> {
                                       )),
                                     ),
                                     Container(
-                                      padding: EdgeInsets.only(top: 8.0),
-                                      height: 100,
-                                      width: 100,
+                                      height: 105,
+                                      width: 105,
                                       decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(8.0),
-                                          color: Colors.blue),
-                                      child: Text(
-                                        calcRemaining(snapshot.data[index].date,
-                                            snapshot.data[index].startTime),
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 25),
+                                        borderRadius: BorderRadius.circular(8.0),
+                                        color: (calcRemaining(snapshot.data[index].date,
+                                            snapshot.data[index].startTime)
+                                            .contains("Geçti"))
+                                            ? Colors.blueGrey
+                                            : Colors.blue,
+                                      ),
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          calcRemaining(snapshot.data[index].date,
+                                              snapshot.data[index].startTime),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(fontSize: 22),
+                                        ),
                                       ),
                                     ),
                                   ],

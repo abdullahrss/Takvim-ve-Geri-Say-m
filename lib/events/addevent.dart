@@ -48,7 +48,6 @@ class _AddEventState extends State<AddEvent> {
 
   bool _iscorrect = true;
   bool _isfullday = false;
-  bool _duplicite = false;
   bool _iscountdownchecked = false;
   bool _options = false;
   bool _periodicCheckboxValue = false;
@@ -187,16 +186,17 @@ class _AddEventState extends State<AddEvent> {
                                 TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
                           ).then((value) {
                             setState(() {
-                              try{
+                              try {
                                 _selectedFinishHour = ((value.hour.toString().length == 1)
-                                    ? ("0" + value.hour.toString())
-                                    : value.hour.toString()) +
+                                        ? ("0" + value.hour.toString())
+                                        : value.hour.toString()) +
                                     ":" +
                                     ((value.minute.toString().length == 1)
                                         ? ("0" + value.minute.toString())
                                         : value.minute.toString());
-                              }catch(e){
-                                print("[ERROR] [ADDEVENT] [showTimePicker] [_selectedFinishHour] $e");
+                              } catch (e) {
+                                print(
+                                    "[ERROR] [ADDEVENT] [showTimePicker] [_selectedFinishHour] $e");
                               }
                             });
                           });
@@ -206,16 +206,17 @@ class _AddEventState extends State<AddEvent> {
                                 TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
                           ).then((value) {
                             setState(() {
-                              try{
+                              try {
                                 _selectedStartHour = ((value.hour.toString().length == 1)
-                                    ? ("0" + value.hour.toString())
-                                    : value.hour.toString()) +
+                                        ? ("0" + value.hour.toString())
+                                        : value.hour.toString()) +
                                     ":" +
                                     ((value.minute.toString().length == 1)
                                         ? ("0" + value.minute.toString())
                                         : value.minute.toString());
-                              }catch(e){
-                                print("[ERROR] [ADDEVENT] [showTimePicker] [_selectedStartHour] $e");
+                              } catch (e) {
+                                print(
+                                    "[ERROR] [ADDEVENT] [showTimePicker] [_selectedStartHour] $e");
                               }
                             });
                           });
@@ -230,7 +231,7 @@ class _AddEventState extends State<AddEvent> {
                             lastDate: DateTime(2025),
                           ).then((value) {
                             setState(() {
-                              try{
+                              try {
                                 _selectedDate = value.year.toString() +
                                     "-" +
                                     ((value.month.toString().length == 1)
@@ -240,7 +241,7 @@ class _AddEventState extends State<AddEvent> {
                                     (value.day.toString().length == 1
                                         ? "0" + value.day.toString()
                                         : value.day.toString());
-                              }catch(e){
+                              } catch (e) {
                                 print("[ERROR] [ADDEVENT] [showDatePicker] $e");
                               }
                             });
@@ -319,7 +320,7 @@ class _AddEventState extends State<AddEvent> {
                 ),
               ),
               // Hata mesaji alani
-              if (!_iscorrect || _duplicite)
+              if (!_iscorrect)
                 Container(
                   width: MediaQuery.of(context).size.width - 40,
                   //height: 75,
@@ -557,11 +558,11 @@ class _AddEventState extends State<AddEvent> {
                                   await showDialog(context: context, child: dayPicker);
                                   setState(() {
                                     _periodicDays = dayPicker.days;
-                                    if(_periodicDays==null){
+                                    if (_periodicDays == null) {
                                       _periodicDays = [];
-                                      _periodRadio=0;
-                                    }else{
-                                      _periodRadio=4;
+                                      _periodRadio = 0;
+                                    } else {
+                                      _periodRadio = 4;
                                     }
                                   });
                                 },
@@ -652,16 +653,7 @@ class _AddEventState extends State<AddEvent> {
   void validateandsave() async {
     final FormState state = _formKey.currentState;
 
-    await _db.isFullDay(_selectedDate).then((value) {
-      setState(() {
-        _duplicite = value;
-      });
-    });
-
     setState(() {
-      /// Eger istenilen gunde tum gun etkinlik varsa hata mesaji yaziliyor
-      errmsg = _duplicite == false ? "" : "Bu gün başka bir etkinliğiniz var";
-
       /// Eger tum gun degilse baslangic ve bitis zamanlari kontrol ediliyor olumsuzluk varsa hata mesaji yaziliyor
       if (!_isfullday) {
         _iscorrect = parseHours(_selectedFinishHour)[0] < parseHours(_selectedStartHour)[0] ||
@@ -676,13 +668,13 @@ class _AddEventState extends State<AddEvent> {
     for (int i = 0; i < _attachments.length; i++) {
       imagePaths += "${_attachments[i]}-";
     }
-    for(int i = 0 ; i<_periodicDays.length;i++){
-     setState(() {
-       _frequency += _periodicDays[i]?"1":"0";
-     });
+    for (int i = 0; i < _periodicDays.length; i++) {
+      setState(() {
+        _frequency += _periodicDays[i] ? "1" : "0";
+      });
     }
-    _frequency.contains("1")?_periodRadio=4:print("[ADDEVENT] frequency doesnt have '1'");
-    if (state.validate() && _iscorrect && (!_duplicite)) {
+    _frequency.contains("1") ? _periodRadio = 4 : print("[ADDEVENT] frequency doesnt have '1'");
+    if (state.validate() && _iscorrect) {
       var newEvent = (_isfullday)
           ? Event(
               title: _titlecontroller.text,

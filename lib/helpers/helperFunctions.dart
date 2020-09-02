@@ -1,7 +1,7 @@
 import 'package:ajanda/databasemodels/events.dart';
 
 String calcRemaining(String date, String startTime) {
-  var result;
+  String result;
   if (startTime == "null") {
     result = (DateTime.parse(date).difference(DateTime.now()).inDays < 0)
         ? "${-1 * DateTime.parse(date).difference(DateTime.now()).inDays}\nGün Geçti"
@@ -11,6 +11,7 @@ String calcRemaining(String date, String startTime) {
         ? "${-1 * DateTime.parse("$date $startTime").difference(DateTime.now()).inDays}\nGün Geçti"
         : "${DateTime.parse("$date $startTime").difference(DateTime.now()).inDays}\nGün Kaldı";
   }
+  result = result.contains("0")?"Bugün":result;
   return result;
 }
 
@@ -29,22 +30,4 @@ int sortByDate(Event e1, Event e2) {
       ? DateTime.parse("${e2.date} ${e2.startTime}")
       : DateTime.parse(e2.date);
   return d1.compareTo(d2);
-//  /// Once olma durumu
-//  if (d1.isBefore(d2))
-//    return 1;
-//
-//  /// Sonra olma durumu
-//  else if (d1.isAfter(d2)) return 0;
-//  /// Esit olma durumu
-//  return 1;
-}
-
-void printEvent(Event e) {
-  print("id : ${e.id} type : ${e.id.runtimeType}\n"
-      "title : ${e.title} type : ${e.title.runtimeType}\n"
-      "recipient : ${e.recipient} type : ${e.recipient.runtimeType}\n"
-      "cc : ${e.cc} type : ${e.cc.runtimeType}\n"
-      "bb : ${e.bb} type : ${e.bb.runtimeType}\n"
-      "subject : ${e.subject.runtimeType} type : ${e.subject.runtimeType}\n"
-      "attachments : ${e.attachments} type : ${e.attachments.runtimeType}\n");
 }
