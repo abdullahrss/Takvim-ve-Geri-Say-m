@@ -3,15 +3,25 @@ import 'package:ajanda/databasemodels/events.dart';
 String calcRemaining(String date, String startTime) {
   String result;
   if (startTime == "null") {
-    result = (DateTime.parse(date).difference(DateTime.now()).inDays < 0)
-        ? "${-1 * DateTime.parse(date).difference(DateTime.now()).inDays}\nGün Geçti"
-        : "${DateTime.parse(date).difference(DateTime.now()).inDays}\nGün Kaldı";
+    result = (DateTime.parse(date).difference(DateTime.now()).inDays == 0 &&
+            DateTime.parse(date).isBefore(DateTime.now()))
+        ? "Bugün"
+        : (DateTime.parse(date).difference(DateTime.now()).inDays < 0)
+            ? "${-1 * DateTime.parse(date).difference(DateTime.now()).inDays}\nGün Geçti"
+            : DateTime.parse(date).difference(DateTime.now()).inDays == 0
+                ? "Geçti"
+                : "${DateTime.parse(date).difference(DateTime.now()).inDays}\nGün Kaldı";
   } else {
-    result = (DateTime.parse("$date $startTime").difference(DateTime.now()).inDays < 0)
-        ? "${-1 * DateTime.parse("$date $startTime").difference(DateTime.now()).inDays}\nGün Geçti"
-        : "${DateTime.parse("$date $startTime").difference(DateTime.now()).inDays}\nGün Kaldı";
+    result = (DateTime.parse("$date $startTime").difference(DateTime.now()).inDays == 0 &&
+            DateTime.now().isBefore(DateTime.parse("$date $startTime")))
+        ? "Bugün"
+        : (DateTime.parse("$date $startTime").difference(DateTime.now()).inDays < 0)
+            ? "${-1 * DateTime.parse("$date $startTime").difference(DateTime.now()).inDays}\nGün Geçti"
+            : DateTime.parse("$date $startTime").difference(DateTime.now()).inDays == 0
+                ? "Geçti"
+                : "${DateTime.parse("$date $startTime").difference(DateTime.now()).inDays}\nGün Kaldı";
   }
-  result = result.contains("0")?"Bugün":result;
+
   return result;
 }
 
