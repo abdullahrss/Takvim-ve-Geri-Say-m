@@ -710,6 +710,9 @@ class _AddEventState extends State<EventEdit> {
               periodic: _periodRadio,
               frequency: _frequency,
             );
+      if(newEvent.recipient != "" && newEvent.choice == "0"){
+        newEvent.choice = "1";
+      }
       _db.updateEvent(newEvent);
       _db.createNotifications();
       Navigator.of(context).pop();
