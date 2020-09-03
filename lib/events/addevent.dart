@@ -610,16 +610,17 @@ class _AddEventState extends State<AddEvent> {
                     RaisedButton(
                       elevation: 18,
                       onPressed: () => {clearAreas()},
-                      child: Text("Temizle"),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-                      splashColor: Colors.blue,
+                      child: Text("Temizle",style: TextStyle(fontSize: 18,color: Colors.white),),
+                      color: Colors.blue,
+                      // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+                      splashColor: Colors.lightBlueAccent,
                     ),
                     RaisedButton(
                       onPressed: () => {validateandsave()},
                       elevation: 18,
-                      child: Text("Kaydet"),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-                      splashColor: Colors.blue,
+                      child: Text("Kaydet",style: TextStyle(fontSize: 18,color: Colors.white),),
+                      color: Colors.blue,
+                      splashColor: Colors.lightBlueAccent,
                     ),
                   ],
                 ),
@@ -646,8 +647,19 @@ class _AddEventState extends State<AddEvent> {
   void clearAreas() {
     _titlecontroller.clear();
     _descriptioncontroller.clear();
-    _iscountdownchecked = false;
-    _isfullday = false;
+    setState(() {
+      _iscountdownchecked = false;
+      _isfullday = false;
+      _switchValue = false;
+      _attachments = [];
+      _cc = "";
+      _bb = "";
+      _recipient = "";
+      _subject = "";
+      _body = "";
+      _periodRadio = 0;
+      _frequency = "";
+    });
   }
 
   void validateandsave() async {
@@ -710,6 +722,9 @@ class _AddEventState extends State<AddEvent> {
               periodic: _periodRadio,
               frequency: _frequency,
             );
+      if(newEvent.recipient != "" && newEvent.choice == "0"){
+        newEvent.choice = "1";
+      }
       await _db.insertEvent(newEvent);
       await _db.createNotifications();
       _advert.showIntersitial();

@@ -60,7 +60,7 @@ class _CalanderEventstate extends State<CalanderEvent> {
                   itemCount: snapshot.data.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
-                      padding: const EdgeInsets.fromLTRB(8.0, 16.0, 8.0, 16.0),
+                      padding: const EdgeInsets.fromLTRB(6.0, 16.0, 8.0, 16.0),
                       child: Card(
                         elevation: 25,
                         child: Container(
@@ -70,7 +70,7 @@ class _CalanderEventstate extends State<CalanderEvent> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
                               Container(
-                                width: MediaQuery.of(context).size.width / 2 - 16,
+                                width: MediaQuery.of(context).size.width / 2,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: <Widget>[
@@ -80,9 +80,37 @@ class _CalanderEventstate extends State<CalanderEvent> {
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(fontSize: 28),
                                     ),
-                                    Text(
-                                      "${snapshot.data[index].date} - ${snapshot.data[index].startTime == "null" ? " Tüm gün" : "${snapshot.data[index].startTime} - ${snapshot.data[index].finishTime}"}",
-                                      style: TextStyle(fontSize: 15),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 16.0),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Row(
+                                            children: <Widget>[
+                                              Icon(
+                                                Icons.calendar_today,
+                                                size: 22,
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text("${snapshot.data[index].date}"),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: <Widget>[
+                                              Icon(
+                                                Icons.watch_later,
+                                                size: 22,
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                  "${snapshot.data[index].startTime == "null" ? "Tüm gün" : "${snapshot.data[index].startTime} - ${snapshot.data[index].finishTime}"}"),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     Text(
                                       snapshot.data[index].desc,
@@ -124,8 +152,8 @@ class _CalanderEventstate extends State<CalanderEvent> {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(8.0),
                                         color: (calcRemaining(snapshot.data[index].date,
-                                            snapshot.data[index].startTime)
-                                            .contains("Geçti"))
+                                                    snapshot.data[index].startTime)
+                                                .contains("Geçti"))
                                             ? Colors.blueGrey
                                             : Colors.blue,
                                       ),

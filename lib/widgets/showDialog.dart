@@ -129,7 +129,7 @@ Future<void> showButtonAboutDialog(context) async {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          "Etklinliğiniz için bildirim ayarlasanız sizin için göndereceğiniz maili Gmail'e gönderir",
+                          "Etklinliğiniz için bildirim ayarlasanız sizin için göndereceğiniz maili E-mail servisine gönderir",
                           style: TextStyle(
                             fontSize: 18,
                           ),

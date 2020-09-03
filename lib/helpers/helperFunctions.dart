@@ -29,5 +29,5 @@ int sortByDate(Event e1, Event e2) {
   DateTime d2 = e2.startTime != "null"
       ? DateTime.parse("${e2.date} ${e2.startTime}")
       : DateTime.parse(e2.date);
-  return d1.compareTo(d2);
+  return d2.compareTo(d1);
 }

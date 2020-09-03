@@ -53,16 +53,47 @@ class _Closesevents extends State<Soclose> {
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(fontSize: 28),
                                       ),
-                                      Text(
-                                        "${snapshot.data[index].date} - ${snapshot.data[index].startTime == "null" ? " Tüm gün" : "${snapshot.data[index].startTime} - ${snapshot.data[index].finishTime}"}",
-                                        style: TextStyle(fontSize: 16),
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 16.0),
+                                        child: Column(
+                                          children: <Widget>[
+                                            Row(
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.calendar_today,
+                                                  size: 22,
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Text("${snapshot.data[index].date}"),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.watch_later,
+                                                  size: 22,
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Text(
+                                                    "${snapshot.data[index].startTime == "null" ? "Tüm gün" : "${snapshot.data[index].startTime} - ${snapshot.data[index].finishTime}"}"),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      Text(
-                                        snapshot.data[index].desc,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontSize: 15,
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          snapshot.data[index].desc,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -71,7 +102,7 @@ class _Closesevents extends State<Soclose> {
                               ),
                               Expanded(
                                 child: Container(
-                                  padding: const EdgeInsets.only(top: 12.0),
+                                  padding: const EdgeInsets.only(left: 16.0, top: 12.0),
                                   child: Column(
                                     children: <Widget>[
                                       Container(

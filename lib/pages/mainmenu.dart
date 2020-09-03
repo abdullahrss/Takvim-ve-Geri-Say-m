@@ -265,7 +265,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                         Navigator.pop(context);
                       },
                     ),
-                    Text("Z-A z-a"),
+                    Text("z-a Z-A"),
                   ],
                 ),
                 Row(
