@@ -65,6 +65,7 @@ class _DetailsState extends State<Details> {
                       ),
                     ]),
                   ),
+                  if((widget.event.recipient != "" || widget.event.recipient.length != 0)||(widget.event.periodic != 0))
                   Container(
                     padding: const EdgeInsets.only(right: 64.0),
                     child: Divider(
