@@ -1,3 +1,4 @@
+import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class Notifications {
@@ -87,15 +88,15 @@ class Notifications {
 
   String calcSingleNotificationBodyText(String index) {
     var provisionMap = {
-      "1": "Etkinliğiniz zamanı geldi.",
-      "2": "Etkinliğinize 5 dakika kaldı.",
-      "3": "Etkinliğinize 15 dakika kaldı.",
-      "4": "Etkinliğinize 30 dakika kaldı.",
-      "5": "Etkinliğinize 1 saat kaldı.",
-      "6": "Etkinliğinize 12 saat kaldı.",
-      "7": "Etkinliğinize 1 gün kaldı.",
-      "8": "Etkinliğinize 3 gün kaldı.",
-      "9": "Etkinliğinize 1 hafta kaldı."
+      "1": protranslate["Etkinliğiniz zamanı geldi."][31],
+      "2": protranslate["Etkinliğinize 5 dakika kaldı."][31],
+      "3": protranslate["Etkinliğinize 15 dakika kaldı."][31],
+      "4": protranslate["Etkinliğinize 30 dakika kaldı."][31],
+      "5": protranslate["Etkinliğinize 12 saat kaldı."][31],
+      "6": protranslate["Etkinliğinize 12 saat kaldı."][31],
+      "7": protranslate["Etkinliğinize 1 gün kaldı."][31],
+      "8": protranslate["Etkinliğinize 3 gün kaldı."][31],
+      "9": protranslate["Etkinliğinize 1 hafta kaldı."][31]
     };
     return provisionMap.containsKey(index)
         ? provisionMap[index]

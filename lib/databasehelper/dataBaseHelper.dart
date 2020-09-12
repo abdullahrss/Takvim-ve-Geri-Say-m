@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io' show Directory;
 
+import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -260,7 +261,7 @@ class DbHelper {
       await not.countDownNotification(
           flutterLocalNotificationsPlugin,
           eventList[i].title,
-          "ETKİNLİĞE ${remainingTime.inDays} GÜN ${remainingTime.inHours - remainingTime.inDays * 24} SAAT ${remainingTime.inMinutes - remainingTime.inHours * 60} DAKİKA KALDI",
+          "${protranslate["ETKİNLİĞE"][31]} ${remainingTime.inDays} ${protranslate["GÜN"][31]} ${remainingTime.inHours - remainingTime.inDays * 24} ${protranslate["SAAT"][31]} ${remainingTime.inMinutes - remainingTime.inHours * 60} ${protranslate["DAKİKA"][31]} ${protranslate["KALDI"][31]}",
           eventList[i].id);
     }
     return true;
@@ -292,7 +293,7 @@ class DbHelper {
       if (event.recipient != "") {
         print("[DATABASEHELPER] [createNotifications] e-mail notification : ${event.title}");
         await not.singleNotificationWithMail(flutterLocalNotificationsPlugin, datetime, event.title,
-            "Yollayacağınız e-mail'in vakti geldi.", event.id);
+            protranslate["Yollayacağınız e-mail'in vakti geldi."][31], event.id);
       } else {
         print("[DATABASEHELPER] [createNotifications] normal notification : ${event.title}");
         await not.singleNotification(flutterLocalNotificationsPlugin, datetime, event.title,

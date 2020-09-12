@@ -1,3 +1,4 @@
+import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
 import 'package:ajanda/widgets/dayPicker.dart';
 import 'package:ajanda/widgets/navigateToSettings.dart';
 import 'package:flutter/cupertino.dart';
@@ -94,7 +95,7 @@ class _AddEventState extends State<AddEvent> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Yeni Etkinlik Ekle"),
+        title: Text(protranslate["Yeni Etkinlik Ekle"][31]),
         actions: <Widget>[
           IconButton(
             icon: Icon(
@@ -116,11 +117,11 @@ class _AddEventState extends State<AddEvent> {
                     controller: _titlecontroller,
                     maxLength: 50,
                     decoration: InputDecoration(
-                      labelText: "Etkinlik ismi",
+                      labelText: protranslate["Etkinlik ismi"][31],
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
-                      return value.isEmpty ? "Etkinlik ismi boş bırakılamaz" : null;
+                      return value.isEmpty ? protranslate["Etkinlik ismi boş bırakılamaz"][31] : null;
                     },
                   )),
               Container(
@@ -223,8 +224,8 @@ class _AddEventState extends State<AddEvent> {
                         }
                         if (widget.date == null)
                           showDatePicker(
-                            cancelText: "Geri",
-                            confirmText: "Tamam",
+                            cancelText: protranslate["Geri"][31],
+                            confirmText: protranslate["Tamam"][31],
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime.now(),
@@ -350,7 +351,7 @@ class _AddEventState extends State<AddEvent> {
                       children: <Widget>[
                         Icon(_iconData),
                         Text(
-                          "Seçenekler",
+                          protranslate["Seçenekler"][31],
                           style: TextStyle(fontSize: 20),
                         ),
                       ],
@@ -381,7 +382,7 @@ class _AddEventState extends State<AddEvent> {
                                 },
                               ),
                               Text(
-                                "Bütün gün",
+                                protranslate["Bütün gün"][31],
                                 style: TextStyle(fontSize: 20),
                               ),
                             ],
@@ -409,7 +410,7 @@ class _AddEventState extends State<AddEvent> {
                                   },
                                 ),
                                 Text(
-                                  "Geri sayım etkinleştir",
+                                  protranslate["Geri sayım etkinleştir"][31],
                                   style: TextStyle(fontSize: 20),
                                 ),
                                 IconButton(
@@ -418,7 +419,7 @@ class _AddEventState extends State<AddEvent> {
                                       showWarningDialog(
                                           context: context,
                                           explanation:
-                                              "Geri sayım sayfasında etkinliğinize ne kadar süre kaldığını görebilirsiniz.");
+                                              protranslate["Geri sayım sayfasında etkinliğinize ne kadar süre kaldığını görebilirsiniz."][31]);
                                     }),
                               ],
                             ),
@@ -447,7 +448,7 @@ class _AddEventState extends State<AddEvent> {
                                   },
                                 ),
                                 Text(
-                                  "Sabit bildirim",
+                                  protranslate["Sabit bildirim"][31],
                                   style: TextStyle(
                                     fontSize: 20,
                                   ),
@@ -460,7 +461,7 @@ class _AddEventState extends State<AddEvent> {
                                       showWarningDialog(
                                           context: context,
                                           explanation:
-                                              "Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!");
+                                              protranslate["Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!"][31]);
                                     })
                               ],
                             ),
@@ -486,7 +487,7 @@ class _AddEventState extends State<AddEvent> {
                                   size: 36,
                                 ),
                                 Text(
-                                  "Periyodik Etkinlik",
+                                  protranslate["Periyodik Etkinlik"][31],
                                   style: TextStyle(
                                     fontSize: 20,
                                   ),
@@ -511,7 +512,7 @@ class _AddEventState extends State<AddEvent> {
                                           setSelectedRadio(val);
                                         },
                                       ),
-                                      Text("Günlük", style: TextStyle(fontSize: 20)),
+                                      Text(protranslate["Günlük"][31], style: TextStyle(fontSize: 20)),
                                     ],
                                   ),
                                 ),
@@ -529,7 +530,7 @@ class _AddEventState extends State<AddEvent> {
                                           setSelectedRadio(val);
                                         },
                                       ),
-                                      Text("Haftalık", style: TextStyle(fontSize: 20)),
+                                      Text(protranslate["Haftalık"][31], style: TextStyle(fontSize: 20)),
                                     ],
                                   ),
                                 ),
@@ -547,7 +548,7 @@ class _AddEventState extends State<AddEvent> {
                                           setSelectedRadio(val);
                                         },
                                       ),
-                                      Text("Aylık", style: TextStyle(fontSize: 20)),
+                                      Text(protranslate["Aylık"][31], style: TextStyle(fontSize: 20)),
                                     ],
                                   ),
                                 ),
@@ -574,7 +575,7 @@ class _AddEventState extends State<AddEvent> {
                                         Icons.calendar_today,
                                       ),
                                       Text(
-                                        "  Özel",
+                                        protranslate["  Özel"][31],
                                         style: TextStyle(
                                           fontSize: 20,
                                         ),
@@ -595,8 +596,8 @@ class _AddEventState extends State<AddEvent> {
                   controller: _descriptioncontroller,
                   maxLines: 7,
                   decoration: InputDecoration(
-                    labelText: "Etkinlik açıklaması ...",
-                    hintText: "Etkinlik detaylarının girileceği alan...",
+                    labelText: protranslate["Etkinlik açıklaması ..."][31],
+                    hintText: protranslate["Etkinlik detaylarının girileceği alan..."][31],
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
                   ),
                 ),
@@ -610,7 +611,7 @@ class _AddEventState extends State<AddEvent> {
                     RaisedButton(
                       elevation: 18,
                       onPressed: () => {clearAreas()},
-                      child: Text("Temizle",style: TextStyle(fontSize: 18,color: Colors.white),),
+                      child: Text(protranslate["Temizle"][31],style: TextStyle(fontSize: 18,color: Colors.white),),
                       color: Colors.blue,
                       // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
                       splashColor: Colors.lightBlueAccent,
@@ -618,7 +619,7 @@ class _AddEventState extends State<AddEvent> {
                     RaisedButton(
                       onPressed: () => {validateandsave()},
                       elevation: 18,
-                      child: Text("Kaydet",style: TextStyle(fontSize: 18,color: Colors.white),),
+                      child: Text(protranslate["Kaydet"][31],style: TextStyle(fontSize: 18,color: Colors.white),),
                       color: Colors.blue,
                       splashColor: Colors.lightBlueAccent,
                     ),
@@ -673,7 +674,7 @@ class _AddEventState extends State<AddEvent> {
                     parseHours(_selectedFinishHour)[1] < parseHours(_selectedStartHour)[1])
             ? false
             : true;
-        errmsg += _iscorrect == false ? "\nBitiş zamanı başlangıç zamanından önce olamaz" : "";
+        errmsg += _iscorrect == false ? "\n${protranslate["Bitiş zamanı başlangıç zamanından önce olamaz"][31]}" : "";
       }
     });
     String imagePaths = "";

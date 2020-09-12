@@ -1,3 +1,4 @@
+import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
 import 'package:flutter/material.dart';
 
 
@@ -42,46 +43,46 @@ class _DayPickerForPeriodicState extends State<DayPickerForPeriodic> {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: Text("Günler",style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
+      title: Text(protranslate["Günler"][31],style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
       children: <Widget>[
         CheckboxListTile(
-          title: Text("Pazartesi"),
+          title: Text(protranslate["Pazartesi"][31]),
           value: _pazartesi,
           onChanged: (v) => setState((){_pazartesi=v;}) ,
         ),
         Container(padding: const EdgeInsets.only(left: 8.0,right: 8.0),child: Divider(height: 0.5,)),
         CheckboxListTile(
-          title: Text("Salı"),
+          title: Text(protranslate["Salı"][31]),
           value: _sali,
           onChanged: (v) => setState((){_sali=v;}),
         ),
         Container(padding: const EdgeInsets.only(left: 8.0,right: 8.0),child: Divider(height: 0.5,)),
         CheckboxListTile(
-          title: Text("Çarşamba"),
+          title: Text(protranslate["Çarşamba"][31]),
           value: _carsamba,
           onChanged: (v) => setState((){_carsamba=v;}),
         ),
         Container(padding: const EdgeInsets.only(left: 8.0,right: 8.0),child: Divider(height: 0.5,)),
         CheckboxListTile(
-          title: Text("Perşembe"),
+          title: Text(protranslate["Perşembe"][31]),
           value: _persembe,
           onChanged: (v) => setState((){_persembe=v;}),
         ),
         Container(padding: const EdgeInsets.only(left: 8.0,right: 8.0),child: Divider(height: 0.5,)),
         CheckboxListTile(
-          title: Text("Cuma"),
+          title: Text(protranslate["Cuma"][31]),
           value: _cuma,
           onChanged: (v) => setState((){_cuma=v;}),
         ),
         Container(padding: const EdgeInsets.only(left: 8.0,right: 8.0),child: Divider(height: 0.5,)),
         CheckboxListTile(
-          title: Text("Cumartesi"),
+          title: Text(protranslate["Cumartesi"][31]),
           value: _cumartesi,
           onChanged: (v) => setState((){_cumartesi=v;}),
         ),
         Container(padding: const EdgeInsets.only(left: 8.0,right: 8.0),child: Divider(height: 0.5,)),
         CheckboxListTile(
-          title: Text("Pazar"),
+          title: Text(protranslate["Pazar"][31]),
           value: _pazar,
           onChanged: (v) => setState((){_pazar=v;}),
         ),
@@ -90,11 +91,11 @@ class _DayPickerForPeriodicState extends State<DayPickerForPeriodic> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             FlatButton(
-              child: Text("Geri",style: TextStyle(color: Colors.blueAccent,),),
+              child: Text(protranslate["Geri"][31],style: TextStyle(color: Colors.blueAccent,),),
               onPressed: () => Navigator.pop(context),
             ),
             FlatButton(
-              child: Text("Tamam",style: TextStyle(color: Colors.blueAccent,),),
+              child: Text(protranslate["Tamam"][31],style: TextStyle(color: Colors.blueAccent,),),
               onPressed: (){
                 setState(() {
                   widget.days = [_pazartesi,_sali,_carsamba,_persembe,_cuma,_cumartesi,_pazar];

@@ -1,21 +1,21 @@
 import 'package:ajanda/databasemodels/events.dart';
-
+import '../helpers/TURKISHtoEnglish.dart';
 String calcRemaining(String date, String startTime) {
   String result = "";
   DateTime dateTime;
   DateTime now = DateTime.now();
   dateTime = startTime == "null" ? DateTime.parse("$date") : DateTime.parse("$date $startTime");
   if(dateTime.difference(now).inHours <= 0 && dateTime.difference(now).inDays == 0 && startTime != "null"){
-    result = "Geçti";
+    result = protranslate["Geçti"][31];
   }else if(dateTime.difference(now).inDays < 0){
-    result = "${dateTime.difference(now).inDays} Gün Geçti";
+    result = "${dateTime.difference(now).inDays} ${protranslate["Gün Geçti"][31]}";
   }
   else if(dateTime.difference(now).inDays == 0 && dateTime.difference(now).inHours > 0){
-    result = "${dateTime.difference(now).inHours} Saat Kaldı";
+    result = "${dateTime.difference(now).inHours} ${protranslate["Saat Kaldı"][31]}";
   }else if(dateTime.difference(now).inDays == 0 && startTime == "null"){
-    result = "Bugün";
+    result = protranslate["Bugün"][31];
   }else{
-    result = "${dateTime.difference(now).inDays} Gün Kaldı";
+    result = "${dateTime.difference(now).inDays} ${protranslate["Gün Kaldı"][31]}";
   }
   return result;
 }

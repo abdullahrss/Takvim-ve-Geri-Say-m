@@ -1,4 +1,5 @@
 import 'package:ajanda/events/notifications.dart';
+import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -18,7 +19,7 @@ class DropDown extends StatefulWidget {
 
 class _DropDownState extends State<DropDown> {
   var _db = DbHelper();
-  String dropdownValue = 'Detaylar';
+  String dropdownValue = protranslate['Detaylar'][31];
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class _DropDownState extends State<DropDown> {
         onChanged: (String newValue) {
           setState(() {
             dropdownValue = newValue;
-            if (newValue == 'Detaylar') {
+            if (newValue == protranslate['Detaylar'][31]) {
               Event event = Event(
                 id: widget.event.id,
                 title: widget.event.title,
@@ -57,7 +58,7 @@ class _DropDownState extends State<DropDown> {
                       builder: (context) => Details(
                             event: event,
                           )));
-            } else if (newValue == 'Sil') {
+            } else if (newValue == protranslate['Sil'][31]) {
               FlutterLocalNotificationsPlugin localNotificationsPlugin =
                   FlutterLocalNotificationsPlugin();
               Notifications not = Notifications(localNotificationsPlugin);
@@ -69,8 +70,8 @@ class _DropDownState extends State<DropDown> {
           });
         },
         items: <String>[
-          'Detaylar',
-          'Sil',
+          protranslate['Detaylar'][31],
+          protranslate['Sil'][31],
         ].map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,

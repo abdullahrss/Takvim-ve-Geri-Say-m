@@ -1,3 +1,4 @@
+import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
 import 'package:flutter/material.dart';
 
 import '../Widgets/dropdown.dart';
@@ -28,7 +29,7 @@ class _CalanderEventstate extends State<CalanderEvent> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Etkinlik",
+          protranslate["Etkinlik"][31],
           style: TextStyle(fontSize: 22),
         ),
         actions: <Widget>[
@@ -53,7 +54,7 @@ class _CalanderEventstate extends State<CalanderEvent> {
           builder: (context, snapshot) {
             if (snapshot.data == null) {
               return Container(
-                child: Text("Loading....."),
+                child: Text(protranslate["Yükleniyor....."][31]),
               );
             } else {
               return ListView.builder(
@@ -106,7 +107,7 @@ class _CalanderEventstate extends State<CalanderEvent> {
                                                 width: 10,
                                               ),
                                               Text(
-                                                  "${snapshot.data[index].startTime == "null" ? "Tüm gün" : "${snapshot.data[index].startTime} - ${snapshot.data[index].finishTime}"}"),
+                                                  "${snapshot.data[index].startTime == "null" ? protranslate["Tüm gün"][31] : "${snapshot.data[index].startTime} - ${snapshot.data[index].finishTime}"}"),
                                             ],
                                           ),
                                         ],
@@ -153,7 +154,7 @@ class _CalanderEventstate extends State<CalanderEvent> {
                                         borderRadius: BorderRadius.circular(8.0),
                                         color: (calcRemaining(snapshot.data[index].date,
                                                     snapshot.data[index].startTime)
-                                                .contains("Geçti"))
+                                                .contains(protranslate["Geçti"][31]))
                                             ? Colors.blueGrey
                                             : Colors.blue,
                                       ),

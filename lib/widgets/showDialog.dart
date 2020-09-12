@@ -1,3 +1,4 @@
+import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
 import 'package:flutter/material.dart';
 
 Future<void> showMyDialog(context, {String title, String message, Function function}) async {
@@ -22,13 +23,13 @@ Future<void> showMyDialog(context, {String title, String message, Function funct
         ),
         actions: <Widget>[
           FlatButton(
-            child: Text('Hayır', style: TextStyle(fontSize: 16)),
+            child: Text(protranslate['Hayır'][31], style: TextStyle(fontSize: 16)),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
           FlatButton(
-            child: Text('Evet', style: TextStyle(fontSize: 16)),
+            child: Text(protranslate['Evet'][31], style: TextStyle(fontSize: 16)),
             onPressed: () async {
               Navigator.of(context).pop();
               await function();
@@ -47,7 +48,7 @@ Future<void> showWarningDialog(
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Dikkat!'),
+        title: Text(protranslate['Dikkat!'][31]),
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
@@ -57,7 +58,7 @@ Future<void> showWarningDialog(
         ),
         actions: <Widget>[
           FlatButton(
-            child: Text('Tamam'),
+            child: Text(protranslate['Tamam'][31]),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -74,7 +75,7 @@ Future<void> showButtonAboutDialog(context) async {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Dikkat!'),
+        title: Text(protranslate['Dikkat!'][31]),
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
@@ -88,7 +89,7 @@ Future<void> showButtonAboutDialog(context) async {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        "Ekleyeceğiniz etklinlik için tarih ve saati ayarlamanıza yardımcı olur.",
+                        protranslate["Ekleyeceğiniz etklinlik için tarih ve saati ayarlamanıza yardımcı olur."][31],
                         style: TextStyle(
                           fontSize: 18,
                         ),
@@ -109,7 +110,7 @@ Future<void> showButtonAboutDialog(context) async {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          "Etkinliğiniz için size hatırlatma bildirimi hazırlar.",
+                          protranslate["Etkinliğiniz için size hatırlatma bildirimi hazırlar."][31],
                           style: TextStyle(
                             fontSize: 18,
                           ),
@@ -129,7 +130,7 @@ Future<void> showButtonAboutDialog(context) async {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          "Etklinliğiniz için bildirim ayarlasanız sizin için göndereceğiniz maili E-mail servisine gönderir",
+                          protranslate["Etklinliğiniz için bildirim ayarlasanız sizin için göndereceğiniz maili E-mail servisine gönderir"][31],
                           style: TextStyle(
                             fontSize: 18,
                           ),
@@ -144,7 +145,7 @@ Future<void> showButtonAboutDialog(context) async {
         ),
         actions: <Widget>[
           FlatButton(
-            child: Text('Tamam'),
+            child: Text(protranslate['Tamam'][31]),
             onPressed: () {
               Navigator.of(context).pop();
             },

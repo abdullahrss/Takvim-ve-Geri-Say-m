@@ -1,3 +1,4 @@
+import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
@@ -20,7 +21,7 @@ class FutureCalendar extends StatelessWidget {
         if (snapshot.data == null) {
           return Scaffold(
             body: Center(
-              child: Text("Yükleniyor...."),
+              child: Text(protranslate["Yükleniyor...."][31]),
             ),
           );
         } else {
@@ -95,7 +96,7 @@ class _CalendarState extends State<Calendar> {
         color: Colors.red,
       ),
       thisMonthDayBorderColor: Colors.grey,
-      headerText: 'Haftalık Takvim',
+      headerText: protranslate['Haftalık Takvim'][31],
       weekFormat: true,
       markedDatesMap: _markedDateMap,
       height: 200.0,
@@ -138,8 +139,8 @@ class _CalendarState extends State<Calendar> {
                   context, MaterialPageRoute(builder: (context) => CalanderEvent(newdate)));
             } else {
               showMyDialog(context,
-                  title: "Boş Gün",
-                  message: 'Bu tarihe etkinlik eklemek ister misiniz ?', function: () {
+                  title: protranslate["Boş Gün"][31],
+                  message: protranslate['Bu tarihe etkinlik eklemek ister misiniz ?'][31], function: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -226,7 +227,7 @@ class _CalendarState extends State<Calendar> {
                   ),
                 )),
                 FlatButton(
-                  child: Text('GERİ'),
+                  child: Text(protranslate['GERİ'][31]),
                   onPressed: () {
                     setState(() {
                       _targetDateTime = DateTime(_targetDateTime.year, _targetDateTime.month - 1);
@@ -235,7 +236,7 @@ class _CalendarState extends State<Calendar> {
                   },
                 ),
                 FlatButton(
-                  child: Text('İLERİ'),
+                  child: Text(protranslate['İLERİ'][31]),
                   onPressed: () {
                     setState(() {
                       _targetDateTime = DateTime(_targetDateTime.year, _targetDateTime.month + 1);
@@ -276,18 +277,18 @@ class _CalendarState extends State<Calendar> {
 
   String translateMonths(String monthYear) {
     var map = {
-      "Jan": "Ocak",
-      "Feb": "Şubat",
-      "Mar": "Mart",
-      "Apr": "Nisan",
-      "May": "Mayıs",
-      "Jun": "Haziran",
-      "Jul": "Temmuz",
-      "Aug": "Ağustos",
-      "Sep": "Eylül",
-      "Oct": "Ekim",
-      "Nov": "Kasım",
-      "Dec": "Aralık"
+      "Jan": protranslate["Ocak"][31],
+      "Feb": protranslate["Subat"][31],
+      "Mar": protranslate["Mart"][31],
+      "Apr": protranslate["Nisan"][31],
+      "May": protranslate["Mayıs"][31],
+      "Jun": protranslate["Haziran"][31],
+      "Jul": protranslate["Temmuz"][31],
+      "Aug": protranslate["Ağustos"][31],
+      "Sep": protranslate["Eylül"][31],
+      "Oct": protranslate["Ekim"][31],
+      "Nov": protranslate["Kasım"][31],
+      "Dec": protranslate["Aralık"][31]
     };
 
     return map.keys.contains(monthYear.split(" ")[0])

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../databasehelper/dataBaseHelper.dart';
 import 'dart:async';
-
+import '../helpers/TURKISHtoEnglish.dart';
 class CountDownPage extends StatefulWidget {
   @override
   _CountDownPageState createState() => _CountDownPageState();
@@ -41,7 +41,7 @@ class _CountDownPageState extends State<CountDownPage> {
           builder: (context, snapshot) {
             if (snapshot.data == null) {
               return Container(
-                child: Center(child: Text("Yükleniyor.....")),
+                child: Center(child: Text(protranslate["Yükleniyor....."][31])),
               );
             } else {
               return ListView.builder(
@@ -87,7 +87,7 @@ class _CountDownPageState extends State<CountDownPage> {
                                 Column(
                                   children: <Widget>[
                                     Text(
-                                      "GÜN",
+                                      protranslate["GÜN"][31],
                                       style: infoStyles(),
                                     ),
                                     SizedBox(
@@ -107,7 +107,7 @@ class _CountDownPageState extends State<CountDownPage> {
                                 Column(
                                   children: <Widget>[
                                     Text(
-                                      "SAAT",
+                                      protranslate["SAAT"][31],
                                       style: infoStyles(),
                                     ),
                                     Text(
@@ -128,7 +128,7 @@ class _CountDownPageState extends State<CountDownPage> {
                                 Column(
                                   children: <Widget>[
                                     Text(
-                                      "DAKİKA",
+                                      protranslate["DAKİKA"][31],
                                       style: infoStyles(),
                                     ),
                                     Text(
@@ -149,7 +149,7 @@ class _CountDownPageState extends State<CountDownPage> {
                                 Column(
                                   children: <Widget>[
                                     Text(
-                                      "SANİYE",
+                                      protranslate["SANİYE"][31],
                                       style: infoStyles(),
                                     ),
                                     Text(

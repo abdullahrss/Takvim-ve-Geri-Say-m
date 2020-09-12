@@ -11,6 +11,8 @@ import '../helpers/backgroundProcesses.dart';
 import 'calendar.dart';
 import 'countdownpage.dart';
 import 'settings.dart';
+import '../helpers/TURKISHtoEnglish.dart';
+
 
 class MainMenu extends StatelessWidget {
   MainMenu({Key key}) : super(key: key);
@@ -26,11 +28,12 @@ class MainMenu extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             home: Scaffold(
               body: Center(
-                child: Text("Yükleniyor....."),
+                child: Text(protranslate["Yükleniyor....."][31]),
               ),
             ),
           );
         } else {
+
           return DynamicTheme(
               defaultBrightness: Brightness.light,
               data: (brightness) => ThemeData(
@@ -168,7 +171,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
         ),
       ),
       appBar: AppBar(
-        title: Text("Takvim ve Geri Sayım"),
+        title: Text(protranslate["Takvim ve Geri Sayım"][31]),
         actions: <Widget>[
           if (_selectedIndex == 0)
             Container(
@@ -201,25 +204,25 @@ class _MainMenuBodyState extends State<MainMenuBody> {
       ),
       body: buildPageView(),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.schedule),
             title: Text(
-              'Yakındakiler',
+              protranslate["Yakındakiler"][31],
               style: TextStyle(fontSize: 18),
             ),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.business),
             title: Text(
-              'Takvim',
+              protranslate['Takvim'][31],
               style: TextStyle(fontSize: 18),
             ),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.watch),
             title: Text(
-              'Geri Sayım',
+              protranslate['Geri Sayım'][31],
               style: TextStyle(fontSize: 18),
             ),
           ),
@@ -237,7 +240,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Sıralama'),
+          title: Text(protranslate['Sıralama'][31]),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
@@ -277,7 +280,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                         Navigator.pop(context);
                       },
                     ),
-                    Text("Gelecek tarihler başta"),
+                    Text(protranslate["Gelecek tarihler başta"][31]),
                   ],
                 ),
                 Row(
@@ -290,7 +293,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                         Navigator.pop(context);
                       },
                     ),
-                    Text("Geçmiş tarihler başta"),
+                    Text(protranslate["Gelecek tarihler başta"][31]),
                   ],
                 ),
               ],
@@ -299,7 +302,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
           actions: <Widget>[
             FlatButton(
               child: Text(
-                "Geri",
+                protranslate["Geri"][31],
                 style: TextStyle(fontSize: 24),
               ),
               onPressed: () {

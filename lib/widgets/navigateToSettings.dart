@@ -1,4 +1,5 @@
 import 'package:ajanda/databasehelper/settingsHelper.dart';
+import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -11,12 +12,12 @@ void navigateToSettingsDialog(context) async {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text("Dikkat!"),
+              title: Text(protranslate["Dikkat!"][31]),
               actions: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    "Sabit bildirim bazen düzgün çalışmayabilir. Düzgün çalışması için bildirimlerin açık olduğuna emin olun\n\nNot: Xiaomi telefonlarda uygulama ayarlarında Otomatik başlatma seçeneğinin açık olduğuna emin olun.",
+                    protranslate["Sabit bildirim bazen düzgün çalışmayabilir. Düzgün çalışması için bildirimlerin açık olduğuna emin olun\n\nNot: Xiaomi telefonlarda uygulama ayarlarında Otomatik başlatma seçeneğinin açık olduğuna emin olun."][31],
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
@@ -24,7 +25,7 @@ void navigateToSettingsDialog(context) async {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text("Bir daha gösterme"),
+                      child: Text(protranslate["Bir daha gösterme"][31]),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(right: 8.0),
@@ -41,14 +42,14 @@ void navigateToSettingsDialog(context) async {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     FlatButton(
-                      child: Text("Tamam"),
+                      child: Text(protranslate["Tamam"][31]),
                       onPressed: () async {
                         await sdb.updateWarning(val ? 1 : 0);
                         Navigator.pop(context);
                       },
                     ),
                     FlatButton(
-                      child: Text("Ayarlara Git"),
+                      child: Text(protranslate["Ayarlara Git"][31]),
                       onPressed: () async {
                         openAppSettings();
                       },

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../databasehelper/dataBaseHelper.dart';
 import '../databasehelper/settingsHelper.dart';
 import '../widgets/showDialog.dart';
+import '../helpers/TURKISHtoEnglish.dart';
 import 'mainmenu.dart';
 
 class Settings extends StatefulWidget {
@@ -66,7 +67,7 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Ayarlar')),
+      appBar: AppBar(title: Text(protranslate['Ayarlar'][31])),
       body: Container(
         padding: const EdgeInsets.fromLTRB(22.0, 4.0, 20.0, 0),
         child: Column(
@@ -115,7 +116,7 @@ class _SettingsState extends State<Settings> {
               children: <Widget>[
                 Expanded(
                   child: Text(
-                    "Karanlık Tema",
+                    protranslate["Karanlık Tema"][31],
                     style: TextStyle(
                       fontSize: 20,
                     ),
@@ -153,7 +154,7 @@ class _SettingsState extends State<Settings> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  "Bütün etkinlikeri sil!",
+                  protranslate["Bütün etkinlikeri sil!"][31],
                   style: TextStyle(
                     fontSize: 20,
                   ),
@@ -162,8 +163,8 @@ class _SettingsState extends State<Settings> {
                   icon: Icon(Icons.delete),
                   onPressed: () async {
                     await showMyDialog(context,
-                        title: "Dikkat",
-                        message: 'Bütün etkinlikleri silmek istediğinize emin misiniz.',
+                        title: protranslate["Bütün etkinlikeri sil!"][31],
+                        message: protranslate['Bütün etkinlikleri silmek istediğinize emin misiniz.'][31],
                         function: () async {
                       await _db.clearDb();
                       Navigator.pop(context);
@@ -180,7 +181,7 @@ class _SettingsState extends State<Settings> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  "Vakiti geçmiş etkinlikleri sil!",
+                  protranslate["Vakiti geçmiş etkinlikleri sil!"][31],
                   style: TextStyle(
                     fontSize: 20,
                   ),
@@ -189,9 +190,9 @@ class _SettingsState extends State<Settings> {
                   icon: Icon(Icons.delete),
                   onPressed: () async {
                     await showMyDialog(context,
-                        title: "Dikkat",
+                        title: protranslate["Dikkat"][31],
                         message:
-                            'Bütün tarihi geçmiş etkinlikleri silmek istediğinize emin misiniz.',
+                            protranslate['Bütün tarihi geçmiş etkinlikleri silmek istediğinize emin misiniz.'][31],
                         function: () async {
                       await _db.clearOldEvents();
                       Navigator.pop(context);
@@ -208,7 +209,7 @@ class _SettingsState extends State<Settings> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  "Yazı fontları",
+                  protranslate["Yazı fontları"][31],
                   style: TextStyle(
                     fontSize: 20,
                   ),

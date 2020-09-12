@@ -1,3 +1,4 @@
+import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +27,7 @@ class _Closesevents extends State<Soclose> {
           builder: (context, snapshot) {
             if (snapshot.data == null) {
               return Container(
-                child: Center(child: Text("Yükleniyor.....")),
+                child: Center(child: Text(protranslate["Yükleniyor....."][31])),
               );
             } else {
               return ListView.builder(
@@ -79,7 +80,7 @@ class _Closesevents extends State<Soclose> {
                                                   width: 10,
                                                 ),
                                                 Text(
-                                                    "${snapshot.data[index].startTime == "null" ? "Tüm gün" : "${snapshot.data[index].startTime} - ${snapshot.data[index].finishTime}"}"),
+                                                    "${snapshot.data[index].startTime == "null" ? protranslate["Tüm gün"][31] : "${snapshot.data[index].startTime} - ${snapshot.data[index].finishTime}"}"),
                                               ],
                                             ),
                                           ],
@@ -134,7 +135,7 @@ class _Closesevents extends State<Soclose> {
                                           borderRadius: BorderRadius.circular(8.0),
                                           color: (calcRemaining(snapshot.data[index].date,
                                                       snapshot.data[index].startTime)
-                                                  .contains("Geçti"))
+                                                  .contains(protranslate["Geçti"][31]))
                                               ? Colors.blueGrey
                                               : Colors.blue,
                                         ),
