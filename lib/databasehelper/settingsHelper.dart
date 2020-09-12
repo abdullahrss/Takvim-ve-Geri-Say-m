@@ -72,7 +72,7 @@ class SettingsDbHelper {
     /// Db bos ise default degerler veriliyor
     if (settingsMapList.length == 0 || settingsMapList == []) {
       await db.rawQuery(
-          "INSERT INTO ${SettingsConstants.TABLE_NAME} (${SettingsConstants.COLUMN_THEME},${SettingsConstants.COLUMN_FONTNAME},${SettingsConstants.COLUMN_WARNING}) VALUES('light','Titillium',0,0);");
+          "INSERT INTO ${SettingsConstants.TABLE_NAME} (${SettingsConstants.COLUMN_THEME},${SettingsConstants.COLUMN_FONTNAME},${SettingsConstants.COLUMN_WARNING},${SettingsConstants.COLUMN_LANGUAGE}) VALUES('light','Titillium',0,0);");
       settingsMapList = await db.rawQuery("SELECT * FROM ${SettingsConstants.TABLE_NAME}");
     }
     List<Setting> settingList = List<Setting>();

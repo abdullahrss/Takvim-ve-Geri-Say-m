@@ -34,20 +34,23 @@ class _SettingsState extends State<Settings> {
     "Titillium",
     "Quicksand"
   ];
+
   /// Dil dropdownmenusu icin gerekli olanlar
   String _dropdownLanguageValue = 'Türkçe';
-  List<String> _languageList = [
+  List<String> _languageDropdownList = [
     "English",
     "Türkçe",
   ];
-  List<ImageIcon> _iconList = [
-    ImageIcon(
-      AssetImage("assets/images/united-kingdom-flag-icon-128.png"),
-      color: Color(0xFF3A5A98),
+  List<Image> _imageList = [
+    Image(
+      image: AssetImage("assets/images/united-kingdom-flag-icon-128.png"),
+      height: 30,
+      width: 30,
     ),
-    ImageIcon(
-      AssetImage("assets/images/turkey-flag-icon-128.png"),
-      color: Color(0xFF3A5A98),
+    Image(
+      image: AssetImage("assets/images/turkey-flag-icon-128.png"),
+      height: 30,
+      width: 30,
     ),
   ];
 
@@ -69,30 +72,42 @@ class _SettingsState extends State<Settings> {
         child: Column(
           children: <Widget>[
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text("Dil (language)"),
-                DropdownButtonFormField(
-                  items: _languageList.map((String lang) {
-                    return DropdownMenuItem(
-                      value: _dropdownLanguageValue,
+                Text(
+                  "Dil (language)",
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+                DropdownButton<String>(
+                  value: _dropdownLanguageValue,
+                  icon: Icon(Icons.arrow_downward),
+                  iconSize: 24,
+                  elevation: 16,
+                  underline: Container(
+                    height: 2,
+                  ),
+                  onChanged: (String newValue) async {
+                    setState(() {
+                      _dropdownLanguageValue = newValue;
+                    });
+                    var temp = Setting();
+                    temp.language = _languageDropdownList.indexOf(_dropdownLanguageValue);
+                    await _sdb.updateLanguage(temp);
+                  },
+                  items: _languageDropdownList.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text(
-                            lang,
-                            style: TextStyle(fontSize: 18, color: Colors.black),
-                          ),
-                          _iconList[_languageList.indexOf(lang)],
+                          _imageList[_languageDropdownList.indexOf(value)],
+                          Text(value),
                         ],
                       ),
                     );
                   }).toList(),
-                  value: _dropdownLanguageValue,
-                  onChanged: (newValue) async {
-                    setState(() => _dropdownLanguageValue = newValue);
-                    var temp = Setting();
-                    temp.language = _languageList.indexOf(_dropdownLanguageValue);
-                    await _sdb.updateLanguage(temp);
-                  },
                 ),
               ],
             ),
