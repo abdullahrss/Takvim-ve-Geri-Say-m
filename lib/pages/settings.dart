@@ -115,7 +115,7 @@ class _SettingsState extends State<Settings> {
               children: <Widget>[
                 Expanded(
                   child: Text(
-                    "Dark Tema",
+                    "Karanlık Tema",
                     style: TextStyle(
                       fontSize: 20,
                     ),

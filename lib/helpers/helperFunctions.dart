@@ -1,27 +1,22 @@
 import 'package:ajanda/databasemodels/events.dart';
 
 String calcRemaining(String date, String startTime) {
-  String result;
-  if (startTime == "null") {
-    result = (DateTime.parse(date).difference(DateTime.now()).inDays == 0 &&
-            DateTime.parse(date).isBefore(DateTime.now()))
-        ? "Bugün"
-        : (DateTime.parse(date).difference(DateTime.now()).inDays < 0)
-            ? "${-1 * DateTime.parse(date).difference(DateTime.now()).inDays}\nGün Geçti"
-            : DateTime.parse(date).difference(DateTime.now()).inDays == 0
-                ? "Geçti"
-                : "${DateTime.parse(date).difference(DateTime.now()).inDays}\nGün Kaldı";
-  } else {
-    result = (DateTime.parse("$date $startTime").difference(DateTime.now()).inDays == 0 &&
-            DateTime.now().isBefore(DateTime.parse("$date $startTime")))
-        ? "${DateTime.parse("$date $startTime").difference(DateTime.now()).inHours}\nSaat Kaldı"
-        : (DateTime.parse("$date $startTime").difference(DateTime.now()).inDays < 0)
-            ? "${-1 * DateTime.parse("$date $startTime").difference(DateTime.now()).inDays}\nGün Geçti"
-            : DateTime.parse("$date $startTime").difference(DateTime.now()).inDays == 0
-                ? "Geçti"
-                : "${DateTime.parse("$date $startTime").difference(DateTime.now()).inDays}\nGün Kaldı";
+  String result = "";
+  DateTime dateTime;
+  DateTime now = DateTime.now();
+  dateTime = startTime == "null" ? DateTime.parse("$date") : DateTime.parse("$date $startTime");
+  if(dateTime.difference(now).inHours <= 0 && dateTime.difference(now).inDays == 0 && startTime != "null"){
+    result = "Geçti";
+  }else if(dateTime.difference(now).inDays < 0){
+    result = "${dateTime.difference(now).inDays} Gün Geçti";
   }
-
+  else if(dateTime.difference(now).inDays == 0 && dateTime.difference(now).inHours > 0){
+    result = "${dateTime.difference(now).inHours} Saat Kaldı";
+  }else if(dateTime.difference(now).inDays == 0 && startTime == "null"){
+    result = "Bugün";
+  }else{
+    result = "${dateTime.difference(now).inDays} Gün Kaldı";
+  }
   return result;
 }
 
