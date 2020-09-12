@@ -16,7 +16,7 @@ class _SettingsState extends State<Settings> {
   /// Tema icin gerekli switch valuesi
   bool _switchValue = false;
 
-  /// Dropdownmenu icin gerekli item degeri
+  /// Font dropdownmenusu icin gerekli olanlar
   String _dropDownValue = "Bangers";
   List<String> _fontNamesList = [
     "Bangers",
@@ -33,6 +33,22 @@ class _SettingsState extends State<Settings> {
     "RussoOne",
     "Titillium",
     "Quicksand"
+  ];
+  /// Dil dropdownmenusu icin gerekli olanlar
+  String _dropdownLanguageValue = 'Türkçe';
+  List<String> _languageList = [
+    "English",
+    "Türkçe",
+  ];
+  List<ImageIcon> _iconList = [
+    ImageIcon(
+      AssetImage("assets/images/united-kingdom-flag-icon-128.png"),
+      color: Color(0xFF3A5A98),
+    ),
+    ImageIcon(
+      AssetImage("assets/images/turkey-flag-icon-128.png"),
+      color: Color(0xFF3A5A98),
+    ),
   ];
 
   var _db = DbHelper();
@@ -52,6 +68,34 @@ class _SettingsState extends State<Settings> {
         padding: const EdgeInsets.fromLTRB(22.0, 4.0, 20.0, 0),
         child: Column(
           children: <Widget>[
+            Row(
+              children: <Widget>[
+                Text("Dil (language)"),
+                DropdownButtonFormField(
+                  items: _languageList.map((String lang) {
+                    return DropdownMenuItem(
+                      value: _dropdownLanguageValue,
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            lang,
+                            style: TextStyle(fontSize: 18, color: Colors.black),
+                          ),
+                          _iconList[_languageList.indexOf(lang)],
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                  value: _dropdownLanguageValue,
+                  onChanged: (newValue) async {
+                    setState(() => _dropdownLanguageValue = newValue);
+                    var temp = Setting();
+                    temp.language = _languageList.indexOf(_dropdownLanguageValue);
+                    await _sdb.updateLanguage(temp);
+                  },
+                ),
+              ],
+            ),
             Row(
               children: <Widget>[
                 Expanded(
@@ -74,7 +118,7 @@ class _SettingsState extends State<Settings> {
                     /// theme'i update etme
                     var sett = Setting();
                     sett.theme = _switchValue ? 'dark' : 'light';
-                    _sdb.updateTheme(sett);
+                    await _sdb.updateTheme(sett);
                     DynamicTheme.of(context)
                         .setBrightness(_switchValue ? Brightness.dark : Brightness.light);
                     await _sdb.getSettings().then((settings) {
@@ -171,7 +215,7 @@ class _SettingsState extends State<Settings> {
                       setState(() => _dropDownValue = newValue);
                       var temp = Setting();
                       temp.fontName = _dropDownValue;
-                      _sdb.updateFont(temp);
+                      await _sdb.updateFont(temp);
                       await _sdb.getSettings().then((settings) {
                         DynamicTheme.of(context).setThemeData(ThemeData(
                           brightness:

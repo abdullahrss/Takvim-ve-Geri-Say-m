@@ -129,6 +129,7 @@ class _Closesevents extends State<Soclose> {
                                       Container(
                                         height: 105,
                                         width: 105,
+                                        padding: EdgeInsets.only(bottom: 8.0),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(8.0),
                                           color: (calcRemaining(snapshot.data[index].date,

@@ -14,7 +14,7 @@ String calcRemaining(String date, String startTime) {
   } else {
     result = (DateTime.parse("$date $startTime").difference(DateTime.now()).inDays == 0 &&
             DateTime.now().isBefore(DateTime.parse("$date $startTime")))
-        ? "Bugün"
+        ? "${DateTime.parse("$date $startTime").difference(DateTime.now()).inHours}\nSaat Kaldı"
         : (DateTime.parse("$date $startTime").difference(DateTime.now()).inDays < 0)
             ? "${-1 * DateTime.parse("$date $startTime").difference(DateTime.now()).inDays}\nGün Geçti"
             : DateTime.parse("$date $startTime").difference(DateTime.now()).inDays == 0

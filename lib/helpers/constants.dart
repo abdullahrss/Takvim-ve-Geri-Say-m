@@ -23,4 +23,5 @@ class SettingsConstants{
   static const String COLUMN_FONTNAME = "fontName";
   static const String COLUMN_THEME = "theme" ;
   static const String COLUMN_WARNING = "warning";
+  static const String COLUMN_LANGUAGE = "language";
 }

@@ -39,7 +39,7 @@ class SettingsDbHelper {
 
   /// Database olusturuluyor
   static void _createDb(Database db, int newVersion) async {
-    await db.execute('CREATE TABLE ${SettingsConstants.TABLE_NAME}(${SettingsConstants.COLUMN_THEME} TEXT, ${SettingsConstants.COLUMN_FONTNAME} TEXT,${SettingsConstants.COLUMN_WARNING} INTEGER)');
+    await db.execute('CREATE TABLE ${SettingsConstants.TABLE_NAME}(${SettingsConstants.COLUMN_THEME} TEXT, ${SettingsConstants.COLUMN_FONTNAME} TEXT,${SettingsConstants.COLUMN_WARNING} INTEGER, ${SettingsConstants.COLUMN_LANGUAGE} INTEGER)');
   }
 
   /// Yeni gelen theme bilgisiyle database guncelleniyor
@@ -60,12 +60,19 @@ class SettingsDbHelper {
     await db.rawQuery("UPDATE ${SettingsConstants.TABLE_NAME} SET ${SettingsConstants.COLUMN_WARNING} = $e;");
   }
 
+  /// Yeni gelen dil bilgisiyle database guncelleniyor
+  Future<void> updateLanguage(Setting setting) async {
+    var db = await this.database;
+    await db.rawQuery("UPDATE ${SettingsConstants.TABLE_NAME} SET ${SettingsConstants.COLUMN_LANGUAGE} = '${setting.language}';");
+  }
+  /// Tum kayitli ayarlari cekmek icin
   Future<List<Setting>> getSettings() async {
     Database db = await this.database;
     var settingsMapList = await db.rawQuery("SELECT * FROM ${SettingsConstants.TABLE_NAME}");
+    /// Db bos ise default degerler veriliyor
     if (settingsMapList.length == 0 || settingsMapList == []) {
       await db.rawQuery(
-          "INSERT INTO ${SettingsConstants.TABLE_NAME} (${SettingsConstants.COLUMN_THEME},${SettingsConstants.COLUMN_FONTNAME},${SettingsConstants.COLUMN_WARNING}) VALUES('light','Titillium',0);");
+          "INSERT INTO ${SettingsConstants.TABLE_NAME} (${SettingsConstants.COLUMN_THEME},${SettingsConstants.COLUMN_FONTNAME},${SettingsConstants.COLUMN_WARNING}) VALUES('light','Titillium',0,0);");
       settingsMapList = await db.rawQuery("SELECT * FROM ${SettingsConstants.TABLE_NAME}");
     }
     List<Setting> settingList = List<Setting>();

@@ -16,7 +16,7 @@ void navigateToSettingsDialog(context) async {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    "Sabit bildirim bazen düzgün çalışmayabilir. Düzgün çalışması için bilidirimleri açık olduğuna emin olun\n\nNot: Xiaomi telefonlarda uygulama ayarlarında Otomatik başlatma seçeneğinin açık olduğuna emin olun.",
+                    "Sabit bildirim bazen düzgün çalışmayabilir. Düzgün çalışması için bildirimlerin açık olduğuna emin olun\n\nNot: Xiaomi telefonlarda uygulama ayarlarında Otomatik başlatma seçeneğinin açık olduğuna emin olun.",
                     style: TextStyle(fontSize: 20),
                   ),
                 ),

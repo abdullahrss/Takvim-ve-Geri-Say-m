@@ -168,8 +168,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
         ),
       ),
       appBar: AppBar(
-        title: Text('Takvim ve Geri Sayım'),
-        //centerTitle: true,
+        title: Text("Takvim ve Geri Sayım"),
         actions: <Widget>[
           if (_selectedIndex == 0)
             Container(
