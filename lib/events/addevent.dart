@@ -229,7 +229,7 @@ class _AddEventState extends State<AddEvent> {
                             confirmText: proTranslate["Tamam"][Language.languageIndex],
                             helpText: Language.languageIndex == 1 ? proTranslate["TARİH SEÇ"]:"TARİH SEÇ",
                             context: context,
-                            locale: Locale('en',''),
+                            locale: Language.languageIndex==0?Locale('tr',''):Locale('en',''),
                             initialDate: DateTime.now(),
                             firstDate: DateTime.now(),
                             lastDate: DateTime(2025),

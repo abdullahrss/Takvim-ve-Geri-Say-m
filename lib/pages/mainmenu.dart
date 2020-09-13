@@ -15,7 +15,6 @@ import 'calendar.dart';
 import 'countdownpage.dart';
 import 'settings.dart';
 
-
 class MainMenu extends StatelessWidget {
   MainMenu({Key key}) : super(key: key);
   final _sdb = SettingsDbHelper();
@@ -27,11 +26,6 @@ class MainMenu extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.data == null) {
           return MaterialApp(
-//            localizationsDelegates: [
-//              GlobalMaterialLocalizations.delegate,
-//              GlobalWidgetsLocalizations.delegate
-//            ],
-//            supportedLocales:  [Locale('en','US'),Locale('tr','')],
             debugShowCheckedModeBanner: false,
             home: Scaffold(
               body: Center(
@@ -52,11 +46,13 @@ class MainMenu extends StatelessWidget {
                   ),
               themedWidgetBuilder: (context, theme) {
                 return MaterialApp(
-//                  localizationsDelegates: [
-//                    GlobalMaterialLocalizations.delegate,
-//                    GlobalWidgetsLocalizations.delegate
+//                  supportedLocales: [
+//                    Locale('en','US'),
 //                  ],
-//                  supportedLocales:  [],
+                  localizationsDelegates: [
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                  ],
                   debugShowCheckedModeBanner: false,
                   theme: theme,
                   home: MainMenuBody(

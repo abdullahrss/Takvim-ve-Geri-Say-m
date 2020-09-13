@@ -89,6 +89,7 @@ class _CalendarState extends State<Calendar> {
   Widget build(BuildContext context) {
     /// Example with custom icon
     _calendarCarousel = CalendarCarousel<Event>(
+      locale: Language.languageIndex==0?'tr':'en',
       onDayPressed: (DateTime date, List<Event> events) {
         this.setState(() => _currentDate = date);
         events.forEach((event) => print(event.title));
@@ -126,6 +127,7 @@ class _CalendarState extends State<Calendar> {
     );
 
     _calendarCarouselNoHeader = CalendarCarousel<Event>(
+      locale: Language.languageIndex==0?'tr':'en',
       todayBorderColor: Colors.green,
       onDayPressed: (DateTime date, List<Event> events) {
         print("Ondaypreesed");
