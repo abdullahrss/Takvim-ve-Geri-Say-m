@@ -25,3 +25,6 @@ class SettingsConstants{
   static const String COLUMN_WARNING = "warning";
   static const String COLUMN_LANGUAGE = "language";
 }
+class Language{
+  static int languageIndex = 0;
+}

@@ -1,5 +1,3 @@
-import 'package:ajanda/events/notifications.dart';
-import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -7,6 +5,9 @@ import '../databasehelper/dataBaseHelper.dart';
 import '../databasemodels/events.dart';
 import '../pages/detailsPage.dart';
 import '../pages/mainmenu.dart';
+import '../events/notifications.dart';
+import '../helpers/constants.dart';
+import '../helpers/languageDictionary.dart';
 
 class DropDown extends StatefulWidget {
   final Event event;
@@ -19,7 +20,7 @@ class DropDown extends StatefulWidget {
 
 class _DropDownState extends State<DropDown> {
   var _db = DbHelper();
-  String dropdownValue = protranslate['Detaylar'][31];
+  String dropdownValue = proTranslate['Detaylar'][Language.languageIndex];
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class _DropDownState extends State<DropDown> {
         onChanged: (String newValue) {
           setState(() {
             dropdownValue = newValue;
-            if (newValue == protranslate['Detaylar'][31]) {
+            if (newValue == proTranslate['Detaylar'][Language.languageIndex]) {
               Event event = Event(
                 id: widget.event.id,
                 title: widget.event.title,
@@ -56,11 +57,11 @@ class _DropDownState extends State<DropDown> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => Details(
-                            event: event,
-                          )));
-            } else if (newValue == protranslate['Sil'][31]) {
+                        event: event,
+                      )));
+            } else if (newValue == proTranslate['Sil'][Language.languageIndex]) {
               FlutterLocalNotificationsPlugin localNotificationsPlugin =
-                  FlutterLocalNotificationsPlugin();
+              FlutterLocalNotificationsPlugin();
               Notifications not = Notifications(localNotificationsPlugin);
               not.cancelNotification(not.localNotificationsPlugin, widget.event.id);
               _db.deleteEvent(widget.event.id);
@@ -70,8 +71,8 @@ class _DropDownState extends State<DropDown> {
           });
         },
         items: <String>[
-          protranslate['Detaylar'][31],
-          protranslate['Sil'][31],
+          proTranslate['Detaylar'][Language.languageIndex],
+          proTranslate['Sil'][Language.languageIndex],
         ].map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,

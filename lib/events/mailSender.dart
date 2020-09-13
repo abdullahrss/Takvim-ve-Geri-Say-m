@@ -1,10 +1,13 @@
 import 'dart:io';
-
-import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
-import 'package:ajanda/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
+
+import '../helpers/constants.dart';
+import '../helpers/languageDictionary.dart';
+import '../widgets/showDialog.dart';
+
 
 class EmailSender extends StatefulWidget {
   final List<String> attacs;
@@ -60,21 +63,21 @@ class _EmailSender extends State<EmailSender> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(protranslate['Mail gönderme'][31]),
+        title: Text(proTranslate['Mail gönderme'][Language.languageIndex]),
         leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: (){
-              List<dynamic> sendBack = sendBackFunc();
-              Navigator.pop(context, sendBack);
-            },
-      ),
+          icon: Icon(Icons.arrow_back),
+          onPressed: (){
+            List<dynamic> sendBack = sendBackFunc();
+            Navigator.pop(context, sendBack);
+          },
+        ),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.help_outline,size: 36,),
               onPressed: () {
                 showWarningDialog(
                     context: context,
-                    explanation: protranslate["Eğer birden fazla alıcı, cc veya bbc değeri girecekseniz her mail arasına virgül koymalısınız.\n\n(örnek: ornek@gmail.com , ornek2@gmail.com)"][31]);
+                    explanation: proTranslate["Eğer birden fazla alıcı, cc veya bbc değeri girecekseniz her mail arasına virgül koymalısınız.\n\n(örnek: ornek@gmail.com , ornek2@gmail.com)"][Language.languageIndex]);
               })
         ],
       ),
@@ -91,7 +94,7 @@ class _EmailSender extends State<EmailSender> {
                   controller: _recipientController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: protranslate['Alıcı adresi '][31],
+                    labelText: proTranslate['Alıcı adresi '][Language.languageIndex],
                   ),
                 ),
               ),
@@ -121,7 +124,7 @@ class _EmailSender extends State<EmailSender> {
                   controller: _subjectController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: protranslate['Konu'][31],
+                    labelText: proTranslate['Konu'][Language.languageIndex],
                   ),
                 ),
               ),
@@ -130,7 +133,7 @@ class _EmailSender extends State<EmailSender> {
                 child: TextField(
                   controller: _bodyController,
                   maxLines: 10,
-                  decoration: InputDecoration(labelText: protranslate['Mail'][31], border: OutlineInputBorder()),
+                  decoration: InputDecoration(labelText:"Mail", border: OutlineInputBorder()),
                 ),
               ),
               ...attachments.map(
@@ -156,7 +159,7 @@ class _EmailSender extends State<EmailSender> {
                               color: Colors.white,
                             ),
                             Text(
-                              protranslate["  Resim ekle"][31],
+                              proTranslate["  Resim ekle"][Language.languageIndex],
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(color: Colors.white),
@@ -180,7 +183,7 @@ class _EmailSender extends State<EmailSender> {
                               color: Colors.white,
                             ),
                             Text(
-                              protranslate["  Dosya Ekle"][31],
+                              proTranslate["  Dosya Ekle"][Language.languageIndex],
                               style: TextStyle(color: Colors.white),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -208,7 +211,7 @@ class _EmailSender extends State<EmailSender> {
                           Icons.save,
                           color: Colors.white,
                         ),
-                        Text(protranslate["  Kaydet"][31], style: TextStyle(color: Colors.white)),
+                        Text(proTranslate["  Kaydet"][Language.languageIndex], style: TextStyle(color: Colors.white)),
                       ],
                     ),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
@@ -235,9 +238,9 @@ class _EmailSender extends State<EmailSender> {
 
   void save() {
     if (_recipientController.text == "") {
-      showWarningDialog(context: context, explanation: protranslate['Alıcı mail boş bırakılmaz!'][31]);
+      showWarningDialog(context: context, explanation: proTranslate['Alıcı mail boş bırakılmaz!'][Language.languageIndex]);
     } else if (_subjectController.text == "") {
-      showWarningDialog(context: context, explanation: protranslate['Konu boş bırakılamaz!'][31]);
+      showWarningDialog(context: context, explanation: proTranslate['Konu boş bırakılamaz!'][Language.languageIndex]);
     } else {
       List<dynamic> sendBack = sendBackFunc();
       Navigator.pop(context, sendBack);
@@ -264,7 +267,7 @@ class _EmailSender extends State<EmailSender> {
       setState(() {
         for(int i = 0;i<files.length;i++){
           if(files[i].path.endsWith(".png") || files[i].path.endsWith(".jpeg") || files[i].path.endsWith(".jpg") || files[i].path.endsWith(".gif")){
-            showWarningDialog(context: context, explanation: protranslate["Resimleri resim ekle butonundan ekleyiniz."][31]);
+            showWarningDialog(context: context, explanation: proTranslate["Resimleri resim ekle butonundan ekleyiniz."][Language.languageIndex]);
             continue;
           }
           attachments.add(files[i].path);

@@ -1,4 +1,5 @@
-import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
+import 'package:ajanda/helpers/constants.dart';
+import 'package:ajanda/helpers/languageDictionary.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +28,7 @@ class _Closesevents extends State<Soclose> {
           builder: (context, snapshot) {
             if (snapshot.data == null) {
               return Container(
-                child: Center(child: Text(protranslate["Yükleniyor....."][31])),
+                child: Center(child: Text(proTranslate["Yükleniyor....."][Language.languageIndex])),
               );
             } else {
               return ListView.builder(
@@ -80,7 +81,7 @@ class _Closesevents extends State<Soclose> {
                                                   width: 10,
                                                 ),
                                                 Text(
-                                                    "${snapshot.data[index].startTime == "null" ? protranslate["Tüm gün"][31] : "${snapshot.data[index].startTime} - ${snapshot.data[index].finishTime}"}"),
+                                                    "${snapshot.data[index].startTime == "null" ? proTranslate["Tüm gün"][Language.languageIndex] : "${snapshot.data[index].startTime} - ${snapshot.data[index].finishTime}"}"),
                                               ],
                                             ),
                                           ],
@@ -134,8 +135,8 @@ class _Closesevents extends State<Soclose> {
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(8.0),
                                           color: (calcRemaining(snapshot.data[index].date,
-                                                      snapshot.data[index].startTime)
-                                                  .contains(protranslate["Geçti"][31]))
+                                              snapshot.data[index].startTime)
+                                              .contains(proTranslate["Geçti"][Language.languageIndex]))
                                               ? Colors.blueGrey
                                               : Colors.blue,
                                         ),

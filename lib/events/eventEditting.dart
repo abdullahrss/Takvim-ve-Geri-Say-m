@@ -1,5 +1,6 @@
-import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
+import 'package:ajanda/helpers/constants.dart';
 import 'package:ajanda/helpers/helperFunctions.dart';
+import 'package:ajanda/helpers/languageDictionary.dart';
 import 'package:flutter/material.dart';
 import 'package:ajanda/widgets/dayPicker.dart';
 import 'package:ajanda/widgets/navigateToSettings.dart';
@@ -109,7 +110,7 @@ class _AddEventState extends State<EventEdit> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(protranslate["Etkinliği Düzenle"][31]),
+        title: Text(proTranslate["Etkinliği Düzenle"][Language.languageIndex]),
       ),
       body: Form(
           key: _formKey,
@@ -123,11 +124,11 @@ class _AddEventState extends State<EventEdit> {
                     controller: _titlecontroller,
                     decoration: InputDecoration(
                       //hintText: widget.title,
-                      labelText: protranslate["Etkinliği Düzenle"][31],
+                      labelText: proTranslate["Etkinliği Düzenle"][Language.languageIndex],
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
-                      return value.isEmpty ? protranslate["Etkinlik ismi boş bırakılamaz"][31] : null;
+                      return value.isEmpty ? proTranslate["Etkinlik ismi boş bırakılamaz"][Language.languageIndex] : null;
                     },
                   )),
               Container(
@@ -162,7 +163,7 @@ class _AddEventState extends State<EventEdit> {
                             children: <Widget>[
                               Icon(Icons.timer),
                               Text(
-                                "${_selectedStartHour == "null" ? protranslate["Tüm gün"][31] : _selectedStartHour}",
+                                "${_selectedStartHour == "null" ? proTranslate["Tüm gün"][Language.languageIndex] : _selectedStartHour}",
                                 style: TextStyle(
                                   fontSize: 22,
                                 ),
@@ -174,7 +175,7 @@ class _AddEventState extends State<EventEdit> {
                             children: <Widget>[
                               Icon(Icons.timer_off),
                               Text(
-                                "${_selectedFinishHour == "null" ? protranslate["Tüm gün"][31] : _selectedFinishHour}",
+                                "${_selectedFinishHour == "null" ? proTranslate["Tüm gün"][Language.languageIndex] : _selectedFinishHour}",
                                 style: TextStyle(
                                   fontSize: 22,
                                 ),
@@ -190,12 +191,12 @@ class _AddEventState extends State<EventEdit> {
                           showTimePicker(
                             context: context,
                             initialTime:
-                                TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
+                            TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
                           ).then((value) {
                             setState(() {
                               _selectedFinishHour = (value.hour.toString().length == 1
-                                      ? "0" + value.hour.toString()
-                                      : value.hour.toString()) +
+                                  ? "0" + value.hour.toString()
+                                  : value.hour.toString()) +
                                   ":" +
                                   (value.minute.toString().length == 1
                                       ? "0" + value.minute.toString()
@@ -205,12 +206,12 @@ class _AddEventState extends State<EventEdit> {
                           showTimePicker(
                             context: context,
                             initialTime:
-                                TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
+                            TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
                           ).then((value) {
                             setState(() {
                               _selectedStartHour = (value.hour.toString().length == 1
-                                      ? "0" + value.hour.toString()
-                                      : value.hour.toString()) +
+                                  ? "0" + value.hour.toString()
+                                  : value.hour.toString()) +
                                   ":" +
                                   (value.minute.toString().length == 1
                                       ? "0" + value.minute.toString()
@@ -260,13 +261,13 @@ class _AddEventState extends State<EventEdit> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => EmailSender(
-                                        attacs: stringPathsToList(widget.event.attachments),
-                                        cctext: widget.event.cc,
-                                        bbtext: widget.event.bb,
-                                        recipienttext: widget.event.recipient,
-                                        subjecttext: widget.event.subject,
-                                        bodytext: widget.event.body,
-                                      ))).then((value) async {
+                                    attacs: stringPathsToList(widget.event.attachments),
+                                    cctext: widget.event.cc,
+                                    bbtext: widget.event.bb,
+                                    recipienttext: widget.event.recipient,
+                                    subjecttext: widget.event.subject,
+                                    bodytext: widget.event.body,
+                                  ))).then((value) async {
                             if (value != null) {
                               setState(() {
                                 _attachments = value[0];
@@ -322,7 +323,7 @@ class _AddEventState extends State<EventEdit> {
                       children: <Widget>[
                         Icon(_iconData),
                         Text(
-                          protranslate["Seçenekler"][31],
+                          proTranslate["Seçenekler"][Language.languageIndex],
                           style: TextStyle(fontSize: 20),
                         ),
                       ],
@@ -353,7 +354,7 @@ class _AddEventState extends State<EventEdit> {
                                 },
                               ),
                               Text(
-                                protranslate["Bütün gün"][31],
+                                proTranslate["Bütün gün"][Language.languageIndex],
                                 style: TextStyle(fontSize: 20),
                               ),
                             ],
@@ -381,7 +382,7 @@ class _AddEventState extends State<EventEdit> {
                                   },
                                 ),
                                 Text(
-                                  protranslate["Geri sayım etkinleştir"][31],
+                                  proTranslate["Geri sayım etkinleştir"][Language.languageIndex],
                                   style: TextStyle(fontSize: 20),
                                 ),
                                 IconButton(
@@ -390,7 +391,7 @@ class _AddEventState extends State<EventEdit> {
                                       showWarningDialog(
                                           context: context,
                                           explanation:
-                                              protranslate["Geri sayım sayfasında etkinliğinize ne kadar süre kaldığını görebilirsiniz."][31]);
+                                          proTranslate["Geri sayım sayfasında etkinliğinize ne kadar süre kaldığını görebilirsiniz."][Language.languageIndex]);
                                     }),
                               ],
                             ),
@@ -419,7 +420,7 @@ class _AddEventState extends State<EventEdit> {
                                   },
                                 ),
                                 Text(
-                                  protranslate["Sabit bildirim"][31],
+                                  proTranslate["Sabit bildirim"][Language.languageIndex],
                                   style: TextStyle(
                                     fontSize: 20,
                                   ),
@@ -432,7 +433,7 @@ class _AddEventState extends State<EventEdit> {
                                       showWarningDialog(
                                           context: context,
                                           explanation:
-                                              protranslate["Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!"][31]);
+                                          proTranslate["Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!"][Language.languageIndex]);
                                     })
                               ],
                             ),
@@ -458,7 +459,7 @@ class _AddEventState extends State<EventEdit> {
                                   size: 36,
                                 ),
                                 Text(
-                                  protranslate["Periyodik Etkinlik"][31],
+                                  proTranslate["Periyodik Etkinlik"][Language.languageIndex],
                                   style: TextStyle(
                                     fontSize: 20,
                                   ),
@@ -483,7 +484,7 @@ class _AddEventState extends State<EventEdit> {
                                           setSelectedRadio(val);
                                         },
                                       ),
-                                      Text(protranslate["Günlük"][31], style: TextStyle(fontSize: 20)),
+                                      Text(proTranslate["Günlük"][Language.languageIndex], style: TextStyle(fontSize: 20)),
                                     ],
                                   ),
                                 ),
@@ -501,7 +502,7 @@ class _AddEventState extends State<EventEdit> {
                                           setSelectedRadio(val);
                                         },
                                       ),
-                                      Text(protranslate["Haftalık"][31], style: TextStyle(fontSize: 20)),
+                                      Text(proTranslate["Haftalık"][Language.languageIndex], style: TextStyle(fontSize: 20)),
                                     ],
                                   ),
                                 ),
@@ -519,7 +520,7 @@ class _AddEventState extends State<EventEdit> {
                                           setSelectedRadio(val);
                                         },
                                       ),
-                                      Text(protranslate["Aylık"][31], style: TextStyle(fontSize: 20)),
+                                      Text(proTranslate["Aylık"][Language.languageIndex], style: TextStyle(fontSize: 20)),
                                     ],
                                   ),
                                 ),
@@ -548,7 +549,7 @@ class _AddEventState extends State<EventEdit> {
                                         Icons.calendar_today,
                                       ),
                                       Text(
-                                        protranslate["  Özel"][31],
+                                        proTranslate["  Özel"][Language.languageIndex],
                                         style: TextStyle(
                                           fontSize: 20,
                                         ),
@@ -569,8 +570,8 @@ class _AddEventState extends State<EventEdit> {
                   controller: _descriptioncontroller,
                   maxLines: 7,
                   decoration: InputDecoration(
-                    labelText: protranslate["Etkinlik açıklaması ..."][31],
-                    hintText: protranslate["Etkinlik detaylarının girileceği alan..."][31],
+                    labelText: proTranslate["Etkinlik açıklaması ..."][Language.languageIndex],
+                    hintText: proTranslate["Etkinlik detaylarının girileceği alan..."][Language.languageIndex],
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
                   ),
                 ),
@@ -585,7 +586,7 @@ class _AddEventState extends State<EventEdit> {
                       elevation: 18,
                       onPressed: () => {clearAreas()},
                       child: Text(
-                        protranslate["Temizle"][31],
+                        proTranslate["Temizle"][Language.languageIndex],
                         style: TextStyle(fontSize: 18, color: Colors.white),
                       ),
                       color: Colors.blue,
@@ -595,7 +596,7 @@ class _AddEventState extends State<EventEdit> {
                       onPressed: () => {validateandsave()},
                       elevation: 18,
                       child: Text(
-                        protranslate["Kaydet"][31],
+                        proTranslate["Kaydet"][Language.languageIndex],
                         style: TextStyle(fontSize: 18, color: Colors.white),
                       ),
                       color: Colors.blue,
@@ -650,17 +651,17 @@ class _AddEventState extends State<EventEdit> {
       try {
         if (!_isfullday) {
           _iscorrect = parseHours(_selectedFinishHour)[0] < parseHours(_selectedStartHour)[0] ||
-                  (parseHours(_selectedFinishHour)[0] == parseHours(_selectedStartHour)[0] &&
-                      parseHours(_selectedFinishHour)[1] < parseHours(_selectedStartHour)[1])
+              (parseHours(_selectedFinishHour)[0] == parseHours(_selectedStartHour)[0] &&
+                  parseHours(_selectedFinishHour)[1] < parseHours(_selectedStartHour)[1])
               ? false
               : true;
-          errmsg += _iscorrect == false ? protranslate["Bitiş zamanı başlangıç zamanından önce olamaz\n"][31] : "";
+          errmsg += _iscorrect == false ? proTranslate["Bitiş zamanı başlangıç zamanından önce olamaz\n"][Language.languageIndex] : "";
         }
       } catch (e) {
         print("[ERROR] [EVENTEDITTING] $e");
 
         /// Tüm gün olan eventi tüm günden cikartip saat secilmezse
-        errmsg += protranslate["Tüm gün işaretli değilse saat girmelisiniz\n"][31];
+        errmsg += proTranslate["Tüm gün işaretli değilse saat girmelisiniz\n"][Language.languageIndex];
       }
     });
     String imagePaths = "";
@@ -676,41 +677,41 @@ class _AddEventState extends State<EventEdit> {
     if (state.validate() && (_iscorrect)) {
       var newEvent = _isfullday
           ? Event(
-              id: widget.event.id,
-              title: _titlecontroller.text,
-              date: _selectedDate,
-              desc: _descriptioncontroller.text,
-              isActive: _iscountdownchecked ? 1 : 0,
-              choice: _radioValue.toString(),
-              countDownIsActive: _switchValue ? 1 : 0,
-              attachments: imagePaths,
-              cc: _cc,
-              bb: _bb,
-              recipient: _recipient,
-              subject: _subject,
-              body: _body,
-              periodic: _periodRadio,
-              frequency: _frequency,
-            )
+        id: widget.event.id,
+        title: _titlecontroller.text,
+        date: _selectedDate,
+        desc: _descriptioncontroller.text,
+        isActive: _iscountdownchecked ? 1 : 0,
+        choice: _radioValue.toString(),
+        countDownIsActive: _switchValue ? 1 : 0,
+        attachments: imagePaths,
+        cc: _cc,
+        bb: _bb,
+        recipient: _recipient,
+        subject: _subject,
+        body: _body,
+        periodic: _periodRadio,
+        frequency: _frequency,
+      )
           : Event(
-              id: widget.event.id,
-              title: _titlecontroller.text,
-              date: _selectedDate,
-              startTime: _selectedStartHour,
-              finishTime: _selectedFinishHour,
-              desc: _descriptioncontroller.text,
-              isActive: _iscountdownchecked ? 1 : 0,
-              choice: _radioValue == null ? "0" : _radioValue.toString(),
-              countDownIsActive: _switchValue ? 1 : 0,
-              attachments: imagePaths,
-              cc: _cc,
-              bb: _bb,
-              recipient: _recipient,
-              subject: _subject,
-              body: _body,
-              periodic: _periodRadio,
-              frequency: _frequency,
-            );
+        id: widget.event.id,
+        title: _titlecontroller.text,
+        date: _selectedDate,
+        startTime: _selectedStartHour,
+        finishTime: _selectedFinishHour,
+        desc: _descriptioncontroller.text,
+        isActive: _iscountdownchecked ? 1 : 0,
+        choice: _radioValue == null ? "0" : _radioValue.toString(),
+        countDownIsActive: _switchValue ? 1 : 0,
+        attachments: imagePaths,
+        cc: _cc,
+        bb: _bb,
+        recipient: _recipient,
+        subject: _subject,
+        body: _body,
+        periodic: _periodRadio,
+        frequency: _frequency,
+      );
       if(newEvent.recipient != "" && newEvent.choice == "0"){
         newEvent.choice = "1";
       }

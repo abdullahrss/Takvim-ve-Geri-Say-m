@@ -1,4 +1,5 @@
-import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
+import 'package:ajanda/helpers/constants.dart';
+import 'package:ajanda/helpers/languageDictionary.dart';
 import 'package:flutter/material.dart';
 
 import '../Widgets/dropdown.dart';
@@ -29,7 +30,7 @@ class _CalanderEventstate extends State<CalanderEvent> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          protranslate["Etkinlik"][31],
+          proTranslate["Etkinlik"][Language.languageIndex],
           style: TextStyle(fontSize: 22),
         ),
         actions: <Widget>[
@@ -54,7 +55,7 @@ class _CalanderEventstate extends State<CalanderEvent> {
           builder: (context, snapshot) {
             if (snapshot.data == null) {
               return Container(
-                child: Text(protranslate["Yükleniyor....."][31]),
+                child: Text(proTranslate["Yükleniyor....."][Language.languageIndex]),
               );
             } else {
               return ListView.builder(
@@ -107,7 +108,7 @@ class _CalanderEventstate extends State<CalanderEvent> {
                                                 width: 10,
                                               ),
                                               Text(
-                                                  "${snapshot.data[index].startTime == "null" ? protranslate["Tüm gün"][31] : "${snapshot.data[index].startTime} - ${snapshot.data[index].finishTime}"}"),
+                                                  "${snapshot.data[index].startTime == "null" ? proTranslate["Tüm gün"][Language.languageIndex] : "${snapshot.data[index].startTime} - ${snapshot.data[index].finishTime}"}"),
                                             ],
                                           ),
                                         ],
@@ -153,8 +154,8 @@ class _CalanderEventstate extends State<CalanderEvent> {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(8.0),
                                         color: (calcRemaining(snapshot.data[index].date,
-                                                    snapshot.data[index].startTime)
-                                                .contains(protranslate["Geçti"][31]))
+                                            snapshot.data[index].startTime)
+                                            .contains(proTranslate["Geçti"][Language.languageIndex]))
                                             ? Colors.blueGrey
                                             : Colors.blue,
                                       ),

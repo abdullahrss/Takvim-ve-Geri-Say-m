@@ -1,5 +1,7 @@
-import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
 import 'package:flutter/material.dart';
+
+import '../helpers/constants.dart';
+import '../helpers/languageDictionary.dart';
 
 Future<void> showMyDialog(context, {String title, String message, Function function}) async {
   return showDialog<void>(
@@ -23,13 +25,13 @@ Future<void> showMyDialog(context, {String title, String message, Function funct
         ),
         actions: <Widget>[
           FlatButton(
-            child: Text(protranslate['Hayır'][31], style: TextStyle(fontSize: 16)),
+            child: Text(proTranslate['Hayır'][Language.languageIndex], style: TextStyle(fontSize: 16)),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
           FlatButton(
-            child: Text(protranslate['Evet'][31], style: TextStyle(fontSize: 16)),
+            child: Text(proTranslate['Evet'][Language.languageIndex], style: TextStyle(fontSize: 16)),
             onPressed: () async {
               Navigator.of(context).pop();
               await function();
@@ -48,7 +50,7 @@ Future<void> showWarningDialog(
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text(protranslate['Dikkat!'][31]),
+        title: Text(proTranslate['Dikkat!'][Language.languageIndex]),
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
@@ -58,7 +60,7 @@ Future<void> showWarningDialog(
         ),
         actions: <Widget>[
           FlatButton(
-            child: Text(protranslate['Tamam'][31]),
+            child: Text(proTranslate['Tamam'][Language.languageIndex]),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -75,7 +77,7 @@ Future<void> showButtonAboutDialog(context) async {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text(protranslate['Dikkat!'][31]),
+        title: Text(proTranslate['Dikkat!'][Language.languageIndex]),
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
@@ -89,7 +91,7 @@ Future<void> showButtonAboutDialog(context) async {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        protranslate["Ekleyeceğiniz etklinlik için tarih ve saati ayarlamanıza yardımcı olur."][31],
+                        proTranslate["Ekleyeceğiniz etklinlik için tarih ve saati ayarlamanıza yardımcı olur."][Language.languageIndex],
                         style: TextStyle(
                           fontSize: 18,
                         ),
@@ -110,7 +112,7 @@ Future<void> showButtonAboutDialog(context) async {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          protranslate["Etkinliğiniz için size hatırlatma bildirimi hazırlar."][31],
+                          proTranslate["Etkinliğiniz için size hatırlatma bildirimi hazırlar."][Language.languageIndex],
                           style: TextStyle(
                             fontSize: 18,
                           ),
@@ -130,7 +132,7 @@ Future<void> showButtonAboutDialog(context) async {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          protranslate["Etklinliğiniz için bildirim ayarlasanız sizin için göndereceğiniz maili E-mail servisine gönderir"][31],
+                          proTranslate["Etklinliğiniz için bildirim ayarlasanız sizin için göndereceğiniz maili E-mail servisine gönderir"][Language.languageIndex],
                           style: TextStyle(
                             fontSize: 18,
                           ),
@@ -145,7 +147,7 @@ Future<void> showButtonAboutDialog(context) async {
         ),
         actions: <Widget>[
           FlatButton(
-            child: Text(protranslate['Tamam'][31]),
+            child: Text(proTranslate['Tamam'][Language.languageIndex]),
             onPressed: () {
               Navigator.of(context).pop();
             },

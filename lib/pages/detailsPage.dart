@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../helpers/TURKISHtoEnglish.dart';
+
+import '../helpers/constants.dart';
+import '../helpers/languageDictionary.dart';
 import '../databasemodels/events.dart';
 import '../events/eventEditting.dart';
 
@@ -16,16 +17,16 @@ class Details extends StatefulWidget {
 class _DetailsState extends State<Details> {
   Map<int, String> _periodicTexts = {
     0: "",
-    1: protranslate["Günlük tekrarlı"][31],
-    2: protranslate["Haftalık tekrarlı"][31],
-    3: protranslate["Aylık tekrarlı"][31],
+    1: proTranslate["Günlük tekrarlı"][Language.languageIndex],
+    2: proTranslate["Haftalık tekrarlı"][Language.languageIndex],
+    3: proTranslate["Aylık tekrarlı"][Language.languageIndex],
   };
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(protranslate["Detaylar"][31]),
+        title: Text(proTranslate["Detaylar"][Language.languageIndex]),
         leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
@@ -60,26 +61,26 @@ class _DetailsState extends State<Details> {
                     child: Row(children: <Widget>[
                       Text(
                         widget.event.date +
-                            "${widget.event.startTime != "null" ? ("  " + widget.event.startTime + "-" + widget.event.finishTime) : " - ${protranslate["Tüm gün"][31]}"}",
+                            "${widget.event.startTime != "null" ? ("  " + widget.event.startTime + "-" + widget.event.finishTime) : " - ${proTranslate["Tüm gün"][Language.languageIndex]}"}",
                         style: TextStyle(fontSize: 18),
                       ),
                     ]),
                   ),
                   if((widget.event.recipient != "" || widget.event.recipient.length != 0)||(widget.event.periodic != 0))
-                  Container(
-                    padding: const EdgeInsets.only(right: 64.0),
-                    child: Divider(
-                      thickness: 1,
-                      color: Colors.black38,
+                    Container(
+                      padding: const EdgeInsets.only(right: 64.0),
+                      child: Divider(
+                        thickness: 1,
+                        color: Colors.black38,
+                      ),
                     ),
-                  ),
                   if (widget.event.recipient != "" || widget.event.recipient.length != 0)
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          protranslate["Mail atılacak "][31] + printMails(widget.event.recipient),
+                          proTranslate["Mail atılacak"][Language.languageIndex] + printMails(widget.event.recipient),
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.start,
@@ -161,7 +162,7 @@ class _DetailsState extends State<Details> {
                     elevation: 18,
                     color: Colors.blue,
                     child: Text(
-                      protranslate["Düzenle"][31],
+                      proTranslate["Düzenle"][Language.languageIndex],
                       style: TextStyle(fontSize: 18),
                     ),
                     splashColor: Colors.blue,
@@ -177,16 +178,16 @@ class _DetailsState extends State<Details> {
 
   String calcDays(String frequency) {
     Map<int, String> weekdayToDay = {
-      0: protranslate["Pazartesi"][31],
-      1: protranslate["Salı"][31],
-      2: protranslate["Çarşamba"][31],
-      3: protranslate["Perşembe"][31],
-      4: protranslate["Cuma"][31],
-      5: protranslate["Cumartesi"][31],
-      6: protranslate["Pazar"][31]
+      0: proTranslate["Pazartesi"][Language.languageIndex],
+      1: proTranslate["Salı"][Language.languageIndex],
+      2: proTranslate["Çarşamba"][Language.languageIndex],
+      3: proTranslate["Perşembe"][Language.languageIndex],
+      4: proTranslate["Cuma"][Language.languageIndex],
+      5: proTranslate["Cumartesi"][Language.languageIndex],
+      6: proTranslate["Pazar"][Language.languageIndex]
     };
 
-    String result = "${protranslate["Tekrar günleri"][31]} :\n";
+    String result = "${proTranslate["Tekrar günleri"][Language.languageIndex]} :\n";
 
     for (int i = 0; i < frequency.length; i++) {
       if (frequency[i] == "1") {
@@ -200,7 +201,7 @@ class _DetailsState extends State<Details> {
   }
 
   String printMails(String recipients) {
-    String result = recipients.split(",").length > 1 ? "${protranslate["kişiler"][31]} :\n" : "${protranslate["kişi"][31]} :\n";
+    String result = recipients.split(",").length > 1 ? "${proTranslate["kişiler"][Language.languageIndex]} :\n" : "${proTranslate["kişi"][Language.languageIndex]} :\n";
     recipients.split(",").forEach((element) {
       result += element.trim() + "\n";
     });

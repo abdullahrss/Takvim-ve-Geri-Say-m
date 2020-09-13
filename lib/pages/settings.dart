@@ -1,11 +1,12 @@
-import 'package:ajanda/databasemodels/settingsModel.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 
+import '../databasemodels/settingsModel.dart';
+import '../helpers/constants.dart';
+import '../helpers/languageDictionary.dart';
 import '../databasehelper/dataBaseHelper.dart';
 import '../databasehelper/settingsHelper.dart';
 import '../widgets/showDialog.dart';
-import '../helpers/TURKISHtoEnglish.dart';
 import 'mainmenu.dart';
 
 class Settings extends StatefulWidget {
@@ -39,17 +40,17 @@ class _SettingsState extends State<Settings> {
   /// Dil dropdownmenusu icin gerekli olanlar
   String _dropdownLanguageValue = 'Türkçe';
   List<String> _languageDropdownList = [
-    "English",
     "Türkçe",
+    "English",
   ];
   List<Image> _imageList = [
     Image(
-      image: AssetImage("assets/images/united-kingdom-flag-icon-128.png"),
+      image: AssetImage("assets/images/turkey-flag-icon-128.png"),
       height: 30,
       width: 30,
     ),
     Image(
-      image: AssetImage("assets/images/turkey-flag-icon-128.png"),
+      image: AssetImage("assets/images/united-kingdom-flag-icon-128.png"),
       height: 30,
       width: 30,
     ),
@@ -67,7 +68,7 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(protranslate['Ayarlar'][31])),
+      appBar: AppBar(title: Text(proTranslate['Ayarlar'][Language.languageIndex])),
       body: Container(
         padding: const EdgeInsets.fromLTRB(22.0, 4.0, 20.0, 0),
         child: Column(
@@ -96,6 +97,12 @@ class _SettingsState extends State<Settings> {
                     var temp = Setting();
                     temp.language = _languageDropdownList.indexOf(_dropdownLanguageValue);
                     await _sdb.updateLanguage(temp);
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MainMenu()),
+                    );
                   },
                   items: _languageDropdownList.map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
@@ -116,7 +123,7 @@ class _SettingsState extends State<Settings> {
               children: <Widget>[
                 Expanded(
                   child: Text(
-                    protranslate["Karanlık Tema"][31],
+                    proTranslate["Karanlık Tema"][Language.languageIndex],
                     style: TextStyle(
                       fontSize: 20,
                     ),
@@ -154,7 +161,7 @@ class _SettingsState extends State<Settings> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  protranslate["Bütün etkinlikeri sil!"][31],
+                  proTranslate["Bütün etkinlikeri sil!"][Language.languageIndex],
                   style: TextStyle(
                     fontSize: 20,
                   ),
@@ -163,16 +170,16 @@ class _SettingsState extends State<Settings> {
                   icon: Icon(Icons.delete),
                   onPressed: () async {
                     await showMyDialog(context,
-                        title: protranslate["Bütün etkinlikeri sil!"][31],
-                        message: protranslate['Bütün etkinlikleri silmek istediğinize emin misiniz.'][31],
+                        title: proTranslate["Bütün etkinlikeri sil!"][Language.languageIndex],
+                        message: proTranslate['Bütün etkinlikleri silmek istediğinize emin misiniz.'][Language.languageIndex],
                         function: () async {
-                      await _db.clearDb();
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MainMenu()),
-                      );
-                    });
+                          await _db.clearDb();
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => MainMenu()),
+                          );
+                        });
                   },
                 ),
               ],
@@ -181,7 +188,7 @@ class _SettingsState extends State<Settings> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  protranslate["Vakiti geçmiş etkinlikleri sil!"][31],
+                  proTranslate["Vakiti geçmiş etkinlikleri sil!"][Language.languageIndex],
                   style: TextStyle(
                     fontSize: 20,
                   ),
@@ -190,17 +197,17 @@ class _SettingsState extends State<Settings> {
                   icon: Icon(Icons.delete),
                   onPressed: () async {
                     await showMyDialog(context,
-                        title: protranslate["Dikkat"][31],
+                        title: proTranslate["Dikkat"][Language.languageIndex],
                         message:
-                            protranslate['Bütün tarihi geçmiş etkinlikleri silmek istediğinize emin misiniz.'][31],
+                        proTranslate['Bütün tarihi geçmiş etkinlikleri silmek istediğinize emin misiniz.'][Language.languageIndex],
                         function: () async {
-                      await _db.clearOldEvents();
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MainMenu()),
-                      );
-                    });
+                          await _db.clearOldEvents();
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => MainMenu()),
+                          );
+                        });
                   },
                 ),
               ],
@@ -209,7 +216,7 @@ class _SettingsState extends State<Settings> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  protranslate["Yazı fontları"][31],
+                  proTranslate["Yazı fontları"][Language.languageIndex],
                   style: TextStyle(
                     fontSize: 20,
                   ),
@@ -235,7 +242,7 @@ class _SettingsState extends State<Settings> {
                       await _sdb.getSettings().then((settings) {
                         DynamicTheme.of(context).setThemeData(ThemeData(
                           brightness:
-                              settings[0].theme == "dark" ? Brightness.dark : Brightness.light,
+                          settings[0].theme == "dark" ? Brightness.dark : Brightness.light,
                           fontFamily: _dropDownValue,
                           floatingActionButtonTheme: FloatingActionButtonThemeData(
                             foregroundColor: Colors.green,

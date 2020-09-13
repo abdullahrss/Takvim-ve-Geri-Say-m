@@ -1,17 +1,19 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-
 import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/locale.dart';
 
 import '../databasehelper/dataBaseHelper.dart';
 import '../databasehelper/settingsHelper.dart';
 import '../events/addevent.dart';
 import '../events/closesEvent.dart';
 import '../helpers/backgroundProcesses.dart';
+import '../helpers/constants.dart';
+import '../helpers/languageDictionary.dart';
 import 'calendar.dart';
 import 'countdownpage.dart';
 import 'settings.dart';
-import '../helpers/TURKISHtoEnglish.dart';
 
 
 class MainMenu extends StatelessWidget {
@@ -25,15 +27,20 @@ class MainMenu extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.data == null) {
           return MaterialApp(
+//            localizationsDelegates: [
+//              GlobalMaterialLocalizations.delegate,
+//              GlobalWidgetsLocalizations.delegate
+//            ],
+//            supportedLocales:  [Locale('en','US'),Locale('tr','')],
             debugShowCheckedModeBanner: false,
             home: Scaffold(
               body: Center(
-                child: Text(protranslate["Yükleniyor....."][31]),
+                child: Text(proTranslate["Yükleniyor....."][Language.languageIndex]),
               ),
             ),
           );
         } else {
-
+          Language.languageIndex = snapshot.data[0].language;
           return DynamicTheme(
               defaultBrightness: Brightness.light,
               data: (brightness) => ThemeData(
@@ -45,9 +52,16 @@ class MainMenu extends StatelessWidget {
                   ),
               themedWidgetBuilder: (context, theme) {
                 return MaterialApp(
+//                  localizationsDelegates: [
+//                    GlobalMaterialLocalizations.delegate,
+//                    GlobalWidgetsLocalizations.delegate
+//                  ],
+//                  supportedLocales:  [],
                   debugShowCheckedModeBanner: false,
                   theme: theme,
-                  home: MainMenuBody(warning: snapshot.data[0].warning,),
+                  home: MainMenuBody(
+                    warning: snapshot.data[0].warning,
+                  ),
                   // navigatorKey: navigatorKey,
                 );
               });
@@ -58,7 +72,6 @@ class MainMenu extends StatelessWidget {
 }
 
 class MainMenuBody extends StatefulWidget {
-
   final int warning;
 
   const MainMenuBody({Key key, this.warning}) : super(key: key);
@@ -115,21 +128,20 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     super.dispose();
   }
 
-
   Widget buildPageView() {
     return PageView.builder(
       onPageChanged: _pageChange,
       controller: pageController,
       itemCount: 3,
       physics: ScrollPhysics(),
-      itemBuilder: (BuildContext context,int itemIndex){
+      itemBuilder: (BuildContext context, int itemIndex) {
         return _widgetOptions[itemIndex];
       },
       scrollDirection: Axis.horizontal,
     );
   }
 
-  void _pageChange(int index){
+  void _pageChange(int index) {
     setState(() {
       _selectedIndex = index;
       bottomSelectedIndex = index;
@@ -147,7 +159,9 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     setState(() {
       radioValue = e;
       _selectedOrder = e;
-      _widgetOptions[0] = Soclose(index: radioValue,);
+      _widgetOptions[0] = Soclose(
+        index: radioValue,
+      );
     });
   }
 
@@ -160,7 +174,10 @@ class _MainMenuBodyState extends State<MainMenuBody> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AddEvent(warningstatus: widget.warning,)),
+              MaterialPageRoute(
+                  builder: (context) => AddEvent(
+                        warningstatus: widget.warning,
+                      )),
             );
           },
           child: Icon(
@@ -171,7 +188,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
         ),
       ),
       appBar: AppBar(
-        title: Text(protranslate["Takvim ve Geri Sayım"][31]),
+        title: Text(proTranslate["Takvim ve Geri Sayım"][Language.languageIndex]),
         actions: <Widget>[
           if (_selectedIndex == 0)
             Container(
@@ -208,21 +225,21 @@ class _MainMenuBodyState extends State<MainMenuBody> {
           BottomNavigationBarItem(
             icon: Icon(Icons.schedule),
             title: Text(
-              protranslate["Yakındakiler"][31],
+              proTranslate["Yakındakiler"][Language.languageIndex],
               style: TextStyle(fontSize: 18),
             ),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.business),
             title: Text(
-              protranslate['Takvim'][31],
+              proTranslate['Takvim'][Language.languageIndex],
               style: TextStyle(fontSize: 18),
             ),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.watch),
             title: Text(
-              protranslate['Geri Sayım'][31],
+              proTranslate['Geri Sayım'][Language.languageIndex],
               style: TextStyle(fontSize: 18),
             ),
           ),
@@ -240,7 +257,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(protranslate['Sıralama'][31]),
+          title: Text(proTranslate['Sıralama'][Language.languageIndex]),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
@@ -280,7 +297,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                         Navigator.pop(context);
                       },
                     ),
-                    Text(protranslate["Gelecek tarihler başta"][31]),
+                    Text(proTranslate["Gelecek tarihler başta"][Language.languageIndex]),
                   ],
                 ),
                 Row(
@@ -293,7 +310,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                         Navigator.pop(context);
                       },
                     ),
-                    Text(protranslate["Gelecek tarihler başta"][31]),
+                    Text(proTranslate["Gelecek tarihler başta"][Language.languageIndex]),
                   ],
                 ),
               ],
@@ -302,7 +319,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
           actions: <Widget>[
             FlatButton(
               child: Text(
-                protranslate["Geri"][31],
+                proTranslate["Geri"][Language.languageIndex],
                 style: TextStyle(fontSize: 24),
               ),
               onPressed: () {

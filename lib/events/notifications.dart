@@ -1,5 +1,7 @@
-import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import 'package:ajanda/helpers/constants.dart';
+import 'package:ajanda/helpers/languageDictionary.dart';
 
 class Notifications {
   final FlutterLocalNotificationsPlugin localNotificationsPlugin;
@@ -88,15 +90,15 @@ class Notifications {
 
   String calcSingleNotificationBodyText(String index) {
     var provisionMap = {
-      "1": protranslate["Etkinliğiniz zamanı geldi."][31],
-      "2": protranslate["Etkinliğinize 5 dakika kaldı."][31],
-      "3": protranslate["Etkinliğinize 15 dakika kaldı."][31],
-      "4": protranslate["Etkinliğinize 30 dakika kaldı."][31],
-      "5": protranslate["Etkinliğinize 12 saat kaldı."][31],
-      "6": protranslate["Etkinliğinize 12 saat kaldı."][31],
-      "7": protranslate["Etkinliğinize 1 gün kaldı."][31],
-      "8": protranslate["Etkinliğinize 3 gün kaldı."][31],
-      "9": protranslate["Etkinliğinize 1 hafta kaldı."][31]
+      "1": proTranslate["Etkinliğiniz zamanı geldi."][Language.languageIndex],
+      "2": proTranslate["Etkinliğinize 5 dakika kaldı."][Language.languageIndex],
+      "3": proTranslate["Etkinliğinize 15 dakika kaldı."][Language.languageIndex],
+      "4": proTranslate["Etkinliğinize 30 dakika kaldı."][Language.languageIndex],
+      "5": proTranslate["Etkinliğinize 12 saat kaldı."][Language.languageIndex],
+      "6": proTranslate["Etkinliğinize 12 saat kaldı."][Language.languageIndex],
+      "7": proTranslate["Etkinliğinize 1 gün kaldı."][Language.languageIndex],
+      "8": proTranslate["Etkinliğinize 3 gün kaldı."][Language.languageIndex],
+      "9": proTranslate["Etkinliğinize 1 hafta kaldı."][Language.languageIndex]
     };
     return provisionMap.containsKey(index)
         ? provisionMap[index]

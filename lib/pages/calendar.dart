@@ -1,4 +1,3 @@
-import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
@@ -9,6 +8,8 @@ import '../databasehelper/dataBaseHelper.dart';
 import '../events/addevent.dart';
 import '../events/calenderEvent.dart';
 import '../widgets/showDialog.dart';
+import '../helpers/constants.dart';
+import '../helpers/languageDictionary.dart';
 
 class FutureCalendar extends StatelessWidget {
   final DbHelper _helper = DbHelper();
@@ -21,7 +22,7 @@ class FutureCalendar extends StatelessWidget {
         if (snapshot.data == null) {
           return Scaffold(
             body: Center(
-              child: Text(protranslate["Yükleniyor...."][31]),
+              child: Text(proTranslate["Yükleniyor...."][Language.languageIndex]),
             ),
           );
         } else {
@@ -96,7 +97,7 @@ class _CalendarState extends State<Calendar> {
         color: Colors.red,
       ),
       thisMonthDayBorderColor: Colors.grey,
-      headerText: protranslate['Haftalık Takvim'][31],
+      headerText: proTranslate['Haftalık Takvim'][Language.languageIndex],
       weekFormat: true,
       markedDatesMap: _markedDateMap,
       height: 200.0,
@@ -139,15 +140,15 @@ class _CalendarState extends State<Calendar> {
                   context, MaterialPageRoute(builder: (context) => CalanderEvent(newdate)));
             } else {
               showMyDialog(context,
-                  title: protranslate["Boş Gün"][31],
-                  message: protranslate['Bu tarihe etkinlik eklemek ister misiniz ?'][31], function: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddEvent(
+                  title: proTranslate["Boş Gün"][Language.languageIndex],
+                  message: proTranslate['Bu tarihe etkinlik eklemek ister misiniz ?'][Language.languageIndex], function: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddEvent(
                               inputDate: newdate,
                             )));
-              });
+                  });
             }
           });
         });
@@ -220,14 +221,14 @@ class _CalendarState extends State<Calendar> {
               children: <Widget>[
                 Expanded(
                     child: Text(
-                  translateMonths(_currentMonth),
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24.0,
-                  ),
-                )),
+                      translateMonths(_currentMonth),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.0,
+                      ),
+                    )),
                 FlatButton(
-                  child: Text(protranslate['GERİ'][31]),
+                  child: Text(proTranslate['GERİ'][Language.languageIndex]),
                   onPressed: () {
                     setState(() {
                       _targetDateTime = DateTime(_targetDateTime.year, _targetDateTime.month - 1);
@@ -236,7 +237,7 @@ class _CalendarState extends State<Calendar> {
                   },
                 ),
                 FlatButton(
-                  child: Text(protranslate['İLERİ'][31]),
+                  child: Text(proTranslate['İLERİ'][Language.languageIndex]),
                   onPressed: () {
                     setState(() {
                       _targetDateTime = DateTime(_targetDateTime.year, _targetDateTime.month + 1);
@@ -277,18 +278,18 @@ class _CalendarState extends State<Calendar> {
 
   String translateMonths(String monthYear) {
     var map = {
-      "Jan": protranslate["Ocak"][31],
-      "Feb": protranslate["Subat"][31],
-      "Mar": protranslate["Mart"][31],
-      "Apr": protranslate["Nisan"][31],
-      "May": protranslate["Mayıs"][31],
-      "Jun": protranslate["Haziran"][31],
-      "Jul": protranslate["Temmuz"][31],
-      "Aug": protranslate["Ağustos"][31],
-      "Sep": protranslate["Eylül"][31],
-      "Oct": protranslate["Ekim"][31],
-      "Nov": protranslate["Kasım"][31],
-      "Dec": protranslate["Aralık"][31]
+      "Jan": proTranslate["Ocak"][Language.languageIndex],
+      "Feb": proTranslate["Şubat"][Language.languageIndex],
+      "Mar": proTranslate["Mart"][Language.languageIndex],
+      "Apr": proTranslate["Nisan"][Language.languageIndex],
+      "May": proTranslate["Mayıs"][Language.languageIndex],
+      "Jun": proTranslate["Haziran"][Language.languageIndex],
+      "Jul": proTranslate["Temmuz"][Language.languageIndex],
+      "Aug": proTranslate["Ağustos"][Language.languageIndex],
+      "Sep": proTranslate["Eylül"][Language.languageIndex],
+      "Oct": proTranslate["Ekim"][Language.languageIndex],
+      "Nov": proTranslate["Kasım"][Language.languageIndex],
+      "Dec": proTranslate["Aralık"][Language.languageIndex]
     };
 
     return map.keys.contains(monthYear.split(" ")[0])

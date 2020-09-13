@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import '../databasehelper/dataBaseHelper.dart';
 import 'dart:async';
-import '../helpers/TURKISHtoEnglish.dart';
+
+import '../databasehelper/dataBaseHelper.dart';
+import '../helpers/constants.dart';
+import '../helpers/languageDictionary.dart';
+
 class CountDownPage extends StatefulWidget {
   @override
   _CountDownPageState createState() => _CountDownPageState();
@@ -19,8 +22,8 @@ class _CountDownPageState extends State<CountDownPage> {
     super.initState();
     _timer = new Timer.periodic(
       Duration(seconds: 1),
-      (Timer timer) => setState(
-        () {
+          (Timer timer) => setState(
+            () {
           now = DateTime.now();
         },
       ),
@@ -41,7 +44,7 @@ class _CountDownPageState extends State<CountDownPage> {
           builder: (context, snapshot) {
             if (snapshot.data == null) {
               return Container(
-                child: Center(child: Text(protranslate["Yükleniyor....."][31])),
+                child: Center(child: Text(proTranslate["Yükleniyor....."][Language.languageIndex])),
               );
             } else {
               return ListView.builder(
@@ -51,22 +54,22 @@ class _CountDownPageState extends State<CountDownPage> {
                       var date = snapshot.data[index].startTime == "null"
                           ? DateTime.parse(snapshot.data[index].date)
                           : DateTime.parse(
-                              snapshot.data[index].date + " " + snapshot.data[index].startTime);
+                          snapshot.data[index].date + " " + snapshot.data[index].startTime);
                       return Container(
                         decoration: BoxDecoration(
                             gradient: LinearGradient(
                                 begin: Alignment.topRight,
                                 end: Alignment.bottomLeft,
                                 colors: ((date.difference(now).inSeconds -
-                                            date.difference(now).inMinutes * 60) <
-                                        0)
+                                    date.difference(now).inMinutes * 60) <
+                                    0)
                                     ? [Colors.deepOrange, Colors.redAccent, Colors.red]
                                     : [
-                                        Colors.blueGrey,
-                                        Colors.blue,
-                                        Colors.cyan,
-                                        Colors.lightBlueAccent,
-                                      ])),
+                                  Colors.blueGrey,
+                                  Colors.blue,
+                                  Colors.cyan,
+                                  Colors.lightBlueAccent,
+                                ])),
                         alignment: Alignment.center,
                         margin: const EdgeInsets.all(8.0),
                         padding: const EdgeInsets.all(8.0),
@@ -87,7 +90,7 @@ class _CountDownPageState extends State<CountDownPage> {
                                 Column(
                                   children: <Widget>[
                                     Text(
-                                      protranslate["GÜN"][31],
+                                      proTranslate["GÜN"][Language.languageIndex],
                                       style: infoStyles(),
                                     ),
                                     SizedBox(
@@ -107,17 +110,17 @@ class _CountDownPageState extends State<CountDownPage> {
                                 Column(
                                   children: <Widget>[
                                     Text(
-                                      protranslate["SAAT"][31],
+                                      proTranslate["SAAT"][Language.languageIndex],
                                       style: infoStyles(),
                                     ),
                                     Text(
                                       ((date.difference(now).inHours -
-                                                  date.difference(now).inDays * 24) <
-                                              0)
+                                          date.difference(now).inDays * 24) <
+                                          0)
                                           ? "0"
                                           : (date.difference(now).inHours -
-                                                  date.difference(now).inDays * 24)
-                                              .toString(),
+                                          date.difference(now).inDays * 24)
+                                          .toString(),
                                       style: inputStyles(),
                                     ),
                                   ],
@@ -128,17 +131,17 @@ class _CountDownPageState extends State<CountDownPage> {
                                 Column(
                                   children: <Widget>[
                                     Text(
-                                      protranslate["DAKİKA"][31],
+                                      proTranslate["DAKİKA"][Language.languageIndex],
                                       style: infoStyles(),
                                     ),
                                     Text(
                                       ((date.difference(now).inMinutes -
-                                                  date.difference(now).inHours * 60) <
-                                              0)
+                                          date.difference(now).inHours * 60) <
+                                          0)
                                           ? "0"
                                           : (date.difference(now).inMinutes -
-                                                  date.difference(now).inHours * 60)
-                                              .toString(),
+                                          date.difference(now).inHours * 60)
+                                          .toString(),
                                       style: inputStyles(),
                                     ),
                                   ],
@@ -149,17 +152,17 @@ class _CountDownPageState extends State<CountDownPage> {
                                 Column(
                                   children: <Widget>[
                                     Text(
-                                      protranslate["SANİYE"][31],
+                                      proTranslate["SANİYE"][Language.languageIndex],
                                       style: infoStyles(),
                                     ),
                                     Text(
                                       ((date.difference(now).inSeconds -
-                                                  date.difference(now).inMinutes * 60) <
-                                              0)
+                                          date.difference(now).inMinutes * 60) <
+                                          0)
                                           ? "0"
                                           : (date.difference(now).inSeconds -
-                                                  date.difference(now).inMinutes * 60)
-                                              .toString(),
+                                          date.difference(now).inMinutes * 60)
+                                          .toString(),
                                       style: inputStyles(),
                                     ),
                                   ],
