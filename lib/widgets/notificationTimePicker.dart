@@ -1,3 +1,4 @@
+import 'package:ajanda/helpers/TURKISHtoEnglish.dart';
 import 'package:flutter/material.dart';
 
 class NotificationPicker extends StatefulWidget {
@@ -15,20 +16,20 @@ class _NotificationPickerState extends State<NotificationPicker> {
   @override
   void initState() {
     super.initState();
-    radioGroupValue = "Zaman geldiğinde";
+    radioGroupValue = protranslate["Zaman geldiğinde"][31];
   }
 
   List<String> _choices = [
-    "Hiçbir zaman",
-    "Zaman geldiğinde",
-    "5 dakika öncesinde",
-    "15 dakika öncesinde",
-    "30 dakika öncesinde",
-    "1 saat öncesinde",
-    "12 saat öncesinde",
-    "1 gün öncesinde",
-    "3 gün öncesinde",
-    "1 hafta öncesinde"
+    protranslate["Hiçbir zaman"][31],
+    protranslate["Zaman geldiğinde"][31],
+    protranslate["5 dakika öncesinde"][31],
+    protranslate["15 dakika öncesinde"][31],
+    protranslate["30 dakika öncesinde"][31],
+    protranslate["1 saat öncesinde"][31],
+    protranslate["12 saat öncesinde"][31],
+    protranslate["1 gün öncesinde"][31],
+    protranslate["3 gün öncesinde"][31],
+    protranslate["1 hafta öncesinde"][31],
   ];
 
   Widget notificationTimePicker() {
@@ -57,9 +58,9 @@ class _NotificationPickerState extends State<NotificationPicker> {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: Text("Bildirim zamanı",style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
+      title: Text(protranslate["Bildirim zamanı"][31],style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
       children: <Widget>[
-        Container(padding: EdgeInsets.only(left: 25.0), child: Text("Bildirim ne zaman çıksın ?",style: TextStyle(fontSize: 18),)),
+        Container(padding: EdgeInsets.only(left: 25.0), child: Text(protranslate["Bildirim ne zaman çıksın ?"][31],style: TextStyle(fontSize: 18),)),
         notificationTimePicker(),
         Container(
           child: Row(
@@ -67,7 +68,7 @@ class _NotificationPickerState extends State<NotificationPicker> {
             children: <Widget>[
               FlatButton(
                 child: Text(
-                  "Geri",
+                  protranslate["Geri"][31],
                   style: TextStyle(color: Colors.black, fontSize: 20),
                 ),
                 onPressed: () {
@@ -76,7 +77,7 @@ class _NotificationPickerState extends State<NotificationPicker> {
               ),
               FlatButton(
                 child: Text(
-                  "Ayarla",
+                  protranslate["Ayarla"][31],
                   style: TextStyle(color: Colors.black, fontSize: 20),
                 ),
                 onPressed: () async {
