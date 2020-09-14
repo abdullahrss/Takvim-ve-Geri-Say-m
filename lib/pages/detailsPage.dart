@@ -81,7 +81,7 @@ class _DetailsState extends State<Details> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           proTranslate["Mail atılacak"][Language.languageIndex] + printMails(widget.event.recipient),
-                          maxLines: 3,
+                          maxLines: widget.event.recipient.length,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.start,
                           style: TextStyle(fontSize: 18),
@@ -90,18 +90,23 @@ class _DetailsState extends State<Details> {
                     ),
                   if (widget.event.periodic != 0)
                     Container(
-                      padding: const EdgeInsets.only(left: 16.0, top: 16.0),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          widget.event.periodic != 4
-                              ? _periodicTexts[widget.event.periodic]
-                              : calcDays(widget.event.frequency),
-                          maxLines: 9,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(fontSize: 18),
-                        ),
+                      padding: const EdgeInsets.only(left: 12.0, top: 16.0),
+                      child: Row(
+                        children: [
+                          Icon(Icons.refresh),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              widget.event.periodic != 4
+                                  ? _periodicTexts[widget.event.periodic]
+                                  : calcDays(widget.event.frequency),
+                              maxLines: 9,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                 ],
@@ -201,9 +206,10 @@ class _DetailsState extends State<Details> {
   }
 
   String printMails(String recipients) {
-    String result = recipients.split(",").length > 1 ? "${proTranslate["kişiler"][Language.languageIndex]} :\n" : "${proTranslate["kişi"][Language.languageIndex]} :\n";
+
+    String result = recipients.split(",").length > 1 ? " ${proTranslate["kişiler"][Language.languageIndex]} :\n" : " ${proTranslate["kişi"][Language.languageIndex]} :\n";
     recipients.split(",").forEach((element) {
-      result += element.trim() + "\n";
+      result += "> "+element.trim() + "\n";
     });
     return result;
   }
