@@ -183,6 +183,9 @@ class _AddEventState extends State<AddEvent> {
                       onPressed: () {
                         if (_isfullday != true) {
                           showTimePicker(
+                            cancelText: proTranslate["Geri"][Language.languageIndex],
+                            confirmText: proTranslate["Tamam"][Language.languageIndex],
+                            helpText: Language.languageIndex==0?proTranslate["BİTİŞ SAAT'İ SEÇ"]:"BİTİŞ SAAT'İ SEÇ",
                             context: context,
                             initialTime:
                                 TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
@@ -203,9 +206,13 @@ class _AddEventState extends State<AddEvent> {
                             });
                           });
                           showTimePicker(
+                            cancelText: proTranslate["Geri"][Language.languageIndex],
+                            confirmText: proTranslate["Tamam"][Language.languageIndex],
+                            helpText: Language.languageIndex==0?proTranslate["BAŞLANGIÇ SAAT'İ SEÇ"]:"BAŞLANGIÇ SAAT'İ SEÇ",
                             context: context,
                             initialTime:
                                 TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
+
                           ).then((value) {
                             setState(() {
                               try {
@@ -232,7 +239,7 @@ class _AddEventState extends State<AddEvent> {
                             locale: Language.languageIndex==0?Locale('tr',''):Locale('en',''),
                             initialDate: DateTime.now(),
                             firstDate: DateTime.now(),
-                            lastDate: DateTime(2025),
+                            lastDate: DateTime(2030),
                           ).then((value) {
                             setState(() {
                               try {

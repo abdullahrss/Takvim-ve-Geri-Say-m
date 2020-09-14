@@ -46,9 +46,6 @@ class MainMenu extends StatelessWidget {
                   ),
               themedWidgetBuilder: (context, theme) {
                 return MaterialApp(
-//                  supportedLocales: [
-//                    Locale('en','US'),
-//                  ],
                   localizationsDelegates: [
                     GlobalMaterialLocalizations.delegate,
                     GlobalWidgetsLocalizations.delegate,
