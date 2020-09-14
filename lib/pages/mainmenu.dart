@@ -302,7 +302,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                         Navigator.pop(context);
                       },
                     ),
-                    Text(proTranslate["Gelecek tarihler başta"][Language.languageIndex]),
+                    Text(proTranslate["Geçmiş tarihler başta"][Language.languageIndex]),
                   ],
                 ),
               ],
