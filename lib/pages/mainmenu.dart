@@ -1,8 +1,9 @@
 import 'dart:async';
+import 'package:ajanda/databasemodels/settingsModel.dart';
 import 'package:flutter/material.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:intl/locale.dart';
+import 'dart:ui' as ui;
 
 import '../databasehelper/dataBaseHelper.dart';
 import '../databasehelper/settingsHelper.dart';
@@ -35,6 +36,10 @@ class MainMenu extends StatelessWidget {
           );
         } else {
           Language.languageIndex = snapshot.data[0].language;
+          if (Language.languageIndex == 2) {
+            Language.languageIndex = ui.window.locale.languageCode == "tr" ? 0 : 1;
+            _sdb.updateLanguage(Setting.fromMap({"language": Language.languageIndex}));
+          }
           return DynamicTheme(
               defaultBrightness: Brightness.light,
               data: (brightness) => ThemeData(
@@ -52,9 +57,7 @@ class MainMenu extends StatelessWidget {
                   ],
                   debugShowCheckedModeBanner: false,
                   theme: theme,
-                  home: MainMenuBody(
-                    warning: snapshot.data[0].warning,
-                  ),
+                  home: MainMenuBody(),
                   // navigatorKey: navigatorKey,
                 );
               });
@@ -65,9 +68,8 @@ class MainMenu extends StatelessWidget {
 }
 
 class MainMenuBody extends StatefulWidget {
-  final int warning;
 
-  const MainMenuBody({Key key, this.warning}) : super(key: key);
+  const MainMenuBody({Key key}) : super(key: key);
 
   @override
   _MainMenuBodyState createState() => _MainMenuBodyState();
@@ -164,13 +166,10 @@ class _MainMenuBodyState extends State<MainMenuBody> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 50.0),
         child: FloatingActionButton(
-          onPressed: () {
+          onPressed: () async {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => AddEvent(
-                        warningstatus: widget.warning,
-                      )),
+              MaterialPageRoute(builder: (context) => AddEvent()),
             );
           },
           child: Icon(

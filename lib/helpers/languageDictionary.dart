@@ -9,10 +9,11 @@ Map<String, dynamic> proTranslate = {
     "Yollayacağınız e-mail'in vakti geldi.",
     "It is time for your email."
   ],
+
   /// addEvent
   "TARİH SEÇ": "SELECT DATE",
-  "BAŞLANGIÇ SAAT'İ SEÇ":"SELECET START TIME",
-  "BİTİŞ SAAT'İ SEÇ":"SELECET FINISH TIME",
+  "BAŞLANGIÇ SAAT'İ SEÇ": ["BAŞLANGIÇ SAAT'İ SEÇ","SELECET START TIME"],
+  "BİTİŞ SAAT'İ SEÇ": ["BİTİŞ SAAT'İ SEÇ","SELECET FINISH TIME"],
   "Sabit bildirim bazen düzgün çalışmayabilir. Düzgün çalışması için bildirimlerin açık olduğuna emin olun\n\nNot: Xiaomi telefonlarda uygulama ayarlarında Otomatik başlatma seçeneğinin açık olduğuna emin olun.":
       [
     "Sabit bildirim bazen düzgün çalışmayabilir. Düzgün çalışması için bildirimlerin açık olduğuna emin olun\n\nNot: Xiaomi telefonlarda uygulama ayarlarında Otomatik başlatma seçeneğinin açık olduğuna emin olun.",
@@ -241,6 +242,8 @@ Map<String, dynamic> proTranslate = {
   //50
   "Dark Tema": ["Dark Tema", "Dark Theme"],
   //59
+  'Bütün etkinlikleri silmek istediğinize emin misiniz ?' : ['Bütün etkinlikleri silmek istediğinize emin misiniz ?',"Are you sure you want to delete all events ?"],
+  'Bütün tarihi geçmiş etkinlikleri silmek istediğinize emin misiniz ?' : ['Bütün tarihi geçmiş etkinlikleri silmek istediğinize emin misiniz ?',"Are you sure you want to delete all expired events?"],
   "Bütün etkinlikeri sil!": ["Bütün etkinlikeri sil!", "Delete all events!"],
   //97
   "Dikkat": ["Dikkat", "Attention"],
@@ -272,13 +275,11 @@ Map<String, dynamic> proTranslate = {
   //details mevcut
   "Sil": ["Sil", "Delete"],
   //60
-
+  "Dil (language)":["Dil (language)","Language (dil)"],
   ///navigateToSettings
-  "Sabit bildirim bazen düzgün çalışmayabilir. Düzgün çalışması için bilidirimleri açık olduğuna emin olun\n\nNot: Xiaomi telefonlarda uygulama ayarlarında Otomatik başlatma seçeneğinin açık olduğuna emin olun.":
-      [
-    "Sabit bildirim bazen düzgün çalışmayabilir. Düzgün çalışması için bilidirimleri açık olduğuna emin olun\n\nNot: Xiaomi telefonlarda uygulama ayarlarında Otomatik başlatma seçeneğinin açık olduğuna emin olun.",
-    "Permanent notification may not work properly sometimes. Make sure notifications are turned on to work properly\n\nNote: Make sure that the Auto-start option is turned on in the application settings on Xiaomi phones."
-  ],
+  "Telefon üreticinizin Xiaomi, OnPlus veya Vivo olduğunu tespit ettik. Lütfen uygulamamızı arka planda çalışması için otomatik başlatmayı açın.":
+      ["Telefon üreticinizin Xiaomi, OnPlus veya Vivo olduğunu tespit ettik. Lütfen uygulamamızı arka planda çalışması için otomatik başlatmayı açın.",
+      "We determined that your phone manufacturer is Xiaomi, OnPlus, or Vivo. Please turn on automatic launch for our app to run in the background.",],
   //19
   "Bir daha gösterme": ["Bir daha gösterme", "Don't show again"],
   //27

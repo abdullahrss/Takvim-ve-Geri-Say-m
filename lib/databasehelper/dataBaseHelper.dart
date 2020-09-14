@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io' show Directory;
 
+import 'package:ajanda/databasehelper/settingsHelper.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -24,8 +25,7 @@ class DbHelper {
   static final String _columnDesc = EventConstants.COLUMN_DESCRIPTION;
   static final String _columnIsActive = EventConstants.COLUMN_ISACTIVE;
   static final String _columnNotification = EventConstants.COLUMN_NOTIFICATION;
-  static final String _columnCountdownIsActive =
-      EventConstants.COLUMN_COUNTDOWNISACTIVE;
+  static final String _columnCountdownIsActive = EventConstants.COLUMN_COUNTDOWNISACTIVE;
   static final String _columnAttachments = EventConstants.COLUMN_ATTACHMENTS;
   static final String _columnCc = EventConstants.COLUMN_CC;
   static final String _columnBb = EventConstants.COLUMN_BB;
@@ -56,8 +56,7 @@ class DbHelper {
     String path = directory.path + 'dbtakvim.db';
 
     // Database yoksa olusturuyor varsa aciyor
-    var eventsDatabase =
-        await openDatabase(path, version: 1, onCreate: _createDb);
+    var eventsDatabase = await openDatabase(path, version: 1, onCreate: _createDb);
     return eventsDatabase;
   }
 
@@ -83,22 +82,20 @@ class DbHelper {
   // Eventi güncelleme
   Future<int> updateEvent(Event event) async {
     var db = await this.database;
-    var result = await db.update(_tableName, event.toMap(),
-        where: '$_columnId = ?', whereArgs: [event.id]);
+    var result =
+        await db.update(_tableName, event.toMap(), where: '$_columnId = ?', whereArgs: [event.id]);
     return result;
   }
 
   Future updateSingleColumn(int id, String columnName, String newValue) async {
     var db = await this.database;
-    await db.rawQuery(
-        "UPDATE $_tableName SET $columnName='$newValue' WHERE $_columnId=$id");
+    await db.rawQuery("UPDATE $_tableName SET $columnName='$newValue' WHERE $_columnId=$id");
   }
 
   // IDsiyle event silme
   Future<int> deleteEvent(int id) async {
     var db = await this.database;
-    int result =
-        await db.rawDelete('DELETE FROM $_tableName WHERE $_columnId = $id');
+    int result = await db.rawDelete('DELETE FROM $_tableName WHERE $_columnId = $id');
     return result;
   }
 
@@ -115,8 +112,7 @@ class DbHelper {
 
   Future<Event> getEventById(int id) async {
     var db = await this.database;
-    var result =
-        await db.rawQuery('SELECT * FROM $_tableName WHERE $_columnId=$id');
+    var result = await db.rawQuery('SELECT * FROM $_tableName WHERE $_columnId=$id');
 
     Event event = Event();
     event = Event.fromMap(result[0]);
@@ -126,8 +122,7 @@ class DbHelper {
   // Database deki eleman sayisini donduruyor
   Future<int> getCount() async {
     Database db = await this.database;
-    List<Map<String, dynamic>> x =
-        await db.rawQuery('SELECT COUNT (*) from $_tableName');
+    List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $_tableName');
     int result = Sqflite.firstIntValue(x);
     return result;
   }
@@ -222,6 +217,8 @@ class DbHelper {
     /// Notification objesi olusturuluyor
     var not = Notifications(flutterLocalNotificationsPlugin);
 
+    /// Settings helper
+    SettingsDbHelper settingsDbHelper = SettingsDbHelper();
     /// Gerekli sartlari [countDownIsActive(Sabit bildirim) - periodic(Periyotlu event)] saglayan eventler databaseden aliniyor
     var result = await db.rawQuery(
         "SELECT * FROM $_tableName WHERE $_columnCountdownIsActive=1 OR $_columnPeriodic!=0");
@@ -250,14 +247,11 @@ class DbHelper {
           : DateTime.parse("${eventList[i].date} ${eventList[i].startTime}");
 
       /// Eger etkinlik tarihi gecmis ise
-      if (targetTime.isBefore(DateTime.now()) ||
-          (targetTime == DateTime.now())) {
+      if (targetTime.isBefore(DateTime.now()) || (targetTime == DateTime.now())) {
         /// Periyodik degilse etkinlik siliniyor ve db guncellenerek sabit bildirim kapatiliyor
         if (eventList[i].periodic == 0) {
-          not.cancelNotification(
-              flutterLocalNotificationsPlugin, eventList[i].id);
-          await updateSingleColumn(
-              eventList[i].id, _columnCountdownIsActive, "0");
+          not.cancelNotification(flutterLocalNotificationsPlugin, eventList[i].id);
+          await updateSingleColumn(eventList[i].id, _columnCountdownIsActive, "0");
           continue;
         }
 
@@ -267,6 +261,7 @@ class DbHelper {
         }
       }
       var remainingTime = targetTime.difference(DateTime.now());
+      await settingsDbHelper.getSettings().then((value) => Language.languageIndex=value[0].language);
       await not.countDownNotification(
           flutterLocalNotificationsPlugin,
           eventList[i].title,
@@ -279,8 +274,7 @@ class DbHelper {
   Future<void> createNotifications() async {
     Database db = await this.database;
     var not = Notifications(flutterLocalNotificationsPlugin);
-    var events = await db
-        .rawQuery("SELECT * FROM $_tableName WHERE $_columnNotification!='0'");
+    var events = await db.rawQuery("SELECT * FROM $_tableName WHERE $_columnNotification!='0'");
     List<Event> eventList = List<Event>();
 
     for (var i = 0; i < events.length; i++) {
@@ -294,16 +288,14 @@ class DbHelper {
           ? DateTime.parse("${event.date} ${event.startTime}")
           : DateTime.parse(event.date);
       if (DateTime.now().compareTo(datetime) == 1) {
-        print(
-            "[dataBaseHelper] [createNotifications] Out of time event title : ${event.title}");
-        flutterLocalNotificationsPlugin.cancel(event
-            .id); // zaman gectikten sonra notificasyonun kapanmasinin sebebi
+        print("[dataBaseHelper] [createNotifications] Out of time event title : ${event.title}");
+        flutterLocalNotificationsPlugin
+            .cancel(event.id); // zaman gectikten sonra notificasyonun kapanmasinin sebebi
         continue;
       }
       datetime = not.calcNotificationDate(datetime, int.parse(event.choice));
       if (event.recipient != "") {
-        print(
-            "[DATABASEHELPER] [createNotifications] e-mail notification : ${event.title}");
+        print("[DATABASEHELPER] [createNotifications] e-mail notification : ${event.title}");
         await not.singleNotificationWithMail(
             flutterLocalNotificationsPlugin,
             datetime,
@@ -311,22 +303,16 @@ class DbHelper {
             proTranslate["Yollayacağınız e-mail'in vakti geldi."][Language.languageIndex],
             event.id);
       } else {
-        print(
-            "[DATABASEHELPER] [createNotifications] normal notification : ${event.title}");
-        await not.singleNotification(
-            flutterLocalNotificationsPlugin,
-            datetime,
-            event.title,
-            not.calcSingleNotificationBodyText(event.choice),
-            event.id);
+        print("[DATABASEHELPER] [createNotifications] normal notification : ${event.title}");
+        await not.singleNotification(flutterLocalNotificationsPlugin, datetime, event.title,
+            not.calcSingleNotificationBodyText(event.choice), event.id);
       }
     }
   }
 
   Future<DateTime> controlDates() async {
     Database db = await this.database;
-    var events = await db
-        .rawQuery("SELECT * FROM $_tableName WHERE $_columnPeriodic!=0");
+    var events = await db.rawQuery("SELECT * FROM $_tableName WHERE $_columnPeriodic!=0");
     DateTime eventDate;
     List<Event> eventList = List<Event>();
     events.forEach((element) {
@@ -387,9 +373,7 @@ class DbHelper {
                         ? ((j + 1) - eventDate.weekday + 7)
                         : ((j + 1) - eventDate.weekday);
                 eventDate = eventDate.add(Duration(days: addition));
-                print(eventDate.toString().split(" ")[0]);
                 event.date = eventDate.toString().split(" ")[0];
-                print(event.date);
                 this.updateEvent(event);
                 break;
               }
@@ -425,8 +409,7 @@ class DbHelper {
         var targetTime = value[i].startTime == "null"
             ? DateTime.parse("${value[i].date}")
             : DateTime.parse("${value[i].date} ${value[i].startTime}");
-        if (targetTime.isBefore(DateTime.now()) ||
-            (targetTime == DateTime.now())) {
+        if (targetTime.isBefore(DateTime.now()) || (targetTime == DateTime.now())) {
           if (value[i].startTime == "null") {
             deleteOldEventDay(value[i].date);
           } else {

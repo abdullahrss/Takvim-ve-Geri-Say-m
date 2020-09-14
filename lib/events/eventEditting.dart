@@ -191,7 +191,7 @@ class _AddEventState extends State<EventEdit> {
                           showTimePicker(
                             cancelText: proTranslate["Geri"][Language.languageIndex],
                             confirmText: proTranslate["Tamam"][Language.languageIndex],
-                            helpText: Language.languageIndex==0?proTranslate["BİTİŞ SAAT'İ SEÇ"]:"BİTİŞ SAAT'İ SEÇ",
+                            helpText: proTranslate["BİTİŞ SAAT'İ SEÇ"][Language.languageIndex],
                             context: context,
                             initialTime:
                             TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
@@ -209,7 +209,7 @@ class _AddEventState extends State<EventEdit> {
                           showTimePicker(
                             cancelText: proTranslate["Geri"][Language.languageIndex],
                             confirmText: proTranslate["Tamam"][Language.languageIndex],
-                            helpText: Language.languageIndex==0?proTranslate["BAŞLANGIÇ SAAT'İ SEÇ"]:"BAŞLANGIÇ SAAT'İ SEÇ",
+                            helpText: proTranslate["BAŞLANGIÇ SAAT'İ SEÇ"][Language.languageIndex],
                             context: context,
                             initialTime:
                             TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),

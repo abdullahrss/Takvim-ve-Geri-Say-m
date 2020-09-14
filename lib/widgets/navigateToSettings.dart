@@ -19,7 +19,7 @@ void navigateToSettingsDialog(context) async {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    proTranslate["Sabit bildirim bazen düzgün çalışmayabilir. Düzgün çalışması için bildirimlerin açık olduğuna emin olun\n\nNot: Xiaomi telefonlarda uygulama ayarlarında Otomatik başlatma seçeneğinin açık olduğuna emin olun."][Language.languageIndex],
+                    proTranslate["Telefon üreticinizin Xiaomi, OnPlus veya Vivo olduğunu tespit ettik. Lütfen uygulamamızı arka planda çalışması için otomatik başlatmayı açın."][Language.languageIndex],
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
@@ -46,14 +46,14 @@ void navigateToSettingsDialog(context) async {
                     FlatButton(
                       child: Text(proTranslate["Tamam"][Language.languageIndex]),
                       onPressed: () async {
-                        await sdb.updateWarning(val ? 1 : 0);
-                        Navigator.pop(context);
+                        await sdb.updateWarning(val ? 1 : 0).then((value) => Navigator.pop(context));
                       },
                     ),
                     FlatButton(
                       child: Text(proTranslate["Ayarlara Git"][Language.languageIndex]),
                       onPressed: () async {
                         openAppSettings();
+                        await sdb.updateWarning(val ? 1 : 0).then((value) => Navigator.pop(context));
                       },
                     )
                   ],

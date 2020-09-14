@@ -38,11 +38,12 @@ class _SettingsState extends State<Settings> {
   ];
 
   /// Dil dropdownmenusu icin gerekli olanlar
-  String _dropdownLanguageValue = 'Türkçe';
+  String _dropdownLanguageValue;
   List<String> _languageDropdownList = [
     "Türkçe",
     "English",
   ];
+
   List<Image> _imageList = [
     Image(
       image: AssetImage("assets/images/turkey-flag-icon-128.png"),
@@ -63,6 +64,7 @@ class _SettingsState extends State<Settings> {
   void initState() {
     super.initState();
     _switchValue = DynamicTheme.of(context).brightness == Brightness.dark ? true : false;
+    _dropdownLanguageValue = Language.languageIndex==0?'Türkçe':'English';
   }
 
   @override
@@ -77,7 +79,7 @@ class _SettingsState extends State<Settings> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  "Dil (language)",
+                  proTranslate["Dil (language)"][Language.languageIndex],
                   style: TextStyle(
                     fontSize: 20,
                   ),
@@ -171,7 +173,7 @@ class _SettingsState extends State<Settings> {
                   onPressed: () async {
                     await showMyDialog(context,
                         title: proTranslate["Bütün etkinlikeri sil!"][Language.languageIndex],
-                        message: proTranslate['Bütün etkinlikleri silmek istediğinize emin misiniz.'][Language.languageIndex],
+                        message: proTranslate['Bütün etkinlikleri silmek istediğinize emin misiniz ?'][Language.languageIndex],
                         function: () async {
                           await _db.clearDb();
                           Navigator.pop(context);
@@ -199,7 +201,7 @@ class _SettingsState extends State<Settings> {
                     await showMyDialog(context,
                         title: proTranslate["Dikkat"][Language.languageIndex],
                         message:
-                        proTranslate['Bütün tarihi geçmiş etkinlikleri silmek istediğinize emin misiniz.'][Language.languageIndex],
+                        proTranslate['Bütün tarihi geçmiş etkinlikleri silmek istediğinize emin misiniz ?'][Language.languageIndex],
                         function: () async {
                           await _db.clearOldEvents();
                           Navigator.pop(context);

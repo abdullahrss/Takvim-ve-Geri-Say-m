@@ -1,4 +1,6 @@
+import 'package:ajanda/databasehelper/settingsHelper.dart';
 import 'package:ajanda/helpers/constants.dart';
+import 'package:device_info/device_info.dart';
 
 import '../widgets/dayPicker.dart';
 import 'package:ajanda/widgets/navigateToSettings.dart';
@@ -15,10 +17,9 @@ import '../widgets/showDialog.dart';
 import '../helpers/languageDictionary.dart';
 
 class AddEvent extends StatefulWidget {
-  final int warningstatus;
   var date;
 
-  AddEvent({inputDate, this.warningstatus}) {
+  AddEvent({inputDate, }) {
     date = inputDate;
   }
 
@@ -58,6 +59,9 @@ class _AddEventState extends State<AddEvent> {
   bool _switchValue = false;
   bool dialogValue = false;
 
+  /// Device infos
+  DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+
   /// Baslik ve aciklama kontrolleri
   final _titlecontroller = TextEditingController();
   final _descriptioncontroller = TextEditingController();
@@ -83,6 +87,7 @@ class _AddEventState extends State<AddEvent> {
     setState(() {
       widget.date != null ? _selectedDate = widget.date : print("[ADDEVENT] widget.date null");
     });
+    asyncCall();
   }
 
   @override
@@ -122,7 +127,9 @@ class _AddEventState extends State<AddEvent> {
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
-                      return value.isEmpty ? proTranslate["Etkinlik ismi boş bırakılamaz"][Language.languageIndex] : null;
+                      return value.isEmpty
+                          ? proTranslate["Etkinlik ismi boş bırakılamaz"][Language.languageIndex]
+                          : null;
                     },
                   )),
               Container(
@@ -185,7 +192,7 @@ class _AddEventState extends State<AddEvent> {
                           showTimePicker(
                             cancelText: proTranslate["Geri"][Language.languageIndex],
                             confirmText: proTranslate["Tamam"][Language.languageIndex],
-                            helpText: Language.languageIndex==0?proTranslate["BİTİŞ SAAT'İ SEÇ"]:"BİTİŞ SAAT'İ SEÇ",
+                            helpText: proTranslate["BİTİŞ SAAT'İ SEÇ"][Language.languageIndex],
                             context: context,
                             initialTime:
                                 TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
@@ -208,11 +215,10 @@ class _AddEventState extends State<AddEvent> {
                           showTimePicker(
                             cancelText: proTranslate["Geri"][Language.languageIndex],
                             confirmText: proTranslate["Tamam"][Language.languageIndex],
-                            helpText: Language.languageIndex==0?proTranslate["BAŞLANGIÇ SAAT'İ SEÇ"]:"BAŞLANGIÇ SAAT'İ SEÇ",
+                            helpText: proTranslate["BAŞLANGIÇ SAAT'İ SEÇ"][Language.languageIndex],
                             context: context,
                             initialTime:
                                 TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
-
                           ).then((value) {
                             setState(() {
                               try {
@@ -234,9 +240,12 @@ class _AddEventState extends State<AddEvent> {
                           showDatePicker(
                             cancelText: proTranslate["Geri"][Language.languageIndex],
                             confirmText: proTranslate["Tamam"][Language.languageIndex],
-                            helpText: Language.languageIndex == 1 ? proTranslate["TARİH SEÇ"]:"TARİH SEÇ",
+                            helpText: Language.languageIndex == 1
+                                ? proTranslate["TARİH SEÇ"]
+                                : "TARİH SEÇ",
                             context: context,
-                            locale: Language.languageIndex==0?Locale('tr',''):Locale('en',''),
+                            locale:
+                                Language.languageIndex == 0 ? Locale('tr', '') : Locale('en', ''),
                             initialDate: DateTime.now(),
                             firstDate: DateTime.now(),
                             lastDate: DateTime(2030),
@@ -428,8 +437,9 @@ class _AddEventState extends State<AddEvent> {
                                     onPressed: () {
                                       showWarningDialog(
                                           context: context,
-                                          explanation:
-                                              proTranslate["Geri sayım sayfasında etkinliğinize ne kadar süre kaldığını görebilirsiniz."][Language.languageIndex]);
+                                          explanation: proTranslate[
+                                                  "Geri sayım sayfasında etkinliğinize ne kadar süre kaldığını görebilirsiniz."]
+                                              [Language.languageIndex]);
                                     }),
                               ],
                             ),
@@ -438,9 +448,9 @@ class _AddEventState extends State<AddEvent> {
                         // Sabit bildirim
                         InkWell(
                           onTap: () {
-                            if (widget.warningstatus == 0) {
-                              navigateToSettingsDialog(context);
-                            }
+//                            if (widget.warningstatus == 0) {
+//                              navigateToSettingsDialog(context);
+//                            }
                             setState(() {
                               _switchValue = !_switchValue;
                             });
@@ -470,8 +480,9 @@ class _AddEventState extends State<AddEvent> {
                                     onPressed: () {
                                       showWarningDialog(
                                           context: context,
-                                          explanation:
-                                              proTranslate["Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!"][Language.languageIndex]);
+                                          explanation: proTranslate[
+                                                  "Sabit bildirim uygulama açıksa 1 dakikada bir güncellenir uygulama kapalı ise belirli aralıklarla güncellenir!"]
+                                              [Language.languageIndex]);
                                     })
                               ],
                             ),
@@ -522,7 +533,8 @@ class _AddEventState extends State<AddEvent> {
                                           setSelectedRadio(val);
                                         },
                                       ),
-                                      Text(proTranslate["Günlük"][Language.languageIndex], style: TextStyle(fontSize: 20)),
+                                      Text(proTranslate["Günlük"][Language.languageIndex],
+                                          style: TextStyle(fontSize: 20)),
                                     ],
                                   ),
                                 ),
@@ -540,7 +552,8 @@ class _AddEventState extends State<AddEvent> {
                                           setSelectedRadio(val);
                                         },
                                       ),
-                                      Text(proTranslate["Haftalık"][Language.languageIndex], style: TextStyle(fontSize: 20)),
+                                      Text(proTranslate["Haftalık"][Language.languageIndex],
+                                          style: TextStyle(fontSize: 20)),
                                     ],
                                   ),
                                 ),
@@ -558,7 +571,8 @@ class _AddEventState extends State<AddEvent> {
                                           setSelectedRadio(val);
                                         },
                                       ),
-                                      Text(proTranslate["Aylık"][Language.languageIndex], style: TextStyle(fontSize: 20)),
+                                      Text(proTranslate["Aylık"][Language.languageIndex],
+                                          style: TextStyle(fontSize: 20)),
                                     ],
                                   ),
                                 ),
@@ -607,7 +621,8 @@ class _AddEventState extends State<AddEvent> {
                   maxLines: 7,
                   decoration: InputDecoration(
                     labelText: proTranslate["Etkinlik açıklaması ..."][Language.languageIndex],
-                    hintText: proTranslate["Etkinlik detaylarının girileceği alan..."][Language.languageIndex],
+                    hintText: proTranslate["Etkinlik detaylarının girileceği alan..."]
+                        [Language.languageIndex],
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
                   ),
                 ),
@@ -621,7 +636,10 @@ class _AddEventState extends State<AddEvent> {
                     RaisedButton(
                       elevation: 18,
                       onPressed: () => {clearAreas()},
-                      child: Text(proTranslate["Temizle"][Language.languageIndex],style: TextStyle(fontSize: 18,color: Colors.white),),
+                      child: Text(
+                        proTranslate["Temizle"][Language.languageIndex],
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
                       color: Colors.blue,
                       // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
                       splashColor: Colors.lightBlueAccent,
@@ -629,7 +647,10 @@ class _AddEventState extends State<AddEvent> {
                     RaisedButton(
                       onPressed: () => {validateandsave()},
                       elevation: 18,
-                      child: Text(proTranslate["Kaydet"][Language.languageIndex],style: TextStyle(fontSize: 18,color: Colors.white),),
+                      child: Text(
+                        proTranslate["Kaydet"][Language.languageIndex],
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
                       color: Colors.blue,
                       splashColor: Colors.lightBlueAccent,
                     ),
@@ -639,6 +660,19 @@ class _AddEventState extends State<AddEvent> {
             ],
           )),
     );
+  }
+
+  void asyncCall() async {
+    var sdb = SettingsDbHelper();
+    await sdb.getSettings().then((value) async{
+      if(value[0].warning!= 1){
+        AndroidDeviceInfo androidInfo = await deviceInfoPlugin.androidInfo;
+        if (androidInfo.brand == "xiaomi" ||
+            androidInfo.brand == "vivo" ||
+            androidInfo.brand == "oneplus") {
+          navigateToSettingsDialog(context);
+      }
+    }});
   }
 
   setSelectedRadio(int val) {
@@ -684,7 +718,9 @@ class _AddEventState extends State<AddEvent> {
                     parseHours(_selectedFinishHour)[1] < parseHours(_selectedStartHour)[1])
             ? false
             : true;
-        errmsg += _iscorrect == false ? "\n${proTranslate["Bitiş zamanı başlangıç zamanından önce olamaz"][Language.languageIndex]}" : "";
+        errmsg += _iscorrect == false
+            ? "\n${proTranslate["Bitiş zamanı başlangıç zamanından önce olamaz"][Language.languageIndex]}"
+            : "";
       }
     });
     String imagePaths = "";
@@ -733,7 +769,7 @@ class _AddEventState extends State<AddEvent> {
               periodic: _periodRadio,
               frequency: _frequency,
             );
-      if(newEvent.recipient != "" && newEvent.choice == "0"){
+      if (newEvent.recipient != "" && newEvent.choice == "0") {
         newEvent.choice = "1";
       }
       await _db.insertEvent(newEvent);
