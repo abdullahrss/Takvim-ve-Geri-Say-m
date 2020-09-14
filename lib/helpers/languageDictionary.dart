@@ -255,7 +255,7 @@ Map<String, dynamic> proTranslate = {
   //107
   "Vakiti geçmiş etkinlikleri sil!": [
     "Vakiti geçmiş etkinlikleri sil!",
-    "Deleting past due events!"
+    "Delete expired events!"
   ],
   //124
   "Bütün tarihi geçmiş etkinlikleri silmek istediğinize emin misiniz?": [
