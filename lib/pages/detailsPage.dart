@@ -76,12 +76,12 @@ class _DetailsState extends State<Details> {
                     ),
                   if (widget.event.recipient != "" || widget.event.recipient.length != 0)
                     Padding(
-                      padding: const EdgeInsets.only(left: 16.0),
+                      padding: const EdgeInsets.only(left: 12.0,top: 16.0),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
                           proTranslate["Mail atılacak"][Language.languageIndex] + printMails(widget.event.recipient),
-                          maxLines: widget.event.recipient.length,
+                          maxLines: widget.event.recipient.split(",").length+1,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.start,
                           style: TextStyle(fontSize: 18),
@@ -206,7 +206,6 @@ class _DetailsState extends State<Details> {
   }
 
   String printMails(String recipients) {
-
     String result = recipients.split(",").length > 1 ? " ${proTranslate["kişiler"][Language.languageIndex]} :\n" : " ${proTranslate["kişi"][Language.languageIndex]} :\n";
     recipients.split(",").forEach((element) {
       result += "> "+element.trim() + "\n";

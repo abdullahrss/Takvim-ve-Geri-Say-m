@@ -7,17 +7,33 @@ String calcRemaining(String date, String startTime) {
   DateTime dateTime;
   DateTime now = DateTime.now();
   dateTime = startTime == "null" ? DateTime.parse("$date") : DateTime.parse("$date $startTime");
-  if(dateTime.difference(now).inHours <= 0 && dateTime.difference(now).inDays == 0 && startTime != "null"){
+  print(date + "  ${dateTime.difference(now).inMinutes}");
+  if (dateTime
+      .difference(now)
+      .inHours <= 0 && dateTime
+      .difference(now)
+      .inDays == 0 && startTime != "null" && dateTime
+      .difference(now)
+      .inMinutes < 0) {
     result = proTranslate["Geçti"][Language.languageIndex];
-  }else if(dateTime.difference(now).inDays < 0){
-    result = "${-1*dateTime.difference(now).inDays} ${proTranslate["Gün Geçti"][Language.languageIndex]}";
+  }else if(dateTime.difference(now).inDays==0 && dateTime.difference(now).inMinutes<60){
+    result = "${dateTime.difference(now).inMinutes+1} " + proTranslate["Dakika Kaldı"][Language.languageIndex];
   }
-  else if(dateTime.difference(now).inDays == 0 && dateTime.difference(now).inHours > 0){
-    result = "${dateTime.difference(now).inHours} ${proTranslate["Saat Kaldı"][Language.languageIndex]}";
-  }else if(dateTime.difference(now).inDays == 0 && startTime == "null"){
+  else if (dateTime
+      .difference(now)
+      .inDays < 0) {
+    result = "${-1 * dateTime
+        .difference(now)
+        .inDays} ${proTranslate["Gün Geçti"][Language.languageIndex]}";
+  }
+  else if (dateTime
+      .difference(now)
+      .inDays == 0 && startTime == "null") {
     result = proTranslate["Bugün"][Language.languageIndex];
-  }else{
-    result = "${dateTime.difference(now).inDays} ${proTranslate["Gün Kaldı"][Language.languageIndex]}";
+  } else {
+    result = "${dateTime
+        .difference(now)
+        .inDays} ${proTranslate["Gün Kaldı"][Language.languageIndex]}";
   }
   return result;
 }

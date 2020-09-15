@@ -155,7 +155,7 @@ Map<String, dynamic> proTranslate = {
   ///helperFunctions.dart
   "Bugün": ["Bugün", "Today"],
   "Gün Geçti": ["Gün Geçti", "Days passed"],
-
+  "Dakika Kaldı":["Dakika Kaldı","Minutes Left"],
   "Saat Kaldı": ["Saat Kaldı", "Hours Left"],
   //17
 
