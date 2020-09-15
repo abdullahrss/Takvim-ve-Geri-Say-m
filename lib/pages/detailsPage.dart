@@ -43,18 +43,17 @@ class _DetailsState extends State<Details> {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              widget.event.title,
-                              maxLines: 4,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 35.0),
-                            ),
-                          ),
-                        ]),
+                    child:
+                        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
+                      Expanded(
+                        child: Text(
+                          widget.event.title,
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 35.0),
+                        ),
+                      ),
+                    ]),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0, bottom: 16.0),
@@ -66,7 +65,8 @@ class _DetailsState extends State<Details> {
                       ),
                     ]),
                   ),
-                  if((widget.event.recipient != "" || widget.event.recipient.length != 0)||(widget.event.periodic != 0))
+                  if ((widget.event.recipient != "" || widget.event.recipient.length != 0) ||
+                      (widget.event.periodic != 0))
                     Container(
                       padding: const EdgeInsets.only(right: 64.0),
                       child: Divider(
@@ -76,35 +76,45 @@ class _DetailsState extends State<Details> {
                     ),
                   if (widget.event.recipient != "" || widget.event.recipient.length != 0)
                     Padding(
-                      padding: const EdgeInsets.only(left: 12.0,top: 16.0),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          proTranslate["Mail atılacak"][Language.languageIndex] + printMails(widget.event.recipient),
-                          maxLines: widget.event.recipient.split(",").length+1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(fontSize: 18),
-                        ),
+                      padding: const EdgeInsets.only(left: 12.0, top: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.mail_outline),
+                          Text(
+                            proTranslate["Mail atılacak"][Language.languageIndex] +
+                                printMails(widget.event.recipient),
+                            maxLines: widget.event.recipient.split(",").length + 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.start,
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ],
                       ),
                     ),
                   if (widget.event.periodic != 0)
                     Container(
                       padding: const EdgeInsets.only(left: 12.0, top: 16.0),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Icon(Icons.refresh),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              widget.event.periodic != 4
-                                  ? _periodicTexts[widget.event.periodic]
-                                  : calcDays(widget.event.frequency),
-                              maxLines: 9,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.start,
-                              style: TextStyle(fontSize: 18),
-                            ),
+                          Column(
+                            children: [
+                              Text(
+                                widget.event.periodic != 4
+                                    ? _periodicTexts[widget.event.periodic]
+                                    : calcDays(widget.event.frequency),
+                                maxLines: 9,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.start,
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -144,25 +154,25 @@ class _DetailsState extends State<Details> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => (EventEdit(
-                                event: Event(
-                                    id: widget.event.id,
-                                    title: widget.event.title,
-                                    date: widget.event.date,
-                                    startTime: widget.event.startTime,
-                                    finishTime: widget.event.finishTime,
-                                    desc: widget.event.desc,
-                                    isActive: widget.event.isActive,
-                                    choice: widget.event.choice,
-                                    countDownIsActive: widget.event.countDownIsActive,
-                                    attachments: widget.event.attachments,
-                                    cc: widget.event.cc,
-                                    bb: widget.event.bb,
-                                    recipient: widget.event.recipient,
-                                    subject: widget.event.subject,
-                                    body: widget.event.body,
-                                    periodic: widget.event.periodic,
-                                    frequency: widget.event.frequency),
-                              ))));
+                                    event: Event(
+                                        id: widget.event.id,
+                                        title: widget.event.title,
+                                        date: widget.event.date,
+                                        startTime: widget.event.startTime,
+                                        finishTime: widget.event.finishTime,
+                                        desc: widget.event.desc,
+                                        isActive: widget.event.isActive,
+                                        choice: widget.event.choice,
+                                        countDownIsActive: widget.event.countDownIsActive,
+                                        attachments: widget.event.attachments,
+                                        cc: widget.event.cc,
+                                        bb: widget.event.bb,
+                                        recipient: widget.event.recipient,
+                                        subject: widget.event.subject,
+                                        body: widget.event.body,
+                                        periodic: widget.event.periodic,
+                                        frequency: widget.event.frequency),
+                                  ))));
                     },
                     elevation: 18,
                     color: Colors.blue,
@@ -206,9 +216,11 @@ class _DetailsState extends State<Details> {
   }
 
   String printMails(String recipients) {
-    String result = recipients.split(",").length > 1 ? " ${proTranslate["kişiler"][Language.languageIndex]} :\n" : " ${proTranslate["kişi"][Language.languageIndex]} :\n";
+    String result = recipients.split(",").length > 1
+        ? " ${proTranslate["kişiler"][Language.languageIndex]} :\n"
+        : " ${proTranslate["kişi"][Language.languageIndex]} :\n";
     recipients.split(",").forEach((element) {
-      result += "> "+element.trim() + "\n";
+      result += "> " + element.trim() + "\n";
     });
     return result;
   }
