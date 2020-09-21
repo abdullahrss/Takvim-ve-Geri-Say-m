@@ -28,7 +28,8 @@ class _ClosesEvents extends State<SoClose> {
           builder: (context, snapshot) {
             if (snapshot.data == null) {
               return Container(
-                child: Center(child: Text(proTranslate["Yükleniyor....."][Language.languageIndex])),
+                child: Center(child:CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.lightBlueAccent),),
+                ),
               );
             } else {
               return ListView.builder(

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io' show Directory;
 
-import 'package:ajanda/databasehelper/settingsHelper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -13,27 +12,9 @@ import '../events/notifications.dart';
 import '../helpers/constants.dart';
 import '../helpers/languageDictionary.dart';
 import '../main.dart';
+import '../databasemodels/settingsModel.dart';
 
 class DbHelper {
-  static final String _tableName = EventConstants.TABLE_NAME;
-  static final String _columnId = EventConstants.COLUMN_ID;
-  static final String _columnTitle = EventConstants.COLUMN_TITLE;
-  static final String _columnDate = EventConstants.COLUMN_DATE;
-  static final String _columnStartTime = EventConstants.COLUMN_STARTTIME;
-  static final String _columnFinishTime = EventConstants.COLUMUN_FINISHTIME;
-  static final String _columnDesc = EventConstants.COLUMN_DESCRIPTION;
-  static final String _columnIsActive = EventConstants.COLUMN_ISACTIVE;
-  static final String _columnNotification = EventConstants.COLUMN_NOTIFICATION;
-  static final String _columnCountdownIsActive = EventConstants.COLUMN_COUNTDOWNISACTIVE;
-  static final String _columnAttachments = EventConstants.COLUMN_ATTACHMENTS;
-  static final String _columnCc = EventConstants.COLUMN_CC;
-  static final String _columnBb = EventConstants.COLUMN_BB;
-  static final String _columnRecipient = EventConstants.COLUMN_RECIPIENT;
-  static final String _columnSubject = EventConstants.COLUMN_SUBJECT;
-  static final String _columnBody = EventConstants.COLUMN_BODY;
-  static final String _columnPeriodic = EventConstants.COLUMN_PERIODIC;
-  static final String _columnFrequency = EventConstants.COLUMN_FREQUENCY;
-
   static Database _database;
   final _lock = Lock();
 
@@ -59,64 +40,71 @@ class DbHelper {
     debugPrint("[dataBaseHelper] [_initDatabase] initDatabase working...");
     Directory directory = await getApplicationDocumentsDirectory();
     String path = directory.path + 'dbtakvim.db';
-    return await openDatabase(path,version: 2,onCreate: (Database database, int version)async{
-      try{
+    return await openDatabase(path, version: 2, onCreate: (Database database, int version) async {
+      try {
         await database.execute(
-            'CREATE TABLE $_tableName( $_columnId INTEGER PRIMARY KEY NOT NULL, $_columnTitle TEXT ,$_columnDate TEXT,$_columnStartTime TEXT,$_columnFinishTime TEXT, $_columnDesc TEXT, $_columnIsActive INTEGER, $_columnNotification TEXT, $_columnCountdownIsActive INTEGER, $_columnAttachments TEXT, $_columnCc TEXT, $_columnBb TEXT, $_columnRecipient TEXT, $_columnSubject TEXT, $_columnBody TEXT, $_columnPeriodic INTEGER, $_columnFrequency TEXT)');
-      }catch(e){
+            'CREATE TABLE ${EventConstants.TABLE_NAME}( ${EventConstants.COLUMN_ID} INTEGER PRIMARY KEY NOT NULL, ${EventConstants.COLUMN_TITLE} TEXT ,${EventConstants.COLUMN_DATE} TEXT,${EventConstants.COLUMN_STARTTIME} TEXT,${EventConstants.COLUMUN_FINISHTIME} TEXT, ${EventConstants.COLUMN_DESCRIPTION} TEXT, ${EventConstants.COLUMN_ISACTIVE} INTEGER, ${EventConstants.COLUMN_NOTIFICATION} TEXT, ${EventConstants.COLUMN_COUNTDOWNISACTIVE} INTEGER, ${EventConstants.COLUMN_ATTACHMENTS} TEXT, ${EventConstants.COLUMN_CC} TEXT, ${EventConstants.COLUMN_BB} TEXT, ${EventConstants.COLUMN_RECIPIENT} TEXT, ${EventConstants.COLUMN_SUBJECT} TEXT, ${EventConstants.COLUMN_BODY} TEXT, ${EventConstants.COLUMN_PERIODIC} INTEGER, ${EventConstants.COLUMN_FREQUENCY} TEXT)');
+        await database.execute(
+            'CREATE TABLE ${SettingsConstants.TABLE_NAME}(${SettingsConstants.COLUMN_THEME} TEXT, ${SettingsConstants.COLUMN_FONTNAME} TEXT,${SettingsConstants.COLUMN_WARNING} INTEGER, ${SettingsConstants.COLUMN_LANGUAGE} INTEGER, ${SettingsConstants.COLUMN_FIRST} INTEGER)');
+      } catch (e) {
         debugPrint("[ERROR] [DATABASEHELPER] [_initDatabase] : $e");
       }
-      });
+    });
   }
 
   // Databaseden tüm eventleri alma
   Future<List<Map<String, dynamic>>> getEventMapList() async {
     Database db = await this.database;
-    var result = await db.query(_tableName, orderBy: '$_columnTitle ASC');
+    var result =
+        await db.query(EventConstants.TABLE_NAME, orderBy: '${EventConstants.COLUMN_TITLE} ASC');
     return result;
   }
 
   // Event ekleme
   Future<int> insertEvent(Event event) async {
     Database db = await this.database;
-    var result = await db.insert(_tableName, event.toMap());
+    var result = await db.insert(EventConstants.TABLE_NAME, event.toMap());
     return result;
   }
 
   // Eventi güncelleme
   Future<int> updateEvent(Event event) async {
     var db = await this.database;
-    var result =
-        await db.update(_tableName, event.toMap(), where: '$_columnId = ?', whereArgs: [event.id]);
+    var result = await db.update(EventConstants.TABLE_NAME, event.toMap(),
+        where: '${EventConstants.COLUMN_ID} = ?', whereArgs: [event.id]);
     return result;
   }
 
   Future updateSingleColumn(int id, String columnName, String newValue) async {
     var db = await this.database;
-    await db.rawQuery("UPDATE $_tableName SET $columnName='$newValue' WHERE $_columnId=$id");
+    await db.rawQuery(
+        "UPDATE ${EventConstants.TABLE_NAME} SET $columnName='$newValue' WHERE ${EventConstants.COLUMN_ID}=$id");
   }
 
   // IDsiyle event silme
   Future<int> deleteEvent(int id) async {
     var db = await this.database;
-    int result = await db.rawDelete('DELETE FROM $_tableName WHERE $_columnId = $id');
+    int result = await db.rawDelete(
+        'DELETE FROM ${EventConstants.TABLE_NAME} WHERE ${EventConstants.COLUMN_ID} = $id');
     return result;
   }
 
   Future<void> deleteOldEventDay(String date) async {
     var db = await this.database;
-    await db.rawQuery('DELETE FROM $_tableName WHERE $_columnDate = "$date" ');
+    await db.rawQuery(
+        'DELETE FROM ${EventConstants.TABLE_NAME} WHERE ${EventConstants.COLUMN_DATE} = "$date" ');
   }
 
   Future<void> deleteOldEventHour(String date, String hour) async {
     var db = await this.database;
     await db.rawQuery(
-        'DELETE FROM $_tableName WHERE $_columnStartTime = "$hour" AND $_columnDate = "$date" ');
+        'DELETE FROM ${EventConstants.TABLE_NAME} WHERE ${EventConstants.COLUMN_STARTTIME} = "$hour" AND ${EventConstants.COLUMN_DATE} = "$date" ');
   }
 
   Future<Event> getEventById(int id) async {
     var db = await this.database;
-    var result = await db.rawQuery('SELECT * FROM $_tableName WHERE $_columnId=$id');
+    var result = await db.rawQuery(
+        'SELECT * FROM ${EventConstants.TABLE_NAME} WHERE ${EventConstants.COLUMN_ID}=$id');
 
     Event event = Event();
     event = Event.fromMap(result[0]);
@@ -126,7 +114,8 @@ class DbHelper {
   // Database deki eleman sayisini donduruyor
   Future<int> getCount() async {
     Database db = await this.database;
-    List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $_tableName');
+    List<Map<String, dynamic>> x =
+        await db.rawQuery('SELECT COUNT (*) from ${EventConstants.TABLE_NAME}');
     int result = Sqflite.firstIntValue(x);
     return result;
   }
@@ -216,10 +205,10 @@ class DbHelper {
 
   Future<bool> openNotificationBar() async {
     debugPrint("[dataBaseHelper] [openNotificationBar] func working...");
+
     /// Database aciliyor
     Database db = await this.database;
-    /// Settings helper
-    SettingsDbHelper settingsDbHelper = SettingsDbHelper();
+
     /// Notification objesi olusturuluyor
     var not = Notifications(flutterLocalNotificationsPlugin);
 
@@ -227,11 +216,12 @@ class DbHelper {
     var result;
     try {
       result = await db.rawQuery(
-          "SELECT * FROM $_tableName WHERE $_columnCountdownIsActive=1 OR $_columnPeriodic!=0");
+          "SELECT * FROM ${EventConstants.TABLE_NAME} WHERE ${EventConstants.COLUMN_COUNTDOWNISACTIVE}=1 OR ${EventConstants.COLUMN_PERIODIC}!=0");
     } catch (e) {
       debugPrint("[ERROR] [DATABASEHELPER] [openNotificationBar] $e");
       debugPrint("[openNotificationBar] db value : ${db.runtimeType}");
     }
+
     /// Eventler listeye ekleniyor
     List<Event> eventList = List<Event>();
     for (var i = 0; i < result.length; i++) {
@@ -260,7 +250,7 @@ class DbHelper {
         /// Periyodik degilse etkinlik siliniyor ve db guncellenerek sabit bildirim kapatiliyor
         if (eventList[i].periodic == 0) {
           not.cancelNotification(flutterLocalNotificationsPlugin, eventList[i].id);
-          await updateSingleColumn(eventList[i].id, _columnCountdownIsActive, "0");
+          await updateSingleColumn(eventList[i].id, EventConstants.COLUMN_COUNTDOWNISACTIVE, "0");
           continue;
         }
 
@@ -270,7 +260,7 @@ class DbHelper {
         }
       }
       var remainingTime = targetTime.difference(DateTime.now());
-      await settingsDbHelper.getSettings().then((value) {
+      await this.getSettings().then((value) {
         Language.languageIndex = value[0].language;
       });
       await not.countDownNotification(
@@ -285,7 +275,8 @@ class DbHelper {
   Future<void> createNotifications() async {
     Database db = await this.database;
     var not = Notifications(flutterLocalNotificationsPlugin);
-    var events = await db.rawQuery("SELECT * FROM $_tableName WHERE $_columnNotification!='0'");
+    var events = await db.rawQuery(
+        "SELECT * FROM ${EventConstants.TABLE_NAME} WHERE ${EventConstants.COLUMN_NOTIFICATION}!='0'");
     List<Event> eventList = List<Event>();
 
     for (var i = 0; i < events.length; i++) {
@@ -326,7 +317,8 @@ class DbHelper {
     Database db = await this.database;
     var events;
     try {
-      events = await db.rawQuery("SELECT * FROM $_tableName WHERE $_columnPeriodic!=0");
+      events = await db.rawQuery(
+          "SELECT * FROM ${EventConstants.TABLE_NAME} WHERE ${EventConstants.COLUMN_PERIODIC}!=0");
     } catch (e) {
       debugPrint("[ERROR] [DATABASEHELPER] [controlDates] $e");
       debugPrint("[controlDates] db value : ${db.runtimeType}");
@@ -443,9 +435,62 @@ class DbHelper {
     // butun notificationlarda silinecek
     var not = Notifications(flutterLocalNotificationsPlugin);
     Database db = await this.database;
-    await db.rawQuery('DELETE FROM $_tableName');
+    await db.rawQuery('DELETE FROM ${EventConstants.TABLE_NAME}');
     not.cancelAllNotifications(flutterLocalNotificationsPlugin);
   }
 
-  Future closeDb() => _database.close();
+  /// Settings part
+
+  /// Yeni gelen theme bilgisiyle database guncelleniyor
+  Future<void> updateTheme(Setting setting) async {
+    var db = await this.database;
+    await db.rawQuery(
+        "UPDATE ${SettingsConstants.TABLE_NAME} SET ${SettingsConstants.COLUMN_THEME} = '${setting.theme}';");
+  }
+
+  /// Font settings'i guncelleniyor
+  Future<void> updateFont(Setting setting) async {
+    var db = await this.database;
+    await db.rawQuery(
+        "UPDATE ${SettingsConstants.TABLE_NAME} SET ${SettingsConstants.COLUMN_FONTNAME} = '${setting.fontName}';");
+  }
+
+  /// Warning Settings'i guncelleniyor
+  Future<void> updateWarning(int e) async {
+    var db = await this.database;
+    await db.rawQuery(
+        "UPDATE ${SettingsConstants.TABLE_NAME} SET ${SettingsConstants.COLUMN_WARNING} = $e;");
+  }
+
+  /// Yeni gelen dil bilgisiyle database guncelleniyor
+  Future<void> updateLanguage(Setting setting) async {
+    var db = await this.database;
+    await db.rawQuery(
+        "UPDATE ${SettingsConstants.TABLE_NAME} SET ${SettingsConstants.COLUMN_LANGUAGE} = ${setting.language};");
+  }
+
+  /// Yeni gelen dil bilgisiyle database guncelleniyor
+  Future<void> updateFirst(Setting setting) async {
+    var db = await this.database;
+    await db.rawQuery(
+        "UPDATE ${SettingsConstants.TABLE_NAME} SET ${SettingsConstants.COLUMN_FIRST} = ${setting.first};");
+  }
+
+  /// Tum kayitli ayarlari cekmek icin
+  Future<List<Setting>> getSettings() async {
+    Database db = await this.database;
+    var settingsMapList = await db.rawQuery("SELECT * FROM ${SettingsConstants.TABLE_NAME}");
+
+    /// Db bos ise default degerler veriliyor
+    if (settingsMapList.length == 0 || settingsMapList == []) {
+      await db.rawQuery(
+          "INSERT INTO ${SettingsConstants.TABLE_NAME} (${SettingsConstants.COLUMN_THEME},${SettingsConstants.COLUMN_FONTNAME},${SettingsConstants.COLUMN_WARNING},${SettingsConstants.COLUMN_LANGUAGE},${SettingsConstants.COLUMN_FIRST}) VALUES('light','Titillium',0,1,0);");
+      settingsMapList = await db.rawQuery("SELECT * FROM ${SettingsConstants.TABLE_NAME}");
+    }
+    List<Setting> settingList = List<Setting>();
+    for (int i = 0; i < settingsMapList.length; i++) {
+      settingList.add(Setting.fromMap(settingsMapList[i]));
+    }
+    return settingList;
+  }
 }

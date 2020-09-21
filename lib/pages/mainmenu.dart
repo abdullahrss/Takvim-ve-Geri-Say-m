@@ -1,46 +1,51 @@
 import 'dart:async';
-import 'package:ajanda/databasemodels/settingsModel.dart';
-import 'package:ajanda/helpers/ads.dart';
+
 import 'package:flutter/material.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:ui' as ui;
 
 import '../databasehelper/dataBaseHelper.dart';
-import '../databasehelper/settingsHelper.dart';
 import '../events/addevent.dart';
 import '../events/closesEvent.dart';
 import '../helpers/backgroundProcesses.dart';
 import '../helpers/constants.dart';
 import '../helpers/languageDictionary.dart';
+import '../helpers/ads.dart';
 import 'calendar.dart';
 import 'countdownpage.dart';
 import 'settings.dart';
+import '../databasemodels/settingsModel.dart';
 
 class MainMenu extends StatelessWidget {
   MainMenu({Key key}) : super(key: key);
-  final _sdb = SettingsDbHelper();
+  final _db = DbHelper.instance;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _sdb.getSettings(),
+      future: _db.getSettings(),
       builder: (context, snapshot) {
         if (snapshot.data == null) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             home: Scaffold(
               body: Center(
-                child: Text(proTranslate["Yükleniyor....."][Language.languageIndex]),
+                child: CircularProgressIndicator(
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(Colors.lightBlueAccent),
+                ),
               ),
             ),
           );
         } else {
-          if(snapshot.data[0].first==0){
-            Language.languageIndex = ui.window.locale.languageCode == "tr" ? 0 : 1;
-            _sdb.updateLanguage(Setting.fromMap({"language": Language.languageIndex}));
-            _sdb.updateFirst(Setting.fromMap({"first":1}));
-          }else{
+          if (snapshot.data[0].first == 0) {
+            Language.languageIndex =
+                ui.window.locale.languageCode == "tr" ? 0 : 1;
+            _db.updateLanguage(
+                Setting.fromMap({"language": Language.languageIndex}));
+            _db.updateFirst(Setting.fromMap({"first": 1}));
+          } else {
             Language.languageIndex = snapshot.data[0].language;
           }
           return DynamicTheme(
@@ -189,7 +194,8 @@ class _MainMenuBodyState extends State<MainMenuBody> {
         ),
       ),
       appBar: AppBar(
-        title: Text(proTranslate["Takvim ve Geri Sayım"][Language.languageIndex]),
+        title:
+            Text(proTranslate["Takvim ve Geri Sayım"][Language.languageIndex]),
         actions: <Widget>[
           if (_selectedIndex == 0)
             Container(
@@ -298,7 +304,8 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                         Navigator.pop(context);
                       },
                     ),
-                    Text(proTranslate["Gelecek tarihler başta"][Language.languageIndex]),
+                    Text(proTranslate["Gelecek tarihler başta"]
+                        [Language.languageIndex]),
                   ],
                 ),
                 Row(
@@ -311,7 +318,8 @@ class _MainMenuBodyState extends State<MainMenuBody> {
                         Navigator.pop(context);
                       },
                     ),
-                    Text(proTranslate["Geçmiş tarihler başta"][Language.languageIndex]),
+                    Text(proTranslate["Geçmiş tarihler başta"]
+                        [Language.languageIndex]),
                   ],
                 ),
               ],
