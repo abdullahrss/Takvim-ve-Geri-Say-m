@@ -57,7 +57,7 @@ class _SettingsState extends State<Settings> {
     ),
   ];
 
-  var _db = DbHelper();
+  var _db = DbHelper.instance;
   var _sdb = SettingsDbHelper();
 
   @override

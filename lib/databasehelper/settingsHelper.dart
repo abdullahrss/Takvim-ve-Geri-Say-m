@@ -39,7 +39,7 @@ class SettingsDbHelper {
 
   /// Database olusturuluyor
   static void _createDb(Database db, int newVersion) async {
-    await db.execute('CREATE TABLE ${SettingsConstants.TABLE_NAME}(${SettingsConstants.COLUMN_THEME} TEXT, ${SettingsConstants.COLUMN_FONTNAME} TEXT,${SettingsConstants.COLUMN_WARNING} INTEGER, ${SettingsConstants.COLUMN_LANGUAGE} INTEGER)');
+    await db.execute('CREATE TABLE ${SettingsConstants.TABLE_NAME}(${SettingsConstants.COLUMN_THEME} TEXT, ${SettingsConstants.COLUMN_FONTNAME} TEXT,${SettingsConstants.COLUMN_WARNING} INTEGER, ${SettingsConstants.COLUMN_LANGUAGE} INTEGER, ${SettingsConstants.COLUMN_FIRST} INTEGER)');
   }
 
   /// Yeni gelen theme bilgisiyle database guncelleniyor
@@ -65,6 +65,11 @@ class SettingsDbHelper {
     var db = await this.database;
     await db.rawQuery("UPDATE ${SettingsConstants.TABLE_NAME} SET ${SettingsConstants.COLUMN_LANGUAGE} = ${setting.language};");
   }
+  /// Yeni gelen dil bilgisiyle database guncelleniyor
+  Future<void> updateFirst(Setting setting) async {
+    var db = await this.database;
+    await db.rawQuery("UPDATE ${SettingsConstants.TABLE_NAME} SET ${SettingsConstants.COLUMN_FIRST} = ${setting.first};");
+  }
   /// Tum kayitli ayarlari cekmek icin
   Future<List<Setting>> getSettings() async {
     Database db = await this.database;
@@ -72,7 +77,7 @@ class SettingsDbHelper {
     /// Db bos ise default degerler veriliyor
     if (settingsMapList.length == 0 || settingsMapList == []) {
       await db.rawQuery(
-          "INSERT INTO ${SettingsConstants.TABLE_NAME} (${SettingsConstants.COLUMN_THEME},${SettingsConstants.COLUMN_FONTNAME},${SettingsConstants.COLUMN_WARNING},${SettingsConstants.COLUMN_LANGUAGE}) VALUES('light','Titillium',0,2);");
+          "INSERT INTO ${SettingsConstants.TABLE_NAME} (${SettingsConstants.COLUMN_THEME},${SettingsConstants.COLUMN_FONTNAME},${SettingsConstants.COLUMN_WARNING},${SettingsConstants.COLUMN_LANGUAGE},${SettingsConstants.COLUMN_FIRST}) VALUES('light','Titillium',0,1,0);");
       settingsMapList = await db.rawQuery("SELECT * FROM ${SettingsConstants.TABLE_NAME}");
     }
     List<Setting> settingList = List<Setting>();

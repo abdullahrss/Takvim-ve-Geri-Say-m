@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:ajanda/databasemodels/settingsModel.dart';
+import 'package:ajanda/helpers/ads.dart';
 import 'package:flutter/material.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -35,10 +36,12 @@ class MainMenu extends StatelessWidget {
             ),
           );
         } else {
-          Language.languageIndex = snapshot.data[0].language;
-          if (Language.languageIndex == 2) {
+          if(snapshot.data[0].first==0){
             Language.languageIndex = ui.window.locale.languageCode == "tr" ? 0 : 1;
             _sdb.updateLanguage(Setting.fromMap({"language": Language.languageIndex}));
+            _sdb.updateFirst(Setting.fromMap({"first":1}));
+          }else{
+            Language.languageIndex = snapshot.data[0].language;
           }
           return DynamicTheme(
               defaultBrightness: Brightness.light,
@@ -68,16 +71,13 @@ class MainMenu extends StatelessWidget {
 }
 
 class MainMenuBody extends StatefulWidget {
-
-  const MainMenuBody({Key key}) : super(key: key);
-
   @override
   _MainMenuBodyState createState() => _MainMenuBodyState();
 }
 
 class _MainMenuBodyState extends State<MainMenuBody> {
   // Database
-  var _db = DbHelper();
+  var _db = DbHelper.instance;
 
   // Background services
   BackGroundProcesses _backGroundProcesses;
@@ -86,6 +86,9 @@ class _MainMenuBodyState extends State<MainMenuBody> {
   int _selectedIndex = 0;
   static int _selectedOrder = 0;
   int radioValue;
+
+  // Ad counter
+  static int _adCounter = 0;
 
   // Timer
   Timer timer;
@@ -97,7 +100,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     keepPage: true,
   );
   List<Widget> _widgetOptions = <Widget>[
-    Soclose(index: _selectedOrder),
+    SoClose(index: _selectedOrder),
     FutureCalendar(),
     CountDownPage(),
   ];
@@ -114,6 +117,12 @@ class _MainMenuBodyState extends State<MainMenuBody> {
       _db.openNotificationBar();
       _db.controlDates();
     });
+    // Ad process
+    if (_adCounter == 0) {
+      Advert advert = Advert();
+      advert.showIntersitial();
+      _adCounter++;
+    }
   }
 
   @override
@@ -154,7 +163,7 @@ class _MainMenuBodyState extends State<MainMenuBody> {
     setState(() {
       radioValue = e;
       _selectedOrder = e;
-      _widgetOptions[0] = Soclose(
+      _widgetOptions[0] = SoClose(
         index: radioValue,
       );
     });

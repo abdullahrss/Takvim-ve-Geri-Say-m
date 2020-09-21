@@ -8,17 +8,17 @@ import '../databasemodels/events.dart';
 import '../helpers/helperFunctions.dart';
 import '../widgets/dropdown.dart';
 
-class Soclose extends StatefulWidget {
+class SoClose extends StatefulWidget {
   int index = 0;
 
-  Soclose({this.index});
+  SoClose({this.index});
 
   @override
-  _Closesevents createState() => _Closesevents();
+  _ClosesEvents createState() => _ClosesEvents();
 }
 
-class _Closesevents extends State<Soclose> {
-  var _db = DbHelper();
+class _ClosesEvents extends State<SoClose> {
+  var _db = DbHelper.instance;
 
   @override
   Widget build(BuildContext context) {

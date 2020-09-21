@@ -32,7 +32,7 @@ class _AddEventState extends State<AddEvent> {
 
   final Advert _advert = Advert();
 
-  var _db = DbHelper();
+  var _db = DbHelper.instance;
 
   String _selectedDate = DateTime.now().toString().split(" ")[0];
   String _selectedStartHour = DateTime.now().toString().split(" ")[1].split(":")[0] +

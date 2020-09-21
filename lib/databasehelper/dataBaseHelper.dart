@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:io' show Directory;
 
 import 'package:ajanda/databasehelper/settingsHelper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:synchronized/synchronized.dart';
 
 import '../helpers/helperFunctions.dart';
 import '../databasemodels/events.dart';
@@ -13,9 +15,6 @@ import '../helpers/languageDictionary.dart';
 import '../main.dart';
 
 class DbHelper {
-  static DbHelper _databaseHelper; // Database'in tekil olmasi icin
-  static Database _database;
-
   static final String _tableName = EventConstants.TABLE_NAME;
   static final String _columnId = EventConstants.COLUMN_ID;
   static final String _columnTitle = EventConstants.COLUMN_TITLE;
@@ -35,34 +34,39 @@ class DbHelper {
   static final String _columnPeriodic = EventConstants.COLUMN_PERIODIC;
   static final String _columnFrequency = EventConstants.COLUMN_FREQUENCY;
 
+  static Database _database;
+  final _lock = Lock();
+
   DbHelper._createInstance();
 
-  factory DbHelper() {
-    if (_databaseHelper == null) {
-      _databaseHelper = DbHelper._createInstance();
-    }
-    return _databaseHelper;
-  }
+  static final DbHelper instance = DbHelper._createInstance();
 
   Future<Database> get database async {
+    debugPrint("[dataBaseHelper] get database working...");
     if (_database == null) {
-      _database = await initializeDatabase();
+      debugPrint("[dataBaseHelper] _database is null");
+      await _lock.synchronized(() async {
+        if (_database == null) {
+          _database = await _initDatabase();
+        }
+      });
     }
+    debugPrint("[dataBaseHelper] _database is not null");
     return _database;
   }
 
-  static Future<Database> initializeDatabase() async {
+  Future<Database> _initDatabase() async {
+    debugPrint("[dataBaseHelper] [_initDatabase] initDatabase working...");
     Directory directory = await getApplicationDocumentsDirectory();
     String path = directory.path + 'dbtakvim.db';
-
-    // Database yoksa olusturuyor varsa aciyor
-    var eventsDatabase = await openDatabase(path, version: 1, onCreate: _createDb);
-    return eventsDatabase;
-  }
-
-  static void _createDb(Database db, int newVersion) async {
-    await db.execute(
-        'CREATE TABLE $_tableName ( $_columnId INTEGER PRIMARY KEY NOT NULL,$_columnTitle TEXT ,$_columnDate TEXT,$_columnStartTime TEXT,$_columnFinishTime TEXT,$_columnDesc TEXT,$_columnIsActive INTEGER, $_columnNotification TEXT, $_columnCountdownIsActive INTEGER, $_columnAttachments TEXT,$_columnCc TEXT, $_columnBb TEXT, $_columnRecipient TEXT, $_columnSubject TEXT, $_columnBody TEXT,$_columnPeriodic INTEGER, $_columnFrequency TEXT);');
+    return await openDatabase(path,version: 2,onCreate: (Database database, int version)async{
+      try{
+        await database.execute(
+            'CREATE TABLE $_tableName( $_columnId INTEGER PRIMARY KEY NOT NULL, $_columnTitle TEXT ,$_columnDate TEXT,$_columnStartTime TEXT,$_columnFinishTime TEXT, $_columnDesc TEXT, $_columnIsActive INTEGER, $_columnNotification TEXT, $_columnCountdownIsActive INTEGER, $_columnAttachments TEXT, $_columnCc TEXT, $_columnBb TEXT, $_columnRecipient TEXT, $_columnSubject TEXT, $_columnBody TEXT, $_columnPeriodic INTEGER, $_columnFrequency TEXT)');
+      }catch(e){
+        debugPrint("[ERROR] [DATABASEHELPER] [_initDatabase] : $e");
+      }
+      });
   }
 
   // Databaseden tüm eventleri alma
@@ -211,18 +215,23 @@ class DbHelper {
   }
 
   Future<bool> openNotificationBar() async {
+    debugPrint("[dataBaseHelper] [openNotificationBar] func working...");
     /// Database aciliyor
     Database db = await this.database;
-
+    /// Settings helper
+    SettingsDbHelper settingsDbHelper = SettingsDbHelper();
     /// Notification objesi olusturuluyor
     var not = Notifications(flutterLocalNotificationsPlugin);
 
-    /// Settings helper
-    SettingsDbHelper settingsDbHelper = SettingsDbHelper();
     /// Gerekli sartlari [countDownIsActive(Sabit bildirim) - periodic(Periyotlu event)] saglayan eventler databaseden aliniyor
-    var result = await db.rawQuery(
-        "SELECT * FROM $_tableName WHERE $_columnCountdownIsActive=1 OR $_columnPeriodic!=0");
-
+    var result;
+    try {
+      result = await db.rawQuery(
+          "SELECT * FROM $_tableName WHERE $_columnCountdownIsActive=1 OR $_columnPeriodic!=0");
+    } catch (e) {
+      debugPrint("[ERROR] [DATABASEHELPER] [openNotificationBar] $e");
+      debugPrint("[openNotificationBar] db value : ${db.runtimeType}");
+    }
     /// Eventler listeye ekleniyor
     List<Event> eventList = List<Event>();
     for (var i = 0; i < result.length; i++) {
@@ -261,7 +270,9 @@ class DbHelper {
         }
       }
       var remainingTime = targetTime.difference(DateTime.now());
-      await settingsDbHelper.getSettings().then((value) => Language.languageIndex=value[0].language);
+      await settingsDbHelper.getSettings().then((value) {
+        Language.languageIndex = value[0].language;
+      });
       await not.countDownNotification(
           flutterLocalNotificationsPlugin,
           eventList[i].title,
@@ -311,8 +322,15 @@ class DbHelper {
   }
 
   Future<DateTime> controlDates() async {
+    debugPrint("[dataBaseHelper] [controlDates] controlDates working...");
     Database db = await this.database;
-    var events = await db.rawQuery("SELECT * FROM $_tableName WHERE $_columnPeriodic!=0");
+    var events;
+    try {
+      events = await db.rawQuery("SELECT * FROM $_tableName WHERE $_columnPeriodic!=0");
+    } catch (e) {
+      debugPrint("[ERROR] [DATABASEHELPER] [controlDates] $e");
+      debugPrint("[controlDates] db value : ${db.runtimeType}");
+    }
     DateTime eventDate;
     List<Event> eventList = List<Event>();
     events.forEach((element) {

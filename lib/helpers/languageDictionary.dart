@@ -335,10 +335,10 @@ Map<String, dynamic> proTranslate = {
     "It prepares you a reminder notification for your event."
   ],
   //112
-  "Etklinliğiniz için bildirim ayarlasanız sizin için göndereceğiniz maili E-mail servisine gönderir":
-      [
-    "Etklinliğiniz için bildirim ayarlasanız sizin için göndereceğiniz maili E-mail servisine gönderir",
-    "Sends the e-mail service you send for you to the E-mail service if you set a notification for your Event."
+  "Ayarladığınız maili zamanı geldiğinde E-mail servisine yönlendirir.":
+  [
+    "Ayarladığınız maili zamanı geldiğinde E-mail servisine yönlendirir.",
+    "It sends the e-mail you set to the e-mail service when the time comes."
   ],
   //132
   //tamam var 147 fuck that shit

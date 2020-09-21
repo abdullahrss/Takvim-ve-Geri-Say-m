@@ -18,7 +18,7 @@ class CalanderEvent extends StatefulWidget {
 }
 
 class _CalanderEventstate extends State<CalanderEvent> {
-  var _db = DbHelper();
+  var _db = DbHelper.instance;
 
   @override
   void dispose() {

@@ -132,7 +132,7 @@ Future<void> showButtonAboutDialog(context) async {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          proTranslate["Etklinliğiniz için bildirim ayarlasanız sizin için göndereceğiniz maili E-mail servisine gönderir"][Language.languageIndex],
+                          proTranslate["Ayarladığınız maili zamanı geldiğinde E-mail servisine yönlendirir."][Language.languageIndex],
                           style: TextStyle(
                             fontSize: 18,
                           ),

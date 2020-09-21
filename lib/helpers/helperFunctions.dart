@@ -6,7 +6,7 @@ String calcRemaining(String date, String startTime) {
   String result = "";
   DateTime dateTime;
   DateTime now = DateTime.now();
-  dateTime = startTime == "null" ? DateTime.parse("$date") : DateTime.parse("$date $startTime");
+  dateTime = startTime == "null" ? DateTime.parse("$date").add(Duration(days: 1)) : DateTime.parse("$date $startTime");
   if(dateTime.difference(now).inMinutes<0 && dateTime.difference(now).inDays == 0){
     result = proTranslate["Geçti"][Language.languageIndex];
   }else if(dateTime.difference(now).inMinutes<0 && dateTime.difference(now).inDays < 0){
