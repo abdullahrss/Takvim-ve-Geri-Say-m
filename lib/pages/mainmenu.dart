@@ -27,6 +27,8 @@ class MainMenu extends StatelessWidget {
       future: _db.getSettings(),
       builder: (context, snapshot) {
         if (snapshot.data == null) {
+          debugPrint("[MainMenu] snapshot.data is null");
+          debugPrint("[MainMenu] _db runtimetype is : ${_db.runtimeType} --- _db value is : $_db");
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             home: Scaffold(

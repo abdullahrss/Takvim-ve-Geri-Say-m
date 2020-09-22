@@ -153,10 +153,12 @@ Map<String, dynamic> proTranslate = {
   "Etkinliğinize 1 hafta kaldı.": ["Etkinliğinize 1 hafta kaldı.", "1 week left to your event."],
 
   ///helperFunctions.dart
+  "Şimdi" :["Şimdi","Now"],
   "Bugün": ["Bugün", "Today"],
   "Gün Geçti": ["Gün Geçti", "Days passed"],
   "Dakika Kaldı":["Dakika Kaldı","Minutes Left"],
   "Saat Kaldı": ["Saat Kaldı", "Hours Left"],
+  "Etkinlik Başladı":["Etkinlik Başladı","Event started"],
   //17
 
   "Gün Kaldı": ["Gün Kaldı", "Days Left"],

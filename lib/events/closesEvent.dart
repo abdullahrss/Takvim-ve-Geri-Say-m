@@ -28,7 +28,11 @@ class _ClosesEvents extends State<SoClose> {
           builder: (context, snapshot) {
             if (snapshot.data == null) {
               return Container(
-                child: Center(child:CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.lightBlueAccent),),
+                child: Center(
+                  child: CircularProgressIndicator(
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Colors.lightBlueAccent),
+                  ),
                 ),
               );
             } else {
@@ -48,7 +52,8 @@ class _ClosesEvents extends State<SoClose> {
                               Expanded(
                                 child: Container(
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
                                     children: <Widget>[
                                       Text(
                                         '${snapshot.data[index].title}',
@@ -69,7 +74,8 @@ class _ClosesEvents extends State<SoClose> {
                                                 SizedBox(
                                                   width: 10,
                                                 ),
-                                                Text("${snapshot.data[index].date}"),
+                                                Text(
+                                                    "${snapshot.data[index].date}"),
                                               ],
                                             ),
                                             Row(
@@ -105,7 +111,8 @@ class _ClosesEvents extends State<SoClose> {
                               ),
                               Expanded(
                                 child: Container(
-                                  padding: const EdgeInsets.only(left: 16.0, top: 12.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 16.0, top: 12.0),
                                   child: Column(
                                     children: <Widget>[
                                       Container(
@@ -113,20 +120,28 @@ class _ClosesEvents extends State<SoClose> {
                                           id: snapshot.data[index].id,
                                           title: snapshot.data[index].title,
                                           date: snapshot.data[index].date,
-                                          startTime: snapshot.data[index].startTime,
-                                          finishTime: snapshot.data[index].finishTime,
+                                          startTime:
+                                              snapshot.data[index].startTime,
+                                          finishTime:
+                                              snapshot.data[index].finishTime,
                                           desc: snapshot.data[index].desc,
-                                          isActive: snapshot.data[index].isActive,
+                                          isActive:
+                                              snapshot.data[index].isActive,
                                           choice: snapshot.data[index].choice,
-                                          countDownIsActive: snapshot.data[index].countDownIsActive,
-                                          attachments: snapshot.data[index].attachments,
+                                          countDownIsActive: snapshot
+                                              .data[index].countDownIsActive,
+                                          attachments:
+                                              snapshot.data[index].attachments,
                                           cc: snapshot.data[index].cc,
                                           bb: snapshot.data[index].bb,
-                                          recipient: snapshot.data[index].recipient,
+                                          recipient:
+                                              snapshot.data[index].recipient,
                                           subject: snapshot.data[index].subject,
                                           body: snapshot.data[index].body,
-                                          periodic: snapshot.data[index].periodic,
-                                          frequency: snapshot.data[index].frequency,
+                                          periodic:
+                                              snapshot.data[index].periodic,
+                                          frequency:
+                                              snapshot.data[index].frequency,
                                         )),
                                       ),
                                       Container(
@@ -134,18 +149,25 @@ class _ClosesEvents extends State<SoClose> {
                                         width: 105,
                                         padding: EdgeInsets.only(bottom: 8.0),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(8.0),
-                                          color: (calcRemaining(snapshot.data[index].date,
-                                              snapshot.data[index].startTime)
-                                              .contains(proTranslate["Geçti"][Language.languageIndex]))
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                          color: (calcRemaining(
+                                            snapshot.data[index].date,
+                                            snapshot.data[index].startTime,
+                                            snapshot.data[index].finishTime,
+                                          ).contains(proTranslate["Geçti"]
+                                                  [Language.languageIndex]))
                                               ? Colors.blueGrey
                                               : Colors.blue,
                                         ),
                                         child: Align(
                                           alignment: Alignment.center,
                                           child: Text(
-                                            calcRemaining(snapshot.data[index].date,
-                                                snapshot.data[index].startTime),
+                                            calcRemaining(
+                                                snapshot.data[index].date,
+                                                snapshot.data[index].startTime,
+                                                snapshot
+                                                    .data[index].finishTime),
                                             textAlign: TextAlign.center,
                                             style: TextStyle(fontSize: 22),
                                           ),

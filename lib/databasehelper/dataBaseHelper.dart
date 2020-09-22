@@ -4,7 +4,6 @@ import 'dart:io' show Directory;
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:synchronized/synchronized.dart';
 
 import '../helpers/helperFunctions.dart';
 import '../databasemodels/events.dart';
@@ -15,8 +14,22 @@ import '../main.dart';
 import '../databasemodels/settingsModel.dart';
 
 class DbHelper {
+  final initialScript = [
+    '''
+    'CREATE TABLE ${EventConstants.TABLE_NAME}( ${EventConstants.COLUMN_ID} INTEGER PRIMARY KEY NOT NULL, ${EventConstants.COLUMN_TITLE} TEXT,
+    ${EventConstants.COLUMN_DATE} TEXT,${EventConstants.COLUMN_STARTTIME} TEXT,${EventConstants.COLUMUN_FINISHTIME} TEXT,
+    ${EventConstants.COLUMN_DESCRIPTION} TEXT, ${EventConstants.COLUMN_ISACTIVE} INTEGER, ${EventConstants.COLUMN_NOTIFICATION} TEXT,
+    ${EventConstants.COLUMN_COUNTDOWNISACTIVE} INTEGER, ${EventConstants.COLUMN_ATTACHMENTS} TEXT, ${EventConstants.COLUMN_CC} TEXT,
+    ${EventConstants.COLUMN_BB} TEXT, ${EventConstants.COLUMN_RECIPIENT} TEXT, ${EventConstants.COLUMN_SUBJECT} TEXT, ${EventConstants.COLUMN_BODY} TEXT,
+    ${EventConstants.COLUMN_PERIODIC} INTEGER, ${EventConstants.COLUMN_FREQUENCY} TEXT)'
+    ''',
+    '''
+    'CREATE TABLE ${SettingsConstants.TABLE_NAME}(${SettingsConstants.COLUMN_THEME} TEXT, ${SettingsConstants.COLUMN_FONTNAME} TEXT,
+    ${SettingsConstants.COLUMN_WARNING} INTEGER, ${SettingsConstants.COLUMN_LANGUAGE} INTEGER, ${SettingsConstants.COLUMN_FIRST} INTEGER)'
+    ''',
+  ];
+
   static Database _database;
-  final _lock = Lock();
 
   DbHelper._createInstance();
 
@@ -26,11 +39,7 @@ class DbHelper {
     debugPrint("[dataBaseHelper] get database working...");
     if (_database == null) {
       debugPrint("[dataBaseHelper] _database is null");
-      await _lock.synchronized(() async {
-        if (_database == null) {
-          _database = await _initDatabase();
-        }
-      });
+      _database = await _initDatabase();
     }
     debugPrint("[dataBaseHelper] _database is not null");
     return _database;
@@ -40,23 +49,25 @@ class DbHelper {
     debugPrint("[dataBaseHelper] [_initDatabase] initDatabase working...");
     Directory directory = await getApplicationDocumentsDirectory();
     String path = directory.path + 'dbtakvim.db';
-    return await openDatabase(path, version: 2, onCreate: (Database database, int version) async {
-      try {
-        await database.execute(
-            'CREATE TABLE ${EventConstants.TABLE_NAME}( ${EventConstants.COLUMN_ID} INTEGER PRIMARY KEY NOT NULL, ${EventConstants.COLUMN_TITLE} TEXT ,${EventConstants.COLUMN_DATE} TEXT,${EventConstants.COLUMN_STARTTIME} TEXT,${EventConstants.COLUMUN_FINISHTIME} TEXT, ${EventConstants.COLUMN_DESCRIPTION} TEXT, ${EventConstants.COLUMN_ISACTIVE} INTEGER, ${EventConstants.COLUMN_NOTIFICATION} TEXT, ${EventConstants.COLUMN_COUNTDOWNISACTIVE} INTEGER, ${EventConstants.COLUMN_ATTACHMENTS} TEXT, ${EventConstants.COLUMN_CC} TEXT, ${EventConstants.COLUMN_BB} TEXT, ${EventConstants.COLUMN_RECIPIENT} TEXT, ${EventConstants.COLUMN_SUBJECT} TEXT, ${EventConstants.COLUMN_BODY} TEXT, ${EventConstants.COLUMN_PERIODIC} INTEGER, ${EventConstants.COLUMN_FREQUENCY} TEXT)');
-        await database.execute(
-            'CREATE TABLE ${SettingsConstants.TABLE_NAME}(${SettingsConstants.COLUMN_THEME} TEXT, ${SettingsConstants.COLUMN_FONTNAME} TEXT,${SettingsConstants.COLUMN_WARNING} INTEGER, ${SettingsConstants.COLUMN_LANGUAGE} INTEGER, ${SettingsConstants.COLUMN_FIRST} INTEGER)');
-      } catch (e) {
-        debugPrint("[ERROR] [DATABASEHELPER] [_initDatabase] : $e");
-      }
-    });
+    return await openDatabase(
+      path,
+      version: 2,
+      onCreate: (Database database, int version) async {
+        try {
+          await database.execute(initialScript[0]);
+          await database.execute(initialScript[1]);
+        } catch (e) {
+          debugPrint("[ERROR] [DATABASEHELPER] [_initDatabase] : $e");
+        }
+      },
+    );
   }
 
   // Databaseden tüm eventleri alma
   Future<List<Map<String, dynamic>>> getEventMapList() async {
     Database db = await this.database;
-    var result =
-        await db.query(EventConstants.TABLE_NAME, orderBy: '${EventConstants.COLUMN_TITLE} ASC');
+    var result = await db.query(EventConstants.TABLE_NAME,
+        orderBy: '${EventConstants.COLUMN_TITLE} ASC');
     return result;
   }
 
@@ -220,6 +231,7 @@ class DbHelper {
     } catch (e) {
       debugPrint("[ERROR] [DATABASEHELPER] [openNotificationBar] $e");
       debugPrint("[openNotificationBar] db value : ${db.runtimeType}");
+      return false;
     }
 
     /// Eventler listeye ekleniyor
@@ -246,11 +258,14 @@ class DbHelper {
           : DateTime.parse("${eventList[i].date} ${eventList[i].startTime}");
 
       /// Eger etkinlik tarihi gecmis ise
-      if (targetTime.isBefore(DateTime.now()) || (targetTime == DateTime.now())) {
+      if (targetTime.isBefore(DateTime.now()) ||
+          (targetTime == DateTime.now())) {
         /// Periyodik degilse etkinlik siliniyor ve db guncellenerek sabit bildirim kapatiliyor
         if (eventList[i].periodic == 0) {
-          not.cancelNotification(flutterLocalNotificationsPlugin, eventList[i].id);
-          await updateSingleColumn(eventList[i].id, EventConstants.COLUMN_COUNTDOWNISACTIVE, "0");
+          not.cancelNotification(
+              flutterLocalNotificationsPlugin, eventList[i].id);
+          await updateSingleColumn(
+              eventList[i].id, EventConstants.COLUMN_COUNTDOWNISACTIVE, "0");
           continue;
         }
 
@@ -290,24 +305,32 @@ class DbHelper {
           ? DateTime.parse("${event.date} ${event.startTime}")
           : DateTime.parse(event.date);
       if (DateTime.now().compareTo(datetime) == 1) {
-        print("[dataBaseHelper] [createNotifications] Out of time event title : ${event.title}");
-        flutterLocalNotificationsPlugin
-            .cancel(event.id); // zaman gectikten sonra notificasyonun kapanmasinin sebebi
+        print(
+            "[dataBaseHelper] [createNotifications] Out of time event title : ${event.title}");
+        flutterLocalNotificationsPlugin.cancel(event
+            .id); // zaman gectikten sonra notificasyonun kapanmasinin sebebi
         continue;
       }
       datetime = not.calcNotificationDate(datetime, int.parse(event.choice));
       if (event.recipient != "") {
-        print("[DATABASEHELPER] [createNotifications] e-mail notification : ${event.title}");
+        print(
+            "[DATABASEHELPER] [createNotifications] e-mail notification : ${event.title}");
         await not.singleNotificationWithMail(
             flutterLocalNotificationsPlugin,
             datetime,
             event.title,
-            proTranslate["Yollayacağınız e-mail'in vakti geldi."][Language.languageIndex],
+            proTranslate["Yollayacağınız e-mail'in vakti geldi."]
+                [Language.languageIndex],
             event.id);
       } else {
-        print("[DATABASEHELPER] [createNotifications] normal notification : ${event.title}");
-        await not.singleNotification(flutterLocalNotificationsPlugin, datetime, event.title,
-            not.calcSingleNotificationBodyText(event.choice), event.id);
+        print(
+            "[DATABASEHELPER] [createNotifications] normal notification : ${event.title}");
+        await not.singleNotification(
+            flutterLocalNotificationsPlugin,
+            datetime,
+            event.title,
+            not.calcSingleNotificationBodyText(event.choice),
+            event.id);
       }
     }
   }
@@ -322,6 +345,7 @@ class DbHelper {
     } catch (e) {
       debugPrint("[ERROR] [DATABASEHELPER] [controlDates] $e");
       debugPrint("[controlDates] db value : ${db.runtimeType}");
+      return null;
     }
     DateTime eventDate;
     List<Event> eventList = List<Event>();
@@ -419,7 +443,8 @@ class DbHelper {
         var targetTime = value[i].startTime == "null"
             ? DateTime.parse("${value[i].date}")
             : DateTime.parse("${value[i].date} ${value[i].startTime}");
-        if (targetTime.isBefore(DateTime.now()) || (targetTime == DateTime.now())) {
+        if (targetTime.isBefore(DateTime.now()) ||
+            (targetTime == DateTime.now())) {
           if (value[i].startTime == "null") {
             deleteOldEventDay(value[i].date);
           } else {
@@ -479,18 +504,34 @@ class DbHelper {
   /// Tum kayitli ayarlari cekmek icin
   Future<List<Setting>> getSettings() async {
     Database db = await this.database;
-    var settingsMapList = await db.rawQuery("SELECT * FROM ${SettingsConstants.TABLE_NAME}");
+    var settingsMapList;
+    try {
+      settingsMapList =
+          await db.rawQuery("SELECT * FROM ${SettingsConstants.TABLE_NAME}");
+    } catch (e) {
+      debugPrint("[ERROR] [DATABASEHELPER] [getSettings] : $e");
+    }
+    debugPrint(
+        "[DATABASEHELPER] [getSettings] settingsMapList : $settingsMapList --- settingsMapList length : ${settingsMapList.length}");
 
     /// Db bos ise default degerler veriliyor
     if (settingsMapList.length == 0 || settingsMapList == []) {
+      // !!!!!!!! Default deger ver bunla ugrasma kekeo
       await db.rawQuery(
           "INSERT INTO ${SettingsConstants.TABLE_NAME} (${SettingsConstants.COLUMN_THEME},${SettingsConstants.COLUMN_FONTNAME},${SettingsConstants.COLUMN_WARNING},${SettingsConstants.COLUMN_LANGUAGE},${SettingsConstants.COLUMN_FIRST}) VALUES('light','Titillium',0,1,0);");
-      settingsMapList = await db.rawQuery("SELECT * FROM ${SettingsConstants.TABLE_NAME}");
+
+      settingsMapList =
+          await db.rawQuery("SELECT * FROM ${SettingsConstants.TABLE_NAME}");
     }
+    debugPrint(
+        "[DATABASEHELPER] [getSettings] settingsMapList : $settingsMapList --- settingsMapList length : ${settingsMapList.length}");
     List<Setting> settingList = List<Setting>();
     for (int i = 0; i < settingsMapList.length; i++) {
       settingList.add(Setting.fromMap(settingsMapList[i]));
     }
+    settingList.forEach((element) {
+      print("[DATABASEHELPER] [getSettings] settingList element : $element");
+    });
     return settingList;
   }
 }
