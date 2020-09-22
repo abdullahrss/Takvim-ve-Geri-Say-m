@@ -17,3 +17,5 @@ Klavuz:
   - Detaylar kısmından etkinliği silebilir, düzenleyebilir, daha detaylı inceleyebilirsin.
   - Etkinlik eklerken veya düzenlerken Seçenekler kısmından sabit bildirim açabilir geri sayım oluşturabilirsin.
   - Menüler arasında kolayca sağ ve sola kaydırarak geçiş yapabilirsin.
+
+[*] İlk proje olduğundan spagetti kodlara sahiptir.
