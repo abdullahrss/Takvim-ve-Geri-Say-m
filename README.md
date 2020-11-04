@@ -1,4 +1,5 @@
 # Takvim-ve-Geri-Sayim
+# PlayStore : https://play.google.com/store/apps/details?id=com.arstech.ajanda
 Öne çıkan özellikler:
   - Gün sayacı ile ne kadar gün dakika saniye kaldığını anlık görebilme.
   - Sabit bildirim özelliği ile uygulamada olmasanız bile telefonunuzun bildirim kısmında etkinliğinize ne kadar kaldığını gösteren gün sayacı.
